@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cn.cqray.android.state.StateRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/_core_refresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+</cn.cqray.android.state.StateRefreshLayout>

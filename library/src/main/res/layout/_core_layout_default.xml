@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <cn.cqray.android.widget.CommonToolbar
+        android:id="@+id/_core_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar"
+        android:background="@color/colorPrimary">
+
+    </cn.cqray.android.widget.CommonToolbar>
+
+    <!-- 刷新界面 -->
+    <cn.cqray.android.state.StateRefreshLayout
+        android:id="@+id/_core_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/_core_footer"
+        android:layout_below="@id/_core_header"
+        android:overScrollMode="never"
+        app:srlEnablePureScrollMode="true"
+        app:srlEnableScrollContentWhenRefreshed="false"
+        app:srlFixedFooterViewId="@id/fixed_footer"
+        app:srlFixedHeaderViewId="@id/fixed_header"
+        app:srlFooterTranslationViewId="@id/translation_footer"
+        app:srlHeaderTranslationViewId="@id/translation_header">
+
+    </cn.cqray.android.state.StateRefreshLayout>
+
+    <!-- 头部布局 -->
+    <FrameLayout
+        android:id="@+id/_core_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/_core_toolbar">
+
+    </FrameLayout>
+
+    <!-- 底部布局 -->
+    <FrameLayout
+        android:id="@+id/_core_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+    </FrameLayout>
+
+</RelativeLayout>

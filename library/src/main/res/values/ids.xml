@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="fixed_footer" type="id" />
+    <item name="fixed_header" type="id" />
+    <item name="translation_footer" type="id" />
+    <item name="translation_header" type="id" />
+
+    <item name="toolbar" type="id" />
+    <item name="footer_layout" type="id" />
+    <item name="header_layout" type="id" />
+    <item name="refresh_layout" type="id" />
+    <item name="nav_layout" type="id" />
+</resources>
