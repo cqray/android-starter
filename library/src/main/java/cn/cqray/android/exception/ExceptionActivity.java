@@ -15,10 +15,10 @@ import cn.cqray.android.app.SupportActivity;
 public class ExceptionActivity extends SupportActivity {
 
     @Override
-    protected void onCreating(@Nullable Bundle savedInstanceState) {
+    public void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
         setContentView(R.layout._core_lauout_exception);
-        mToolbar.setTitle("异常");
+        //mToolbar.setTitle("异常");
 
         Exception e = (Exception) getIntent().getSerializableExtra("exception");
         TextView tv = findViewById(R.id.tv);

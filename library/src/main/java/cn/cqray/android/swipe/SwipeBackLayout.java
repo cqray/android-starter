@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.cqray.android.R;
-import cn.cqray.android.app.SupportDelegateProvider;
+import cn.cqray.android.app.StarterProvider;
 
 /**
  * 滑动返回控件
@@ -79,9 +79,9 @@ public class SwipeBackLayout extends FrameLayout {
     /** 滑动拖拽辅助类 **/
     private ViewDragHelper mHelper;
     /** Activity **/
-    private SupportDelegateProvider mActivityProvider;
+    private StarterProvider mActivityProvider;
     /** Fragment **/
-    private SupportDelegateProvider mFragmentProvider;
+    private StarterProvider mFragmentProvider;
 
     public SwipeBackLayout(Context context) {
         this(context, null);
@@ -260,7 +260,7 @@ public class SwipeBackLayout extends FrameLayout {
         }
     }
 
-    public void attachToActivity(SupportDelegateProvider provider) {
+    public void attachToActivity(StarterProvider provider) {
         if (getParent() == null) {
             mActivityProvider = provider;
             AppCompatActivity act = (AppCompatActivity) provider;
@@ -279,7 +279,7 @@ public class SwipeBackLayout extends FrameLayout {
         }
     }
 
-    public void attachToFragment(@NonNull SupportDelegateProvider fragment, @NonNull View view) {
+    public void attachToFragment(@NonNull StarterProvider fragment, @NonNull View view) {
         if (view.getParent() == null) {
             addView(view);
             mFragmentProvider = fragment;
@@ -539,7 +539,7 @@ public class SwipeBackLayout extends FrameLayout {
                     }
                     if (!((Fragment) mFragmentProvider).isStateSaved()) {
                         onDragFinished();
-                        mFragmentProvider.getSupportDelegate().pop();
+                        mFragmentProvider.getStarterDelegate().pop();
                     }
                 } else if (mActivityProvider != null) {
                     AppCompatActivity act = (AppCompatActivity) mActivityProvider;
@@ -558,7 +558,7 @@ public class SwipeBackLayout extends FrameLayout {
                 return 1;
             }
             if (mActivityProvider != null) {
-                return mActivityProvider.getSupportDelegate().getSupportFragmentManager().canPop() ? 0 : 1;
+                return mActivityProvider.getStarterDelegate().canPop() ? 0 : 1;
             }
             return 1;
         }

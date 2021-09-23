@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <cn.cqray.android.widget.CommonToolbar
-        android:id="@id/toolbar"
+        android:id="@id/starter_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar"
         android:background="@color/colorPrimary">
@@ -14,11 +14,11 @@
 
     <!-- 刷新界面 -->
     <cn.cqray.android.state.StateRefreshLayout
-        android:id="@id/refresh_layout"
+        android:id="@id/starter_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/footer_layout"
-        android:layout_below="@id/header_layout"
+        android:layout_above="@id/starter_footer_layout"
+        android:layout_below="@id/starter_header_layout"
         android:overScrollMode="never"
         app:srlEnablePureScrollMode="true"
         app:srlEnableScrollContentWhenRefreshed="false"
@@ -31,16 +31,16 @@
 
     <!-- 头部布局 -->
     <FrameLayout
-        android:id="@id/header_layout"
+        android:id="@id/starter_header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar">
+        android:layout_below="@id/starter_toolbar">
 
     </FrameLayout>
 
     <!-- 底部布局 -->
     <FrameLayout
-        android:id="@id/footer_layout"
+        android:id="@id/starter_footer_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">

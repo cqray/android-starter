@@ -16,8 +16,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 
-import cn.cqray.android.app.DisposablePool;
-import cn.cqray.android.app.SupportDelegateProvider;
+import cn.cqray.android.app.StarterProvider;
 import cn.cqray.android.util.CheckUtils;
 import io.reactivex.functions.Consumer;
 
@@ -29,10 +28,10 @@ public final class SwipeBackDelegate {
     /** 边缘生效百分比 **/
     private static final float SWIPE_EDGE_PERCENT = 0.2f;
     private SwipeBackLayout mSwipeLayout;
-    private DisposablePool mDisposablePool;
-    private final SupportDelegateProvider mDelegateProvider;
+    //private DisposablePool mDisposablePool;
+    private final StarterProvider mDelegateProvider;
 
-    public SwipeBackDelegate(@NonNull SupportDelegateProvider provider) {
+    public SwipeBackDelegate(@NonNull StarterProvider provider) {
         CheckUtils.checkDelegateProvider(provider);
         mDelegateProvider = provider;
         LifecycleOwner owner = (LifecycleOwner) provider;
@@ -46,32 +45,32 @@ public final class SwipeBackDelegate {
     }
 
     public void onAttachActivity() {
-        if (mDelegateProvider.onSwipeBackSupport()
-                && mDelegateProvider instanceof Activity) {
-            AppCompatActivity act = (AppCompatActivity) mDelegateProvider;
-            Window window = act.getWindow();
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            window.getDecorView().setBackgroundColor(Color.TRANSPARENT);
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(-1, -1);
-            mSwipeLayout = new SwipeBackLayout(act);
-            mSwipeLayout.setLayoutParams(params);
-            mSwipeLayout.setSwipeEdgePercent(SWIPE_EDGE_PERCENT);
-            mSwipeLayout.attachToActivity(mDelegateProvider);
-        }
+//        if (mDelegateProvider.onSwipeBackSupport()
+//                && mDelegateProvider instanceof Activity) {
+//            AppCompatActivity act = (AppCompatActivity) mDelegateProvider;
+//            Window window = act.getWindow();
+//            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//            window.getDecorView().setBackgroundColor(Color.TRANSPARENT);
+//            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(-1, -1);
+//            mSwipeLayout = new SwipeBackLayout(act);
+//            mSwipeLayout.setLayoutParams(params);
+//            mSwipeLayout.setSwipeEdgePercent(SWIPE_EDGE_PERCENT);
+//            mSwipeLayout.attachToActivity(mDelegateProvider);
+//        }
     }
 
     public View onAttachFragment(View view) {
-        if (mDelegateProvider.onSwipeBackSupport()
-                && mDelegateProvider instanceof Fragment
-                && view != null ) {
-            mSwipeLayout = new SwipeBackLayout(((Fragment) mDelegateProvider).requireContext());
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(-1, -1);
-            mSwipeLayout.setLayoutParams(params);
-            mSwipeLayout.setBackgroundColor(Color.TRANSPARENT);
-            mSwipeLayout.setSwipeEdgePercent(SWIPE_EDGE_PERCENT);
-            mSwipeLayout.attachToFragment(mDelegateProvider, view);
-            return mSwipeLayout;
-        }
+//        if (mDelegateProvider.onSwipeBackSupport()
+//                && mDelegateProvider instanceof Fragment
+//                && view != null ) {
+//            mSwipeLayout = new SwipeBackLayout(((Fragment) mDelegateProvider).requireContext());
+//            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(-1, -1);
+//            mSwipeLayout.setLayoutParams(params);
+//            mSwipeLayout.setBackgroundColor(Color.TRANSPARENT);
+//            mSwipeLayout.setSwipeEdgePercent(SWIPE_EDGE_PERCENT);
+//            mSwipeLayout.attachToFragment(mDelegateProvider, view);
+//            return mSwipeLayout;
+//        }
         return view;
     }
 
@@ -180,25 +179,25 @@ public final class SwipeBackDelegate {
         return this;
     }
 
-    public SupportDelegateProvider getSupportDelegateProvider() {
+    public StarterProvider getSupportDelegateProvider() {
         return mDelegateProvider;
     }
 
-    private DisposablePool getDisposablePool() {
-        if (mDisposablePool == null) {
-            synchronized (mDelegateProvider) {
-                if (mDisposablePool == null) {
-                    mDisposablePool = new DisposablePool((LifecycleOwner) mDelegateProvider);
-                }
-            }
-        }
-        return mDisposablePool;
-    }
-
+//    private DisposablePool getDisposablePool() {
+//        if (mDisposablePool == null) {
+//            synchronized (mDelegateProvider) {
+//                if (mDisposablePool == null) {
+//                    mDisposablePool = new DisposablePool((LifecycleOwner) mDelegateProvider);
+//                }
+//            }
+//        }
+//        return mDisposablePool;
+//    }
+//
     private void timer(Consumer<Long> consumer) {
-        if (!mDelegateProvider.onSwipeBackSupport()) {
-            return;
-        }
-        getDisposablePool().timer(consumer, 0);
+//        if (!mDelegateProvider.onSwipeBackSupport()) {
+//            return;
+//        }
+//        getDisposablePool().timer(consumer, 0);
     }
 }

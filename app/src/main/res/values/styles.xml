@@ -7,4 +7,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="TextApp">
+
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
 </resources>

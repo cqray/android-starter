@@ -5,7 +5,7 @@ import android.content.Context;
 
 import cn.cqray.android.anim.DefaultVerticalAnimator;
 import cn.cqray.android.anim.FragmentAnimator;
-import cn.cqray.android.app.ApplicationLifecycleDispatcher;
+import cn.cqray.android.app.StarterDispatcher;
 
 /**
  * Android库入口
@@ -47,7 +47,7 @@ public class Starter {
                         if (Application.class.isAssignableFrom(clazz)) {
                             mApplication = application;
                             //ActivityHelper.initialize(application);
-                            ApplicationLifecycleDispatcher.initialize(application);
+                            StarterDispatcher.initialize(application);
                             return this;
                         }
                     } catch (ClassNotFoundException ignored) {}

@@ -18,14 +18,14 @@ import java.util.UUID;
  * 用以管理AppCompatActivity和Fragment下的回退栈及其他缓存数据
  * @author cqray
  */
-final class FragmentDataDelegate {
+final class StarterCache {
 
     /** id关键字 **/
     private static final String FRAGMENT_ID_KEY = "starter:fragment_id";
-    private static final Map<LifecycleOwner, FragmentDataDelegate> FC_DELEGATE_MAP = new HashMap<>();
+    private static final Map<LifecycleOwner, StarterCache> FC_DELEGATE_MAP = new HashMap<>();
 
     @NonNull
-    static synchronized FragmentDataDelegate get(LifecycleOwner owner) {
+    static synchronized StarterCache get(LifecycleOwner owner) {
         Object key;
         if (owner instanceof AppCompatActivity) {
             key = owner;
@@ -38,9 +38,9 @@ final class FragmentDataDelegate {
                 key = fragment.requireActivity();
             }
         }
-        FragmentDataDelegate delegate = FC_DELEGATE_MAP.get(key);
+        StarterCache delegate = FC_DELEGATE_MAP.get(key);
         if (delegate == null) {
-            delegate = new FragmentDataDelegate();
+            delegate = new StarterCache();
             FC_DELEGATE_MAP.put(owner, delegate);
         }
         return delegate;
@@ -88,7 +88,7 @@ final class FragmentDataDelegate {
      * @param intent intent对象
      */
     @NonNull
-    Fragment generateFragment(@NonNull FragmentManagerDelegate delegate, @NonNull NavIntent intent) {
+    Fragment generateFragment(@NonNull StarterDelegate delegate, @NonNull NavIntent intent) {
         // Fragment工厂
         FragmentFactory factory = delegate.getFragmentManager().getFragmentFactory();
         // 类加载器
@@ -108,7 +108,7 @@ final class FragmentDataDelegate {
      * 获取回退栈栈顶的Fragment
      * @param delegate 代理
      */
-    Fragment getTopFragment(@NonNull FragmentManagerDelegate delegate) {
+    Fragment getTopFragment(@NonNull StarterDelegate delegate) {
         String fragmentTag = getFragmentTag(mBackStack.size() - 1);
         return delegate.getFragmentManager().findFragmentByTag(fragmentTag);
     }

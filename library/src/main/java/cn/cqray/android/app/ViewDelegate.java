@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -82,27 +83,15 @@ public final class ViewDelegate {
      * @param view 布局
      */
     public void setContentView(View view) {
-        mContentView = inflate(R.layout.starter_layout_default);
-        mToolbar = findViewById(R.id.toolbar);
-        mHeaderLayout = findViewById(R.id.header_layout);
-        mFooterLayout = findViewById(R.id.footer_layout);
-        mRefreshLayout = findViewById(R.id.refresh_layout);
+        mContentView = inflate(R.layout.starter_default_layout);
+        mToolbar = findViewById(R.id.starter_toolbar);
+        mHeaderLayout = findViewById(R.id.starter_header_layout);
+        mFooterLayout = findViewById(R.id.starter_footer_layout);
+        mRefreshLayout = findViewById(R.id.starter_refresh_layout);
         assert mRefreshLayout != null;
         mRefreshLayout.addView(view);
         setActivityContentView();
-        initSupportView();
-    }
-
-    public void setNormalContentView(@LayoutRes int id) {
-        setNormalContentView(inflate(id));
-    }
-
-    public void setNormalContentView(View view) {
-        mContentView = inflate(R.layout.starter_layout_normal);
-        mRefreshLayout = findViewById(R.id.refresh_layout);
-        ((ViewGroup) mContentView).addView(view);
-        setActivityContentView();
-        initSupportView();
+        initUnBinder();
     }
 
     /**
@@ -117,10 +106,14 @@ public final class ViewDelegate {
      * 设置原生布局
      * @param view 布局
      */
-    public void setNativeContentView(View view) {
+    public void setNativeContentView(@NonNull View view) {
         mContentView = view;
+        mToolbar = view.findViewById(R.id.starter_toolbar);
+        mHeaderLayout = view.findViewById(R.id.starter_header_layout);
+        mFooterLayout = view.findViewById(R.id.starter_footer_layout);
+        mRefreshLayout = view.findViewById(R.id.starter_refresh_layout);
         setActivityContentView();
-        initSupportView();
+        initUnBinder();
     }
 
     /**
@@ -284,39 +277,6 @@ public final class ViewDelegate {
             ButterKnifeUtils.unbind(mUnBinder);
             mUnBinder = ButterKnifeUtils.bind(mLifecycleOwner, mContentView);
         }
-    }
-
-    void initSupportView() {
-//        final SupportDelegate delegate = mDelegateProvider.getSupportDelegate();
-//        if (mDelegateProvider instanceof AppCompatActivity) {
-//            if (mDelegateProvider instanceof SupportActivity) {
-//                ((SupportActivity) mDelegateProvider).mToolbar = mToolbar;
-//                ((SupportActivity) mDelegateProvider).mContentView = mContentView;
-//                ((SupportActivity) mDelegateProvider).mRefreshLayout = mRefreshLayout;
-//            }
-//        } else {
-//            if (mDelegateProvider instanceof SupportFragment) {
-//                ((SupportFragment) mDelegateProvider).mToolbar = mToolbar;
-//                ((SupportFragment) mDelegateProvider).mContentView = mContentView;
-//                ((SupportFragment) mDelegateProvider).mRefreshLayout = mRefreshLayout;
-//            }
-//        }
-//        // 初始化标题栏监听事件
-//        if (mToolbar != null) {
-//            mToolbar.setNavListener(v -> delegate.pop());
-//        }
-//        SupportHandler<CommonToolbar> tHandler = AndroidLibrary.getInstance().getToolbarHandler();
-//        SupportHandler<StateRefreshLayout> rHandler = AndroidLibrary.getInstance().getRefreshLayoutHandler();
-//        // 全局初始化Toolbar
-//        if (tHandler != null && mToolbar != null) {
-//            tHandler.onHandle(mDelegateProvider, mToolbar);
-//        }
-//        // 全局初始化刷新控件
-//        if (rHandler != null && mRefreshLayout != null) {
-//            rHandler.onHandle(mDelegateProvider, mRefreshLayout);
-//        }
-        // 初始化ButterKnife
-        initUnBinder();
     }
 
     /**

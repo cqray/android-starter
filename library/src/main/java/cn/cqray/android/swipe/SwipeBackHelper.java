@@ -10,8 +10,7 @@ import androidx.fragment.app.Fragment;
 import java.util.Stack;
 
 import cn.cqray.android.Starter;
-import cn.cqray.android.app.SupportDelegateProvider;
-import cn.cqray.android.app.SupportHandler;
+import cn.cqray.android.app.StarterProvider;
 import cn.cqray.android.util.CheckUtils;
 
 /**
@@ -26,23 +25,23 @@ public class SwipeBackHelper {
     private static final Stack<SwipeBackDelegate> FRAGMENT_DELEGATES = new Stack<>();
 
     public static void addSwipeDelegate(@NonNull SwipeBackDelegate delegate) {
-        SupportDelegateProvider provider = delegate.getSupportDelegateProvider();
-        SupportHandler<SwipeBackDelegate> handler = Starter.getInstance().getSwipeBackHandler();
-        if (provider instanceof Activity) {
-            if (!ACTIVITY_DELEGATES.contains(delegate)) {
-                ACTIVITY_DELEGATES.push(delegate);
-                if (handler != null) {
-                    handler.onHandle(provider, delegate);
-                }
-            }
-        } else {
-            if (!FRAGMENT_DELEGATES.contains(delegate)) {
-                FRAGMENT_DELEGATES.push(delegate);
-                if (handler != null) {
-                    handler.onHandle(provider, delegate);
-                }
-            }
-        }
+        StarterProvider provider = delegate.getSupportDelegateProvider();
+//        SupportHandler<SwipeBackDelegate> handler = Starter.getInstance().getSwipeBackHandler();
+//        if (provider instanceof Activity) {
+//            if (!ACTIVITY_DELEGATES.contains(delegate)) {
+//                ACTIVITY_DELEGATES.push(delegate);
+//                if (handler != null) {
+//                    handler.onHandle(provider, delegate);
+//                }
+//            }
+//        } else {
+//            if (!FRAGMENT_DELEGATES.contains(delegate)) {
+//                FRAGMENT_DELEGATES.push(delegate);
+//                if (handler != null) {
+//                    handler.onHandle(provider, delegate);
+//                }
+//            }
+//        }
     }
 
     public static void removeSwipeDelegate(@NonNull SwipeBackDelegate delegate) {
@@ -51,7 +50,7 @@ public class SwipeBackHelper {
     }
 
     @Nullable
-    private static SwipeBackDelegate getSwipeDelegate(@NonNull SupportDelegateProvider provider) {
+    private static SwipeBackDelegate getSwipeDelegate(@NonNull StarterProvider provider) {
         for (SwipeBackDelegate delegate : ACTIVITY_DELEGATES) {
             if (delegate.getSupportDelegateProvider() == provider) {
                 return delegate;
@@ -61,7 +60,7 @@ public class SwipeBackHelper {
     }
 
     @Nullable
-    static SwipeBackDelegate getPreSwipeDelegate(@NonNull SupportDelegateProvider provider) {
+    static SwipeBackDelegate getPreSwipeDelegate(@NonNull StarterProvider provider) {
         SwipeBackDelegate delegate;
         if ((delegate = getSwipeDelegate(provider)) != null) {
             int preIndex = ACTIVITY_DELEGATES.indexOf(delegate) - 1;
@@ -73,7 +72,7 @@ public class SwipeBackHelper {
     @NonNull
     public static SwipeBackDelegate with(AppCompatActivity activity) {
         CheckUtils.checkDelegateProvider(activity);
-        SupportDelegateProvider provider = (SupportDelegateProvider) activity;
+        StarterProvider provider = (StarterProvider) activity;
         SwipeBackDelegate delegate = getSwipeDelegate(provider);
         if (delegate == null) {
             delegate = new SwipeBackDelegate(provider);
@@ -84,7 +83,7 @@ public class SwipeBackHelper {
     @NonNull
     public static SwipeBackDelegate with(Fragment fragment) {
         CheckUtils.checkDelegateProvider(fragment);
-        SupportDelegateProvider provider = (SupportDelegateProvider) fragment;
+        StarterProvider provider = (StarterProvider) fragment;
         SwipeBackDelegate delegate = getSwipeDelegate(provider);
         if (delegate == null) {
             delegate = new SwipeBackDelegate(provider);

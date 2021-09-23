@@ -27,31 +27,33 @@ import cn.cqray.android.exception.ExceptionManager;
  * FragmentManager委托
  * @author Cqray
  */
-public class FragmentManagerDelegate {
+public class StarterDelegate {
 
-    private static final Map<LifecycleOwner, FragmentManagerDelegate> DELEGATE_MAP = new HashMap<>();
-    private FragmentDataDelegate mFcDelegate;
+    private static final Map<LifecycleOwner, StarterDelegate> DELEGATE_MAP = new HashMap<>();
+    private StarterCache mStarterCache;
     private final LifecycleOwner mLifecycleOwner;
 
-    public static FragmentManagerDelegate get(AppCompatActivity activity) {
+    @NonNull
+    public static StarterDelegate get(@NonNull AppCompatActivity activity) {
         return get((LifecycleOwner) activity);
     }
 
-    public static FragmentManagerDelegate get(Fragment fragment) {
+    @NonNull
+    public static StarterDelegate get(@NonNull Fragment fragment) {
         return get((LifecycleOwner) fragment);
     }
 
     @NonNull
-    private static synchronized FragmentManagerDelegate get(@NonNull LifecycleOwner owner) {
-        FragmentManagerDelegate fm = DELEGATE_MAP.get(owner);
+    private static synchronized StarterDelegate get(@NonNull LifecycleOwner owner) {
+        StarterDelegate fm = DELEGATE_MAP.get(owner);
         if (fm == null) {
-            fm = new FragmentManagerDelegate(owner);
+            fm = new StarterDelegate(owner);
             DELEGATE_MAP.put(owner, fm);
         }
         return fm;
     }
 
-    private FragmentManagerDelegate(LifecycleOwner owner) {
+    private StarterDelegate(LifecycleOwner owner) {
         mLifecycleOwner = owner;
         // 添加到缓存
         DELEGATE_MAP.put(owner, this);
@@ -59,7 +61,7 @@ public class FragmentManagerDelegate {
 
     void onCreated() {
         // 获取缓存代理
-        mFcDelegate = FragmentDataDelegate.get(mLifecycleOwner);
+        mStarterCache = StarterCache.get(mLifecycleOwner);
         // Fragment还需做回退处理
         if (mLifecycleOwner instanceof Fragment) {
             Fragment fragment = ((Fragment) mLifecycleOwner);
@@ -76,7 +78,7 @@ public class FragmentManagerDelegate {
 
     void onDestroyed() {
         DELEGATE_MAP.remove(mLifecycleOwner);
-        FragmentDataDelegate.remove(mLifecycleOwner);
+        StarterCache.remove(mLifecycleOwner);
     }
 
     /**
@@ -85,7 +87,7 @@ public class FragmentManagerDelegate {
      * @param intent NavIntent
      */
     public void loadRootFragment(@IdRes int containerId, NavIntent intent) {
-        mFcDelegate.setContainerId(containerId);
+        mStarterCache.setContainerId(containerId);
         start(intent);
     }
 
@@ -94,7 +96,7 @@ public class FragmentManagerDelegate {
      * @param intent NavIntent
      */
     public void start(@NonNull NavIntent intent) {
-        if (mFcDelegate.getContainerId() == 0) {
+        if (mStarterCache.getContainerId() == 0) {
             // 还未设置根Fragment
             ExceptionManager.getInstance().showException(new Exception());
             return;
@@ -123,11 +125,11 @@ public class FragmentManagerDelegate {
         // 获取Fragment事务
         FragmentTransaction ft = fm.beginTransaction();
         // 生成Fragment
-        Fragment fragment = mFcDelegate.generateFragment(this, intent);
+        Fragment fragment = mStarterCache.generateFragment(this, intent);
         // 获取动画
         FragmentAnimator fa = getFragmentAnimator(mLifecycleOwner, intent);
         // 如果回退栈不为空，则需要显示动画
-        if (mFcDelegate.getBackStackCount() != 0) {
+        if (mStarterCache.getBackStackCount() != 0) {
             // 设置动画
             ft.setCustomAnimations(fa.mEnter, fa.mExit, fa.mPopEnter, fa.mPopExit);
         }
@@ -140,9 +142,9 @@ public class FragmentManagerDelegate {
             }
         }
         // 获取FragmentTag
-        String fragmentTag = mFcDelegate.getFragmentTag(fragment);
+        String fragmentTag = mStarterCache.getFragmentTag(fragment);
         // 添加Fragment
-        ft.add(mFcDelegate.getContainerId(), fragment, fragmentTag);
+        ft.add(mStarterCache.getContainerId(), fragment, fragmentTag);
         // 设置初始化生命周期
         ft.setMaxLifecycle(fragment, Lifecycle.State.RESUMED);
         // 设置当前Fragment
@@ -150,7 +152,7 @@ public class FragmentManagerDelegate {
         // 加入BackStack
         ft.addToBackStack(fragmentTag);
         // 加入回退栈
-        mFcDelegate.addToBackStack(fragmentTag);
+        mStarterCache.addToBackStack(fragmentTag);
         // 提交事务
         ft.setReorderingAllowed(true);
         ft.commit();
@@ -170,18 +172,18 @@ public class FragmentManagerDelegate {
             return;
         }
         // 如果是第一个入栈的Fragment并且需要销毁，则父级pop。
-        if (mFcDelegate.isRootFragment(popTo) && inclusive) {
+        if (mStarterCache.isRootFragment(popTo) && inclusive) {
             popParent();
             return;
         }
         // 操作当前Fragment回退栈中的Fragment
         boolean needContinue = true;
-        for (int i = 0; i < mFcDelegate.getBackStackCount(); i++) {
-            String fragmentTag = mFcDelegate.getFragmentTag(i);
+        for (int i = 0; i < mStarterCache.getBackStackCount(); i++) {
+            String fragmentTag = mStarterCache.getFragmentTag(i);
             if (fragmentTag.split("-")[0].equals(popTo.getName())) {
                 if (inclusive) {
                     fm.popBackStack(fragmentTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    mFcDelegate.popBackStackAfter(i);
+                    mStarterCache.popBackStackAfter(i);
                     return;
                 } else {
                     needContinue = false;
@@ -190,18 +192,18 @@ public class FragmentManagerDelegate {
             }
             if (!needContinue) {
                 fm.popBackStack(fragmentTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                mFcDelegate.popBackStackAfter(i);
+                mStarterCache.popBackStackAfter(i);
                 return;
             }
         }
     }
 
     public boolean canPop() {
-        return mFcDelegate.getBackStackCount() > 1;
+        return mStarterCache.getBackStackCount() > 1;
     }
 
     public boolean popEnable() {
-        return mFcDelegate.getBackStackCount() > 1 && !getFragmentManager().isStateSaved();
+        return mStarterCache.getBackStackCount() > 1 && !getFragmentManager().isStateSaved();
     }
 
     public boolean pop() {
@@ -212,7 +214,7 @@ public class FragmentManagerDelegate {
             return false;
         }
         // Fragment回退
-        getFragmentManager().popBackStack(mFcDelegate.popFragmentTag(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getFragmentManager().popBackStack(mStarterCache.popFragmentTag(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         return true;
     }
 
@@ -228,7 +230,7 @@ public class FragmentManagerDelegate {
             Fragment fragment = (Fragment) mLifecycleOwner;
             Fragment parent = fragment.getParentFragment();
             if (parent != null) {
-                FragmentManagerDelegate.get(parent).pop();
+                StarterDelegate.get(parent).pop();
             } else {
                 if (!fragment.requireActivity().isFinishing()) {
                     fragment.requireActivity().finish();
@@ -277,21 +279,21 @@ public class FragmentManagerDelegate {
      */
     private void activityPop(@NonNull FragmentActivity activity) {
         // 获取委托
-        FragmentManagerDelegate delegate = FragmentManagerDelegate.get(activity);
+        StarterDelegate delegate = StarterDelegate.get(activity);
         // 尝试回退Fragment
         if (delegate.popEnable()) {
-            Fragment fragment = mFcDelegate.getTopFragment(this);
+            Fragment fragment = mStarterCache.getTopFragment(this);
             // 回退未成功，实现了BackPressedProvider
-            if (fragment instanceof SupportDelegateProvider) {
-                if (!((SupportDelegateProvider) fragment).onBackPressedSupport()) {
+            if (fragment instanceof StarterProvider) {
+                if (!((StarterProvider) fragment).onBackPressedSupport()) {
                     pop();
                 }
             } else {
                 pop();
             }
         } else {
-            if (activity instanceof SupportDelegateProvider) {
-                if (!((SupportDelegateProvider) activity).onBackPressedSupport()) {
+            if (activity instanceof StarterProvider) {
+                if (!((StarterProvider) activity).onBackPressedSupport()) {
                     ActivityHelper.finish(activity);
                 }
             } else {
@@ -306,11 +308,11 @@ public class FragmentManagerDelegate {
      */
     private void fragmentPop(@NonNull Fragment fragment) {
         // 获取委托
-        FragmentManagerDelegate delegate = FragmentManagerDelegate.get(fragment);
+        StarterDelegate delegate = StarterDelegate.get(fragment);
         if (delegate.popEnable()) {
-            Fragment top = mFcDelegate.getTopFragment(this);
-            if (top instanceof SupportDelegateProvider) {
-                if (!((SupportDelegateProvider) top).onBackPressedSupport()) {
+            Fragment top = mStarterCache.getTopFragment(this);
+            if (top instanceof StarterProvider) {
+                if (!((StarterProvider) top).onBackPressedSupport()) {
                     delegate.pop();
                 }
             } else {
@@ -338,8 +340,8 @@ public class FragmentManagerDelegate {
             return intent.getFragmentAnimator();
         }
         // 如果Owner实现了FragmentAnimatorProvider
-        if (owner instanceof SupportDelegateProvider) {
-            FragmentAnimator fragmentAnimator = ((SupportDelegateProvider) owner).onCreateFragmentAnimator();
+        if (owner instanceof StarterProvider) {
+            FragmentAnimator fragmentAnimator = ((StarterProvider) owner).onCreateFragmentAnimator();
             if (fragmentAnimator != null) {
                 return fragmentAnimator;
             }

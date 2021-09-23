@@ -48,7 +48,7 @@ public class StateRefreshLayout extends SmartRefreshLayout {
         mEnableOverScrollDrag = ta.getBoolean(R.styleable.SmartRefreshLayout_srlEnableOverScrollDrag, true);
         ta.recycle();
         if (getId() == NO_ID) {
-            setId(R.id._core_refresh);
+            setId(R.id.starter_refresh_layout);
         }
     }
 

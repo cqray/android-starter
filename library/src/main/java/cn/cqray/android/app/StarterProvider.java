@@ -6,9 +6,9 @@ import cn.cqray.android.anim.FragmentAnimator;
  * 功能实现
  * @author Cqray
  */
-public interface SupportDelegateProvider {
+public interface StarterProvider {
 
-    SupportDelegate getSupportDelegate();
+    StarterDelegate getStarterDelegate();
 
     FragmentAnimator onCreateFragmentAnimator();
 

@@ -66,7 +66,7 @@ public class CommonToolbar extends RelativeLayout {
         super(context, attrs, defStyleAttr);
         mContext = context;
         if (getId() == NO_ID) {
-            setId(R.id._core_toolbar);
+            setId(R.id.starter_toolbar);
         }
         initInnerViews();
     }
