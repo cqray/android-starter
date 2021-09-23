@@ -20,7 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
- * 应用生命周期调度器
+ * 应用调度器
  * 用来统一调度AppCompatActivity和Fragment的生命周期
  * @author Cqray
  */
