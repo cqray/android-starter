@@ -22,12 +22,13 @@ import java.util.Map;
 import cn.cqray.android.Starter;
 import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.exception.ExceptionManager;
+import cn.cqray.android.util.ActivityUtils;
 
 /**
  * FragmentManager委托
  * @author Cqray
  */
-public class StarterDelegate {
+public final class StarterDelegate {
 
     private static final Map<LifecycleOwner, StarterDelegate> DELEGATE_MAP = new HashMap<>();
     private StarterCache mStarterCache;
@@ -119,7 +120,11 @@ public class StarterDelegate {
         startFragment(intent);
     }
 
-    protected void startFragment(NavIntent intent) {
+    /**
+     * 启动Fragment
+     * @param intent 意图
+     */
+    void startFragment(NavIntent intent) {
         // 获取Fragment管理器
         FragmentManager fm = getFragmentManager();
         // 获取Fragment事务
@@ -168,7 +173,7 @@ public class StarterDelegate {
         FragmentManager fm = getFragmentManager();
         // 如果popTo是Activity, 则直接操作Activity
         if (Activity.class.isAssignableFrom(popTo)) {
-            ActivityHelper.popTo((Class<? extends Activity>) popTo, inclusive);
+            ActivityUtils.popTo((Class<? extends Activity>) popTo, inclusive);
             return;
         }
         // 如果是第一个入栈的Fragment并且需要销毁，则父级pop。
@@ -221,7 +226,7 @@ public class StarterDelegate {
     /**
      * 父级Fragment或Activity退出
      */
-    protected void popParent() {
+    public void popParent() {
         if (mLifecycleOwner instanceof AppCompatActivity) {
             if (!((AppCompatActivity) mLifecycleOwner).isFinishing()) {
                 ((AppCompatActivity) mLifecycleOwner).finish();
@@ -263,8 +268,9 @@ public class StarterDelegate {
         return ((Fragment) mLifecycleOwner).getParentFragmentManager();
     }
 
-
-
+    /**
+     * 回退操作
+     */
     public void onBackPressed() {
         if (mLifecycleOwner instanceof FragmentActivity) {
             activityPop((FragmentActivity) mLifecycleOwner);
@@ -294,10 +300,10 @@ public class StarterDelegate {
         } else {
             if (activity instanceof StarterProvider) {
                 if (!((StarterProvider) activity).onBackPressedSupport()) {
-                    ActivityHelper.finish(activity);
+                    ActivityUtils.finish(activity);
                 }
             } else {
-                ActivityHelper.finish(activity);
+                ActivityUtils.finish(activity);
             }
         }
     }

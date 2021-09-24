@@ -91,7 +91,7 @@ public final class ViewDelegate {
         assert mRefreshLayout != null;
         mRefreshLayout.addView(view);
         setActivityContentView();
-        initUnBinder();
+        initSupportView();
     }
 
     /**
@@ -113,7 +113,7 @@ public final class ViewDelegate {
         mFooterLayout = view.findViewById(R.id.starter_footer_layout);
         mRefreshLayout = view.findViewById(R.id.starter_refresh_layout);
         setActivityContentView();
-        initUnBinder();
+        initSupportView();
     }
 
     /**
@@ -277,6 +277,42 @@ public final class ViewDelegate {
             ButterKnifeUtils.unbind(mUnBinder);
             mUnBinder = ButterKnifeUtils.bind(mLifecycleOwner, mContentView);
         }
+    }
+
+    /**
+     * 初始化界面相关控件
+     */
+    void initSupportView() {
+        if (mLifecycleOwner instanceof SupportActivity) {
+            ((SupportActivity) mLifecycleOwner).mToolbar = mToolbar;
+            ((SupportActivity) mLifecycleOwner).mContentView = mContentView;
+            ((SupportActivity) mLifecycleOwner).mRefreshLayout = mRefreshLayout;
+        } else if (mLifecycleOwner instanceof SupportFragment) {
+            ((SupportFragment) mLifecycleOwner).mToolbar = mToolbar;
+            ((SupportFragment) mLifecycleOwner).mContentView = mContentView;
+            ((SupportFragment) mLifecycleOwner).mRefreshLayout = mRefreshLayout;
+        }
+        // 初始化标题栏监听事件
+        if (mToolbar != null && mLifecycleOwner instanceof StarterProvider) {
+            mToolbar.setNavListener(v -> {
+                StarterDelegate delegate = ((StarterProvider) mLifecycleOwner).getStarterDelegate();
+                if (!delegate.pop()) {
+                    delegate.popParent();
+                }
+            });
+        }
+//        SupportHandler<CommonToolbar> tHandler = AndroidLibrary.getInstance().getToolbarHandler();
+//        SupportHandler<StateRefreshLayout> rHandler = AndroidLibrary.getInstance().getRefreshLayoutHandler();
+//        // 全局初始化Toolbar
+//        if (tHandler != null && mToolbar != null) {
+//            tHandler.onHandle(mDelegateProvider, mToolbar);
+//        }
+//        // 全局初始化刷新控件
+//        if (rHandler != null && mRefreshLayout != null) {
+//            rHandler.onHandle(mDelegateProvider, mRefreshLayout);
+//        }
+        // 初始化ButterKnife
+        initUnBinder();
     }
 
     /**

@@ -15,9 +15,9 @@ import cn.cqray.android.anim.FragmentAnimator;
 public class NavIntent {
 
     /** 目标Fragment **/
-    private Class<?> mTo;
+    private Class<? extends StarterProvider> mTo;
     /** 回退标识Fragment **/
-    private Class<?> mPopTo;
+    private Class<? extends StarterProvider> mPopTo;
     /** 回退是否包含指定标识Fragment **/
     private boolean mPopToInclusive;
     /** Fragment动画 **/
@@ -27,23 +27,23 @@ public class NavIntent {
 
     public NavIntent() {}
 
-    public NavIntent(Class<?> cls) {
+    public NavIntent(Class<? extends StarterProvider> cls) {
         mTo = cls;
     }
 
-    public NavIntent(Class<?> cls, Bundle arguments) {
+    public NavIntent(Class<? extends StarterProvider> cls, Bundle arguments) {
         mTo = cls;
         if (arguments != null) {
             mArguments.putAll(arguments);
         }
     }
 
-    public NavIntent setClass(Class<?> cls) {
+    public NavIntent setClass(Class<? extends StarterProvider> cls) {
         mTo = cls;
         return this;
     }
 
-    public NavIntent setPopTo(Class<?> popTo, boolean inclusive) {
+    public NavIntent setPopTo(Class<? extends StarterProvider> popTo, boolean inclusive) {
         mPopTo = popTo;
         mPopToInclusive = inclusive;
         return this;
@@ -54,11 +54,11 @@ public class NavIntent {
         return this;
     }
 
-    public Class<?> getToClass() {
+    public Class<? extends StarterProvider> getToClass() {
         return mTo;
     }
 
-    public Class<?> getPopToClass() {
+    public Class<? extends StarterProvider> getPopToClass() {
         return mPopTo;
     }
 

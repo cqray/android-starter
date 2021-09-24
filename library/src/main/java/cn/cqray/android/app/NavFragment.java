@@ -10,7 +10,7 @@ import cn.cqray.android.R;
  * 导航入口界面
  * @author Cqray
  */
-public class NavActivity extends SupportActivity {
+public class NavFragment extends SupportFragment {
 
     @Override
     public void onCreating(@Nullable Bundle savedInstanceState) {

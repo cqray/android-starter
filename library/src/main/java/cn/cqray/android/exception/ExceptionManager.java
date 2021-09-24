@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import cn.cqray.android.Starter;
-import cn.cqray.android.app.ActivityHelper;
+import cn.cqray.android.util.ActivityUtils;
 
 /**
  * 异常管理界面
@@ -29,7 +29,7 @@ public class ExceptionManager {
     }
 
     public void showException(Exception exc) {
-        Context context = ActivityHelper.peek();
+        Context context = ActivityUtils.getCurrent();
         if (context == null) {
             context = Starter.getInstance().getContext();
         }

@@ -13,7 +13,7 @@ public class MainActivity extends NavActivity {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_main);
 
-        loadRootFragment(new NavIntent(MainFragment.class));
+        loadRootFragment(MainFragment.class);
 //        setHeaderView(R.layout.header);
 //
 //        StateLayout stateLayout = findViewById(R.id.state_layout);

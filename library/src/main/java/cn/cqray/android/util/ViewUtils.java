@@ -12,13 +12,11 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import cn.cqray.android.app.ActivityHelper;
-
 /**
  * 控件辅助工具
  * @author Cqray
  */
-public class ViewUtil {
+public class ViewUtils {
 
     /**
      * 通过View获取Activity
@@ -43,7 +41,7 @@ public class ViewUtil {
      * @return 界面
      */
     public static View inflate(@LayoutRes int resId) {
-        Activity act = ActivityHelper.requirePeek();
+        Activity act = ActivityUtils.requireCurrent();
         ViewGroup root = act.findViewById(android.R.id.content);
         return LayoutInflater.from(act).inflate(resId, root, false);
     }

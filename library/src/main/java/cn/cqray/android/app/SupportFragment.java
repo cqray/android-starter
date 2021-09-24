@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import cn.cqray.android.anim.FragmentAnimator;
+import cn.cqray.android.state.StateRefreshLayout;
+import cn.cqray.android.widget.CommonToolbar;
 
 /**
  * 基础Fragment
@@ -19,8 +21,16 @@ import cn.cqray.android.anim.FragmentAnimator;
  */
 public class SupportFragment extends Fragment implements StarterProvider {
 
-    private ViewDelegate mViewDelegate = new ViewDelegate(this);
-    private StarterDelegate mStarterDelegate = StarterDelegate.get(this);
+    /** 设置的布局 **/
+    public View mContentView;
+    /** 标题 **/
+    public CommonToolbar mToolbar;
+    /** 状态刷新控件 **/
+    public StateRefreshLayout mRefreshLayout;
+    /** 布局代理 **/
+    private final ViewDelegate mViewDelegate = new ViewDelegate(this);
+    /** 启动代理 **/
+    private final StarterDelegate mStarterDelegate = StarterDelegate.get(this);
 
     @Nullable
     @Override

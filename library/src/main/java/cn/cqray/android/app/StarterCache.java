@@ -14,7 +14,7 @@ import java.util.Stack;
 import java.util.UUID;
 
 /**
- * Fragment数据代理
+ * Fragment数据缓存
  * 用以管理AppCompatActivity和Fragment下的回退栈及其他缓存数据
  * @author cqray
  */

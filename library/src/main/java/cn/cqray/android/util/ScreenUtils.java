@@ -16,8 +16,6 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import cn.cqray.android.app.ActivityHelper;
-
 /**
  * 屏幕管理工具
  * @author Cqray
@@ -163,7 +161,7 @@ public class ScreenUtils {
 
 
     private static Context getContext() {
-        Activity act = ActivityHelper.peek();
+        Activity act = ActivityUtils.getCurrent();
 //        if (act == null) {
 //            return AndroidCore.getApplication().getApplicationContext();
 //        }
