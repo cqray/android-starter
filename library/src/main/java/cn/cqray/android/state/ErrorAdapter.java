@@ -18,7 +18,7 @@ public class ErrorAdapter extends StateAdapter {
     private View.OnClickListener mRetryListener;
 
     public ErrorAdapter() {
-        super(R.layout.__core_state_layout_error);
+        super(R.layout.starter_state_error_layout);
     }
 
     @Override

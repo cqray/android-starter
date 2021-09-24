@@ -16,7 +16,7 @@ import cn.cqray.android.R;
 public class EmptyAdapter extends StateAdapter {
 
     public EmptyAdapter() {
-        super(R.layout.__core_state_layout_empty);
+        super(R.layout.starter_state_empty_layout);
     }
 
     @Override

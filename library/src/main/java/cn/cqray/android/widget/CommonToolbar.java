@@ -85,7 +85,7 @@ public class CommonToolbar extends RelativeLayout {
         mTitleSpace = mContext.getResources().getDimensionPixelOffset(R.dimen.content);
 
         // 设置布局
-        LayoutInflater.from(getContext()).inflate(R.layout.__core_toolbar_layout, this, true);
+        LayoutInflater.from(getContext()).inflate(R.layout.starter_toolbar_layout, this, true);
         mNavLayout = findViewById(R.id._core_toolbar_nav_layout);
         mNavSpace = mNavLayout.getChildAt(1);
         mNavText = (TextView) mNavLayout.getChildAt(2);

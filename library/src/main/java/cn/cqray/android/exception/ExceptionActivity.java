@@ -17,7 +17,7 @@ public class ExceptionActivity extends SupportActivity {
     @Override
     public void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
-        setContentView(R.layout._core_lauout_exception);
+        setContentView(R.layout.starter_exception_layout);
         //mToolbar.setTitle("异常");
 
         Exception e = (Exception) getIntent().getSerializableExtra("exception");

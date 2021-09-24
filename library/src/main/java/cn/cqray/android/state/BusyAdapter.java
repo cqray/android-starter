@@ -17,7 +17,7 @@ import cn.cqray.android.widget.LoadingView;
 public class BusyAdapter extends StateAdapter {
 
     public BusyAdapter() {
-        super(R.layout.__core_state_layout_busy);
+        super(R.layout.starter_state_busy_layout);
     }
 
     @Override
