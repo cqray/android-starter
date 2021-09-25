@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- 水波纹效果 -->
+    <attr name="tbRippleEnable" format="boolean"/>
+
     <declare-styleable name="CommonToolbar">
         <attr name="tbPaddingLeft" format="dimension" />
         <attr name="tbPaddingRight" format="dimension" />
-        <!-- 水波纹效果 -->
-        <attr name="tbRippleEnable" format="boolean" />
+        <attr name="tbRippleEnable"/>
         <!-- 标题 -->
         <attr name="tbTitle" format="string" />
         <attr name="tbTitleTextColor" format="color" />
@@ -36,4 +38,12 @@
         <attr name="tbDividerMargin" format="dimension" />
         <attr name="tbDividerVisible" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="Toolbar">
+        <attr name="tbElevation" format="dimension" />
+    </declare-styleable>
+
+<!--    <declare-styleable name="ActionLayout">-->
+<!--        <attr name="tbRippleEnable"/>-->
+<!--    </declare-styleable>-->
 </resources>

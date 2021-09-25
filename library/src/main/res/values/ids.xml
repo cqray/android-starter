@@ -16,4 +16,10 @@
     <item name="starter_refresh_layout" type="id" />
     <item name="starter_footer_layout" type="id" />
     <item name="starter_navigation_layout" type="id" />
+
+
+    <item name="starter_toolbar_title" type="id"/>
+    <item name="starter_toolbar_divider" type="id"/>
+    <item name="starter_toolbar_nav_layout" type="id"/>
+    <item name="starter_toolbar_action_layout" type="id"/>
 </resources>
