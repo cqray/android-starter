@@ -1,14 +1,9 @@
 package cn.cqray.android.widget;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -20,19 +15,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 
-import com.google.android.material.ripple.RippleDrawableCompat;
-import com.google.android.material.ripple.RippleUtils;
 
 import cn.cqray.android.R;
-import cn.cqray.android.util.DrawableUtils;
 
 import static android.util.TypedValue.COMPLEX_UNIT_PX;
 
@@ -98,11 +88,9 @@ public class ActionLayout extends LinearLayout {
         tv.setFocusable(true);
         tv.setVisibility(mVisibleArray.get(key) ? VISIBLE : GONE);
         tv.setTypeface(Typeface.defaultFromStyle(mTextBold ? Typeface.BOLD : Typeface.NORMAL));
-        if (mRippleEnable) {
-            ViewCompat.setBackground(tv, generateRippleDrawable());
-        }
-        mViewArray.put(key, tv);
         addView(tv, index);
+        setRippleBackground(tv);
+        mViewArray.put(key, tv);
         return this;
     }
 
@@ -123,12 +111,9 @@ public class ActionLayout extends LinearLayout {
         iv.setAdjustViewBounds(true);
         iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
         iv.setVisibility(mVisibleArray.get(key) ? VISIBLE : GONE);
-        // Api 19一下设置
-        if (mRippleEnable) {
-            ViewCompat.setBackground(iv, generateRippleDrawable());
-        }
-        mViewArray.put(key, iv);
         addView(iv, index);
+        setRippleBackground(iv);
+        mViewArray.put(key, iv);
         return this;
     }
 
@@ -141,18 +126,34 @@ public class ActionLayout extends LinearLayout {
         return this;
     }
 
-
-    public Drawable generateRippleDrawable() {
+    public void setRippleBackground(View view) {
         Context context = getContext();
-        Drawable drawable;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            TypedArray ta = context.obtainStyledAttributes(new int[]{
-                    android.R.attr.actionBarItemBackground});
-            drawable = ta.getDrawable(0);
-            ta.recycle();
-        } else {
-            drawable = ContextCompat.getDrawable(context, R.drawable.bg_ripple);
+        if (mRippleEnable) {
+            Drawable drawable;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                TypedArray ta = context.obtainStyledAttributes(new int[]{
+                        android.R.attr.actionBarItemBackground});
+                drawable = ta.getDrawable(0);
+                ta.recycle();
+
+            } else {
+                drawable = ContextCompat.getDrawable(context, R.drawable.bg_ripple);
+            }
+            ViewCompat.setBackground(view, drawable);
         }
-        return drawable;
     }
+
+//    public Drawable generateRippleDrawable() {
+//        Context context = getContext();
+//        Drawable drawable;
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            TypedArray ta = context.obtainStyledAttributes(new int[]{
+//                    android.R.attr.actionBarItemBackground});
+//            drawable = ta.getDrawable(0);
+//            ta.recycle();
+//        } else {
+//            drawable = ContextCompat.getDrawable(context, R.drawable.bg_ripple);
+//        }
+//        return drawable;
+//    }
 }
