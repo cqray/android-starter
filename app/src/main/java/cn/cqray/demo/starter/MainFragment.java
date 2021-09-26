@@ -1,9 +1,7 @@
 package cn.cqray.demo.starter;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,12 +21,14 @@ public class MainFragment extends SupportFragment {
         setContentView(R.layout.activity_main);
 
         mToolbar.setTitleText("车时标题777777");
+        mToolbar.setActionText(0, "确定");
+        mToolbar.setVisibility(View.GONE);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView tv = view.findViewById(R.id.tv);
+
 
     }
 }

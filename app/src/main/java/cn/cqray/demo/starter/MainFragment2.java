@@ -1,6 +1,7 @@
 package cn.cqray.demo.starter;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -18,9 +19,21 @@ public class MainFragment2 extends SupportFragment {
     @Override
     public void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
 
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("数据", "onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e("数据", "onPause");
     }
 
     @Override

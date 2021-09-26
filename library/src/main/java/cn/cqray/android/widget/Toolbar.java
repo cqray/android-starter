@@ -70,11 +70,10 @@ public class Toolbar extends RelativeLayout {
         mLifecycleOwner = () -> mLifecycleRegistry;
         mLifecycleRegistry = new LifecycleRegistry(mLifecycleOwner);
         mLifecycleRegistry.setCurrentState(Lifecycle.State.INITIALIZED);
-        float density = getResources().getDisplayMetrics().density;
         // 设置属性
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.Toolbar);
         int padding = ta.getDimensionPixelSize(R.styleable.Toolbar_tbPadding, getResources().getDimensionPixelSize(R.dimen.content));
-        float elevation = ta.getDimension(R.styleable.Toolbar_tbElevation, density * 5.5f + 0.5f);
+        float elevation = ta.getDimension(R.styleable.Toolbar_tbElevation, getResources().getDimension(R.dimen.elevation));
         boolean useRipple = ta.getBoolean(R.styleable.Toolbar_tbUseRipple, true);
         boolean titleEditable = ta.getBoolean(R.styleable.Toolbar_tbTitleEditable, false);
         mTitleCenter = ta.getBoolean(R.styleable.Toolbar_tbTitleCenter, false);
@@ -160,7 +159,6 @@ public class Toolbar extends RelativeLayout {
         mActionLayout = new ActionLayout(context);
         mActionLayout.setId(R.id.starter_toolbar_action_layout);
         mActionLayout.setLayoutParams(params);
-        mActionLayout.setPadding(actionSpace, 0, actionSpace, 0);
         mActionLayout.setActionTextColor(actionTextColor);
         mActionLayout.setActionTextSize(actionTextSize / density);
         mActionLayout.setActionTypeface(Typeface.defaultFromStyle(actionTextStyle));
@@ -179,6 +177,7 @@ public class Toolbar extends RelativeLayout {
         ta.recycle();
         // 设置标题
         mTitleView = new AppCompatEditText(context);
+        mTitleView.setLayoutParams(new LayoutParams(-1, -1));
         mTitleView.setId(R.id.starter_toolbar_title);
         mTitleView.setText(titleText);
         mTitleView.setTextColor(titleTextColor);
@@ -226,8 +225,10 @@ public class Toolbar extends RelativeLayout {
                 params.addRule(isNewApi ? RelativeLayout.START_OF : RelativeLayout.LEFT_OF, R.id.starter_toolbar_action_layout);
                 params.addRule(isNewApi ? RelativeLayout.END_OF : RelativeLayout.RIGHT_OF, R.id.starter_toolbar_back_layout);
                 params.leftMargin = iconVisible ? mTitleSpace - padding : 0;
+                params.rightMargin = mTitleSpace - mActionLayout.getActionSpace();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     params.setMarginStart(iconVisible ? mTitleSpace - padding : 0);
+                    params.setMarginEnd(mTitleSpace - mActionLayout.getActionSpace());
                 }
                 params.addRule(RelativeLayout.CENTER_VERTICAL);
                 mTitleView.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
@@ -466,7 +467,6 @@ public class Toolbar extends RelativeLayout {
 
     public Toolbar setActionSpace(float space) {
         mActionLayout.setActionSpace(space);
-        mActionLayout.setPadding(toPx(space / 2), 0, toPx(space / 2), 0);
         mPadding.setValue(mPadding.getValue());
         mTitleCenterData.postValue(mTitleCenter);
         return this;

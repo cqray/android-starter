@@ -1,6 +1,7 @@
 package cn.cqray.android.widget;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -11,6 +12,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
@@ -31,6 +33,10 @@ import static android.util.TypedValue.COMPLEX_UNIT_PX;
  */
 public class ActionLayout extends LinearLayout {
 
+    /** 左间隔 **/
+    private Space mLeftSpace;
+    /** 右间隔 **/
+    private Space mRightSpace;
     /** 间隔 **/
     private int mActionSpace;
     /** 文字大小 **/
@@ -41,8 +47,6 @@ public class ActionLayout extends LinearLayout {
     private int mActionTextStyle;
     /** 是否显示水波纹 **/
     private boolean mUseRipple;
-    /** 间隔 **/
-    private int[] mPadding = new int[4];
     /** 控件列表 **/
     private final SparseArray<View> mViewArray = new SparseArray<>();
     /** 控件是否显示列表 **/
@@ -68,22 +72,11 @@ public class ActionLayout extends LinearLayout {
         mActionTextStyle = ta.getInt(R.styleable.ActionLayout_alActionTextStyle, 0);
         mUseRipple = ta.getBoolean(R.styleable.ActionLayout_alUseRipple, true);
         ta.recycle();
+        mLeftSpace = new Space(context);
+        mRightSpace = new Space(context);
+        addView(mLeftSpace);
+        addView(mRightSpace);
         setActionSpace(Float.MIN_VALUE);
-    }
-
-    @Override
-    public void setPadding(int left, int top, int right, int bottom) {
-        mPadding = mPadding == null ? new int[4] : mPadding;
-        mPadding[0] = left;
-        mPadding[1] = top;
-        mPadding[2] = right;
-        mPadding[3] = bottom;
-        boolean horizontal = getOrientation() == HORIZONTAL;
-        super.setPadding(
-                horizontal ? left + mActionSpace : left,
-                horizontal ? top : top + mActionSpace,
-                horizontal ? right + mActionSpace : right,
-                horizontal ? bottom : bottom + mActionSpace);
     }
 
     @Override
@@ -135,7 +128,7 @@ public class ActionLayout extends LinearLayout {
     }
 
     public ActionLayout setActionTextSize(float size) {
-        mActionTextSize = (int) (getResources().getDisplayMetrics().density * size + 0.5f);
+        mActionTextSize = toPx(size);
         for (int i = 0; i < mViewArray.size(); i++) {
             View view = mViewArray.valueAt(i);
             if (view instanceof TextView) {
@@ -230,22 +223,22 @@ public class ActionLayout extends LinearLayout {
 
     public ActionLayout setActionSpace(float space) {
         if (space != Float.MIN_VALUE) {
-            mActionSpace = (int) (getResources().getDisplayMetrics().density * space + 0.5f) / 2;
+            mActionSpace = toPx(space / 2);
         }
         boolean horizontal = getOrientation() == HORIZONTAL;
-        mPadding = mPadding == null ? new int[4] : mPadding;
-        super.setPadding(
-                horizontal ? mPadding[0] + mActionSpace : mPadding[0],
-                horizontal ? mPadding[1] : mPadding[1] + mActionSpace,
-                horizontal ? mPadding[2] + mActionSpace : mPadding[2],
-                horizontal ? mPadding[3] : mPadding[3] + mActionSpace);
+        mLeftSpace.getLayoutParams().width = horizontal ? mActionSpace : 0;
+        mLeftSpace.getLayoutParams().height = !horizontal ? mActionSpace : 0;
+        mRightSpace.getLayoutParams().width = horizontal ? mActionSpace : 0;
+        mRightSpace.getLayoutParams().height = !horizontal ? mActionSpace : 0;
+        mLeftSpace.requestLayout();
+        mRightSpace.requestLayout();
         for (int i = 0; i < mViewArray.size(); i++) {
             View view = mViewArray.valueAt(i);
             view.setPadding(
                     horizontal ? mActionSpace : 0,
-                    horizontal ? 0: mActionSpace,
+                    !horizontal ? mActionSpace : 0,
                     horizontal ? mActionSpace : 0,
-                    horizontal ? 0: mActionSpace);
+                    !horizontal ? mActionSpace : 0);
         }
         return this;
     }
@@ -283,6 +276,11 @@ public class ActionLayout extends LinearLayout {
             // 未添加做控件，则直接设置为可见
             mVisibleArray.put(key, true);
         }
-        return index;
+        return index + 1;
+    }
+
+    private int toPx(float dip) {
+        float density = Resources.getSystem().getDisplayMetrics().density;
+        return (int) (dip * density +0.5f);
     }
 }

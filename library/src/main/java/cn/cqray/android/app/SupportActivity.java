@@ -36,7 +36,7 @@ public class SupportActivity extends AppCompatActivity implements StarterProvide
         onCreating(savedInstanceState);
     }
 
-    public void onCreating(@Nullable Bundle savedInstanceState) {}
+    protected void onCreating(@Nullable Bundle savedInstanceState) {}
 
     @Override
     public void setContentView(View view) {
