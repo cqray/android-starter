@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.state.StateRefreshLayout;
-import cn.cqray.android.widget.CommonToolbar;
+import cn.cqray.android.widget.Toolbar;
 
 /**
  * 基础Fragment
@@ -24,7 +24,7 @@ public class SupportFragment extends Fragment implements StarterProvider {
     /** 设置的布局 **/
     public View mContentView;
     /** 标题 **/
-    public CommonToolbar mToolbar;
+    public Toolbar mToolbar;
     /** 状态刷新控件 **/
     public StateRefreshLayout mRefreshLayout;
     /** 布局代理 **/

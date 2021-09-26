@@ -4,13 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <cn.cqray.android.widget.CommonToolbar
+    <cn.cqray.android.widget.Toolbar
         android:id="@id/starter_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar"
-        android:background="@color/colorPrimary">
+        android:layout_height="@dimen/toolbar">
 
-    </cn.cqray.android.widget.CommonToolbar>
+    </cn.cqray.android.widget.Toolbar>
 
     <!-- 刷新界面 -->
     <cn.cqray.android.state.StateRefreshLayout

@@ -27,7 +27,7 @@ import cn.cqray.android.exception.ExceptionManager;
 import cn.cqray.android.exception.ViewException;
 import cn.cqray.android.state.StateRefreshLayout;
 import cn.cqray.android.util.ButterKnifeUtils;
-import cn.cqray.android.widget.CommonToolbar;
+import cn.cqray.android.widget.Toolbar;
 
 /**
  * 界面布局代理
@@ -38,7 +38,7 @@ public final class ViewDelegate {
     /** 内容控件 **/
     private View mContentView;
     /** 标题 **/
-    private CommonToolbar mToolbar;
+    private Toolbar mToolbar;
     /** 刷新控件 **/
     private StateRefreshLayout mRefreshLayout;
     /** 头部容器 **/
@@ -226,7 +226,7 @@ public final class ViewDelegate {
         return isContentViewExist() ? mContentView.findViewById(resId) : null;
     }
 
-    public CommonToolbar getToolbar() {
+    public Toolbar getToolbar() {
         return mToolbar;
     }
 
@@ -294,7 +294,7 @@ public final class ViewDelegate {
         }
         // 初始化标题栏监听事件
         if (mToolbar != null && mLifecycleOwner instanceof StarterProvider) {
-            mToolbar.setNavListener(v -> {
+            mToolbar.setBackListener(v -> {
                 StarterDelegate delegate = ((StarterProvider) mLifecycleOwner).getStarterDelegate();
                 if (!delegate.pop()) {
                     delegate.popParent();

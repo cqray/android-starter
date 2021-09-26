@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,10 @@ import android.view.ViewGroup;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+
+import cn.cqray.android.R;
 
 /**
  * 控件辅助工具
@@ -75,6 +82,25 @@ public class ViewUtils {
         int rpx = r <= 0 ? 0 : view.getResources().getDimensionPixelSize(r);
         int bpx = b <= 0 ? 0 : view.getResources().getDimensionPixelSize(b);
         setPxMargin(view, lpx, tpx, rpx, bpx);
+    }
+
+    public static void setRippleBackground(@NonNull View view, boolean rippleEnable) {
+        Context context = view.getContext();
+        if (rippleEnable) {
+            Drawable drawable;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                TypedArray ta = context.obtainStyledAttributes(new int[]{
+                        android.R.attr.actionBarItemBackground});
+                drawable = ta.getDrawable(0);
+                ta.recycle();
+
+            } else {
+                drawable = ContextCompat.getDrawable(context, R.drawable.bg_ripple);
+            }
+            ViewCompat.setBackground(view, drawable);
+        } else {
+            ViewCompat.setBackground(view, null);
+        }
     }
 
     private static int toPx(float dp) {
