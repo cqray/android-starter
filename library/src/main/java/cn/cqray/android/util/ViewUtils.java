@@ -14,10 +14,7 @@ import android.view.ViewGroup;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
-
-import cn.cqray.android.R;
 
 /**
  * 控件辅助工具
@@ -87,15 +84,12 @@ public class ViewUtils {
     public static void setRippleBackground(@NonNull View view, boolean rippleEnable) {
         Context context = view.getContext();
         if (rippleEnable) {
-            Drawable drawable;
+            Drawable drawable = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 TypedArray ta = context.obtainStyledAttributes(new int[]{
                         android.R.attr.actionBarItemBackground});
                 drawable = ta.getDrawable(0);
                 ta.recycle();
-
-            } else {
-                drawable = ContextCompat.getDrawable(context, R.drawable.bg_ripple);
             }
             ViewCompat.setBackground(view, drawable);
         } else {

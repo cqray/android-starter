@@ -16,12 +16,15 @@
             <enum name="bold" value="1" />
             <enum name="italic" value="2" />
         </attr>
+        <!-- 标题可编辑 -->
+        <attr name="tbTitleEditable" format="boolean" />
+        <!-- 标题居中 -->
         <attr name="tbTitleCenter" format="boolean" />
         <attr name="tbTitleSpace" format="dimension" />
         <!-- 返回 -->
         <attr name="tbBackIcon" format="reference" />
         <attr name="tbBackIconVisible" format="boolean" />
-        <attr name="tbBackText" format="string" localization="suggested"/>
+        <attr name="tbBackText" format="string" localization="suggested" />
         <attr name="tbBackTextColor" format="color" />
         <attr name="tbBackTextSize" format="dimension" />
         <attr name="tbBackTextStyle">
@@ -32,7 +35,7 @@
         <attr name="tbBackSpace" format="dimension" />
         <!-- 行为相关属性 -->
         <attr name="tbActionTextColor" format="color" />
-        <attr name="tbActionTextSize" format="dimension"/>
+        <attr name="tbActionTextSize" format="dimension" />
         <attr name="tbActionTextStyle">
             <enum name="normal" value="0" />
             <enum name="bold" value="1" />
@@ -58,7 +61,7 @@
             <enum name="italic" value="2" />
         </attr>
         <!-- Action控件间隔 -->
-        <attr name="alActionSpace" format="dimension"/>
+        <attr name="alActionSpace" format="dimension" />
     </declare-styleable>
 
     <!-- 文本图标控件 -->

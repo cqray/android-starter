@@ -1,6 +1,7 @@
 package cn.cqray.android.widget;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -21,6 +22,8 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.widget.ImageViewCompat;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -147,6 +150,16 @@ public class IconTextLayout extends LinearLayout {
 
     public IconTextLayout setIconResource(@DrawableRes int resId) {
         mIconView.setImageResource(resId);
+        return this;
+    }
+
+    public IconTextLayout setIconTintColor(int color) {
+        ImageViewCompat.setImageTintList(mIconView, ColorStateList.valueOf(color));
+        return this;
+    }
+
+    public IconTextLayout setIconTintList(ColorStateList tintList) {
+        ImageViewCompat.setImageTintList(mIconView, tintList);
         return this;
     }
 

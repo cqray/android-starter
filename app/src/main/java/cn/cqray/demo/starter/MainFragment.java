@@ -23,11 +23,6 @@ public class MainFragment extends SupportFragment {
         setContentView(R.layout.activity_main);
 
         mToolbar.setTitleText("车时标题777777");
-        mToolbar.setActionIcon(0, R.drawable.def_back_common_light);
-        mToolbar.setActionText(1, "6666666");
-        mToolbar.setActionSpace(16)
-                .setTitleSpace(16)
-                .setTitleStart();
     }
 
     @Override

@@ -42,7 +42,7 @@ public class ActionLayout extends LinearLayout {
     /** 是否显示水波纹 **/
     private boolean mUseRipple;
     /** 间隔 **/
-    private final int[] mPadding = new int[4];
+    private int[] mPadding = new int[4];
     /** 控件列表 **/
     private final SparseArray<View> mViewArray = new SparseArray<>();
     /** 控件是否显示列表 **/
@@ -73,6 +73,7 @@ public class ActionLayout extends LinearLayout {
 
     @Override
     public void setPadding(int left, int top, int right, int bottom) {
+        mPadding = mPadding == null ? new int[4] : mPadding;
         mPadding[0] = left;
         mPadding[1] = top;
         mPadding[2] = right;
@@ -218,18 +219,26 @@ public class ActionLayout extends LinearLayout {
         return this;
     }
 
+    public ActionLayout setUseRipple(int key, boolean useRipple) {
+        mUseRipple = useRipple;
+        View view = mViewArray.get(key);
+        if (view != null) {
+            ViewUtils.setRippleBackground(view, mUseRipple);
+        }
+        return this;
+    }
+
     public ActionLayout setActionSpace(float space) {
         if (space != Float.MIN_VALUE) {
             mActionSpace = (int) (getResources().getDisplayMetrics().density * space + 0.5f) / 2;
         }
         boolean horizontal = getOrientation() == HORIZONTAL;
-        int[] padding = mPadding;
-        padding = padding == null ? new int[4] : padding;
+        mPadding = mPadding == null ? new int[4] : mPadding;
         super.setPadding(
-                horizontal ? padding[0] + mActionSpace : padding[0],
-                horizontal ? padding[1] : padding[1] + mActionSpace,
-                horizontal ? padding[2] + mActionSpace : padding[2],
-                horizontal ? padding[3] : padding[3] + mActionSpace);
+                horizontal ? mPadding[0] + mActionSpace : mPadding[0],
+                horizontal ? mPadding[1] : mPadding[1] + mActionSpace,
+                horizontal ? mPadding[2] + mActionSpace : mPadding[2],
+                horizontal ? mPadding[3] : mPadding[3] + mActionSpace);
         for (int i = 0; i < mViewArray.size(); i++) {
             View view = mViewArray.valueAt(i);
             view.setPadding(
