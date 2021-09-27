@@ -3,9 +3,9 @@ package cn.cqray.demo.starter;
 import android.os.Bundle;
 
 import cn.cqray.android.ui.multi.MultiItem;
-import cn.cqray.android.ui.multi.MultiTabFragment;
+import cn.cqray.android.ui.multi.MultiTabActivity;
 
-public class MainActivity extends MultiTabFragment {
+public class MainActivity extends MultiTabActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -16,7 +16,7 @@ import cn.cqray.android.app.SupportActivity;
  * 多个Fragment的Activity
  * @author Cqray
  */
-public class BaseMultiActivity extends SupportActivity {
+public class MultiActivity extends SupportActivity {
 
     private final MultiDelegate mMultiDelegate = new MultiDelegate(this);
 

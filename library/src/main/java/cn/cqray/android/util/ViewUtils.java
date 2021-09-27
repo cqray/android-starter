@@ -110,6 +110,8 @@ public class ViewUtils {
         if (background instanceof ColorDrawable) {
             ViewCompat.setBackground(view, createMaterialShapeDrawableBackground(view.getContext(), background));
         }
+
+        MaterialShapeUtils.setParentAbsoluteElevation(view);
         MaterialShapeUtils.setElevation(view, elevation);
     }
 

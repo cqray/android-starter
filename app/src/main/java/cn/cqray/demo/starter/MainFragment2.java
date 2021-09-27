@@ -21,7 +21,7 @@ public class MainFragment2 extends SupportFragment {
         super.onCreating(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-
+        mToolbar.setElevation(30);
     }
 
     @Override

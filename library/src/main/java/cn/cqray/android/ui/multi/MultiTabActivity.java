@@ -14,13 +14,13 @@ import java.util.List;
 import cn.cqray.android.R;
 import cn.cqray.android.app.MultiDelegate;
 import cn.cqray.android.app.NavIntent;
-import cn.cqray.android.app.SupportFragment;
+import cn.cqray.android.app.SupportActivity;
 
 /**
  * 底部多Fragment界面
  * @author Cqray
  */
-public class MultiTabFragment extends SupportFragment {
+public class MultiTabActivity extends SupportActivity {
 
     protected ViewPager2 mViewPager;
     protected TabLayout mTabLayout;
