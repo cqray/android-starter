@@ -1,17 +1,14 @@
 package cn.cqray.android.ui.multi;
 
-import android.content.res.Resources;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Menu;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.shape.MaterialShapeUtils;
-import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 
@@ -24,57 +21,41 @@ import cn.cqray.android.app.SupportActivity;
  * 底部多Fragment界面
  * @author Cqray
  */
-public class TopTabFragment extends SupportActivity {
+public class MultiNavActivity extends SupportActivity {
 
     protected ViewPager2 mViewPager;
-    protected TabLayout mTabLayout;
+    protected BottomNavigationView mNavigationView;
     protected final MultiDelegate mMultiDelegate = new MultiDelegate(this);
 
     @Override
-    public void onCreating(@Nullable Bundle savedInstanceState) {
+    protected void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
-        setNativeContentView(R.layout.starter_top_tab_layout);
+        setNativeContentView(R.layout.starter_bottom_multi_layout);
         mViewPager = findViewById(R.id.starter_content_layout);
         mViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                mTabLayout.selectTab(mTabLayout.getTabAt(position), true);
+                mNavigationView.setSelectedItemId(position);
             }
         });
-        mTabLayout = findViewById(R.id.starter_tab_layout);
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                mMultiDelegate.showFragment(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
+        mNavigationView = findViewById(R.id.starter_nav_view);
+        mNavigationView.setOnNavigationItemSelectedListener(item -> {
+            mMultiDelegate.showFragment(item.getOrder());
+            item.setChecked(true);
+            return false;
         });
-
-        Drawable background = mTabLayout.getBackground();
-        if (background instanceof ColorDrawable) {
-            MaterialShapeUtils.setElevation(mTabLayout, getResources().getDimension(R.dimen.elevation));
-        }
     }
 
-    public void loadMultiFragments(@NonNull TabItem... items) {
+    public void loadMultiFragments(@NonNull MultiItem... items) {
         reset();
-        mTabLayout.removeAllTabs();
+        Menu menu = mNavigationView.getMenu();
+        menu.clear();
         NavIntent[] intents = new NavIntent[items.length];
         for (int i = 0; i < items.length; i++) {
             intents[i] = items[i].getIntent();
-            TabItem ti = items[i];
-            TabLayout.Tab tab = mTabLayout.newTab();
-            if (ti.getIcon() != 0) {
-                tab.setIcon(ti.getIcon());
-            }
-            tab.setText(ti.getName());
-            mTabLayout.addTab(tab);
+            MultiItem ti = items[i];
+            menu.add(0, i, i, ti.getName()).setIcon(ti.getIcon());
         }
         mMultiDelegate.loadMultiFragments(mViewPager, intents);
     }
@@ -85,13 +66,12 @@ public class TopTabFragment extends SupportActivity {
 
     public void showFragment(int index) {
         mMultiDelegate.showFragment(index);
-        mTabLayout.selectTab(mTabLayout.getTabAt(index), true);
+        mNavigationView.setSelectedItemId(index);
     }
 
     public void showFragment(Fragment fragment) {
         mMultiDelegate.showFragment(fragment);
-
-        mTabLayout.selectTab(mTabLayout.getTabAt(getFragments().indexOf(fragment)), true);
+        mNavigationView.setSelectedItemId(getFragments().indexOf(fragment));
     }
 
     public void reset() {

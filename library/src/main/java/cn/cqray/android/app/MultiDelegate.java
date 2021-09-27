@@ -1,6 +1,5 @@
 package cn.cqray.android.app;
 
-
 import android.view.View;
 
 import androidx.annotation.IdRes;
@@ -13,14 +12,13 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import cn.cqray.android.ui.multi.FragmentAdapter;
+import cn.cqray.android.ui.multi.MultiFragmentAdapter;
 
 /**
  * @author Cqray
@@ -182,11 +180,11 @@ public class MultiDelegate {
     }
 
     @NonNull
-    private FragmentAdapter getFragmentAdapter(List<Fragment> fragmentList) {
+    private MultiFragmentAdapter getFragmentAdapter(List<Fragment> fragmentList) {
         if (mLifecycleOwner instanceof AppCompatActivity) {
-            return new FragmentAdapter((AppCompatActivity) mLifecycleOwner, fragmentList);
+            return new MultiFragmentAdapter((AppCompatActivity) mLifecycleOwner, fragmentList);
         } else {
-            return new FragmentAdapter((Fragment) mLifecycleOwner, fragmentList);
+            return new MultiFragmentAdapter((Fragment) mLifecycleOwner, fragmentList);
         }
     }
 

@@ -11,29 +11,29 @@ import cn.cqray.android.app.StarterProvider;
  * @author Cqray
  */
 @SuppressWarnings("unchecked")
-public class TabItem {
+public class MultiItem {
 
     private String mName;
     private int mIcon;
     private NavIntent mIntent;
 
-    public TabItem(Class<? extends Fragment> clazz, String name) {
+    public MultiItem(Class<? extends Fragment> clazz, String name) {
         mIntent = new NavIntent((Class<? extends StarterProvider>) clazz);
         mName = name;
     }
 
-    public TabItem(Class<? extends Fragment> clazz, String name, @DrawableRes int icon) {
+    public MultiItem(Class<? extends Fragment> clazz, String name, @DrawableRes int icon) {
         mIntent = new NavIntent((Class<? extends StarterProvider>) clazz);
         mName = name;
         mIcon = icon;
     }
 
-    public TabItem(NavIntent intent, String name) {
+    public MultiItem(NavIntent intent, String name) {
         mIntent = intent;
         mName = name;
     }
 
-    public TabItem(NavIntent intent, String name, @DrawableRes int icon) {
+    public MultiItem(NavIntent intent, String name, @DrawableRes int icon) {
         mIntent = intent;
         mName = name;
         mIcon = icon;

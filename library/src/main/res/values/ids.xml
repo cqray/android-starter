@@ -15,9 +15,8 @@
     <item name="starter_header_layout" type="id" />
     <item name="starter_refresh_layout" type="id" />
     <item name="starter_footer_layout" type="id" />
-    <item name="starter_navigation_layout" type="id" />
     <item name="starter_content_layout" type="id" />
-    <item name="starter_navigation_view" type="id" />
+    <item name="starter_nav_view" type="id" />
     <item name="starter_tab_layout" type="id" />
 
     <item name="starter_toolbar_title" type="id" />

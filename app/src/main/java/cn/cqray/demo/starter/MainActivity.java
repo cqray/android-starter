@@ -2,20 +2,18 @@ package cn.cqray.demo.starter;
 
 import android.os.Bundle;
 
-import cn.cqray.android.ui.multi.BaseMultiActivity;
-import cn.cqray.android.ui.multi.BottomMultiActivity;
-import cn.cqray.android.ui.multi.TabItem;
-import cn.cqray.android.ui.multi.TopTabFragment;
+import cn.cqray.android.ui.multi.MultiItem;
+import cn.cqray.android.ui.multi.MultiTabFragment;
 
-public class MainActivity extends TopTabFragment {
+public class MainActivity extends MultiTabFragment {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         loadMultiFragments(
-                new TabItem(MainFragment.class, "首页"),//, R.drawable.ic_no_data_search),
-                new TabItem(MainFragment2.class, "我的")//, R.drawable.ic_no_data_search)
+                new MultiItem(MainFragment.class, "首页"),//, R.drawable.ic_no_data_search),
+                new MultiItem(MainFragment2.class, "我的")//, R.drawable.ic_no_data_search)
         );
 
         setDragEnable(true);

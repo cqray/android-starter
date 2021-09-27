@@ -12,7 +12,7 @@
         android:layout_weight="1" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@id/starter_navigation_view"
+        android:id="@id/starter_nav_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar"
         android:background="@color/foreground"

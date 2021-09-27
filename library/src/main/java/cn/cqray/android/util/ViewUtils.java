@@ -3,8 +3,10 @@ package cn.cqray.android.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -15,6 +17,9 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
+
+import com.google.android.material.shape.MaterialShapeDrawable;
+import com.google.android.material.shape.MaterialShapeUtils;
 
 /**
  * 控件辅助工具
@@ -95,6 +100,28 @@ public class ViewUtils {
         } else {
             ViewCompat.setBackground(view, null);
         }
+    }
+
+    public static void setElevation(@NonNull View view, float elevation) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view.setElevation(elevation);
+        }
+        Drawable background = view.getBackground();
+        if (background instanceof ColorDrawable) {
+            ViewCompat.setBackground(view, createMaterialShapeDrawableBackground(view.getContext(), background));
+        }
+        MaterialShapeUtils.setElevation(view, elevation);
+    }
+
+    @NonNull
+    private static MaterialShapeDrawable createMaterialShapeDrawableBackground(Context context, Drawable background) {
+        MaterialShapeDrawable materialShapeDrawable = new MaterialShapeDrawable();
+        if (background instanceof ColorDrawable) {
+            materialShapeDrawable.setFillColor(
+                    ColorStateList.valueOf(((ColorDrawable) background).getColor()));
+        }
+        materialShapeDrawable.initializeElevationOverlay(context);
+        return materialShapeDrawable;
     }
 
     private static int toPx(float dp) {

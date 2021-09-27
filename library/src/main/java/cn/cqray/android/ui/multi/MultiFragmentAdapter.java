@@ -11,16 +11,16 @@ import java.util.List;
  * Fragment适配器
  * @author Cqray
  */
-public class FragmentAdapter extends FragmentStateAdapter {
+public class MultiFragmentAdapter extends FragmentStateAdapter {
 
     private List<Fragment> fragmentList;
 
-    public FragmentAdapter(@NonNull Fragment fragment, List<Fragment> fragmentList) {
+    public MultiFragmentAdapter(@NonNull Fragment fragment, List<Fragment> fragmentList) {
         super(fragment);
         this.fragmentList = fragmentList;
     }
 
-    public FragmentAdapter(@NonNull AppCompatActivity activity, List<Fragment> fragmentList) {
+    public MultiFragmentAdapter(@NonNull AppCompatActivity activity, List<Fragment> fragmentList) {
         super(activity);
         this.fragmentList = fragmentList;
     }

@@ -21,7 +21,7 @@ import cn.cqray.android.app.SupportFragment;
  * 底部多Fragment界面
  * @author Cqray
  */
-public class BottomMultiFragment extends SupportFragment {
+public class MultiNavFragment extends SupportFragment {
 
     protected ViewPager2 mViewPager;
     protected BottomNavigationView mNavigationView;
@@ -39,7 +39,7 @@ public class BottomMultiFragment extends SupportFragment {
                 mNavigationView.setSelectedItemId(position);
             }
         });
-        mNavigationView = findViewById(R.id.starter_navigation_view);
+        mNavigationView = findViewById(R.id.starter_nav_view);
         mNavigationView.setOnNavigationItemSelectedListener(item -> {
             mMultiDelegate.showFragment(item.getOrder());
             item.setChecked(true);
@@ -47,14 +47,14 @@ public class BottomMultiFragment extends SupportFragment {
         });
     }
 
-    public void loadMultiFragments(@NonNull TabItem... items) {
+    public void loadMultiFragments(@NonNull MultiItem... items) {
         reset();
         Menu menu = mNavigationView.getMenu();
         menu.clear();
         NavIntent[] intents = new NavIntent[items.length];
         for (int i = 0; i < items.length; i++) {
             intents[i] = items[i].getIntent();
-            TabItem ti = items[i];
+            MultiItem ti = items[i];
             menu.add(0, i, i, ti.getName()).setIcon(ti.getIcon());
         }
         mMultiDelegate.loadMultiFragments(mViewPager, intents);
