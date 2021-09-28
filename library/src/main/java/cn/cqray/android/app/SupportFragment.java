@@ -121,7 +121,69 @@ public class SupportFragment extends Fragment implements StarterProvider {
         return false;
     }
 
+    public void start(Class<? extends StarterProvider> to) {
+        mStarterDelegate.start(new NavIntent(to));
+    }
+
+    public void startWithPop(Class<? extends StarterProvider> to, Class<? extends StarterProvider> popTo) {
+        NavIntent intent = new NavIntent(to);
+        intent.setPopTo(popTo, true);
+        mStarterDelegate.start(intent);
+    }
+
+    public void startWithPop(Class<? extends StarterProvider> to, Class<? extends StarterProvider> popTo, boolean inclusive) {
+        NavIntent intent = new NavIntent(to);
+        intent.setPopTo(popTo, inclusive);
+        mStarterDelegate.start(intent);
+    }
+
     public void start(NavIntent intent) {
         mStarterDelegate.start(intent);
+    }
+
+    public boolean pop() {
+        return mStarterDelegate.pop();
+    }
+
+    public void popOrFinish() {
+        if (!pop()) {
+            mStarterDelegate.popParent();
+        }
+    }
+
+    public void popTo(Class<? extends StarterProvider> clazz) {
+        mStarterDelegate.popTo(clazz, true);
+    }
+
+    public void popTo(Class<? extends StarterProvider> clazz, boolean inclusive) {
+        mStarterDelegate.popTo(clazz, inclusive);
+    }
+
+    public void setIdle() {
+        mViewDelegate.setIdle();
+    }
+
+    public void setBusy() {
+        mViewDelegate.setBusy(null);
+    }
+
+    public void setBusy(String text) {
+        mViewDelegate.setBusy(text);
+    }
+
+    public void setEmpty() {
+        mViewDelegate.setEmpty(null);
+    }
+
+    public void setEmpty(String text) {
+        mViewDelegate.setEmpty(text);
+    }
+
+    public void setError() {
+        mViewDelegate.setError(null);
+    }
+
+    public void setError(String text) {
+        mViewDelegate.setError(text);
     }
 }

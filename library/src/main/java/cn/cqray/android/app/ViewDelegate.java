@@ -217,6 +217,30 @@ public final class ViewDelegate {
         mBackground.setValue(background);
     }
 
+    public void setIdle() {
+        if (mRefreshLayout != null) {
+            mRefreshLayout.setIdle();
+        }
+    }
+
+    public void setBusy(String text) {
+        if (mRefreshLayout != null) {
+            mRefreshLayout.setBusy(text);
+        }
+    }
+
+    public void setEmpty(String text) {
+        if (mRefreshLayout != null) {
+            mRefreshLayout.setEmpty(text);
+        }
+    }
+
+    public void setError(String text) {
+        if (mRefreshLayout != null) {
+            mRefreshLayout.setError(text);
+        }
+    }
+
     /**
      * 查找控件
      * @param resId 控件Id
