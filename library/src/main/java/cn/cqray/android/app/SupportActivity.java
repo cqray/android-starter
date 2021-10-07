@@ -25,6 +25,8 @@ public class SupportActivity extends AppCompatActivity implements StarterProvide
     public Toolbar mToolbar;
     /** 状态刷新控件 **/
     public StateRefreshLayout mRefreshLayout;
+    
+    private final ToastDelegate mToastDelegate = new ToastDelegate();
     /** 布局代理 **/
     private final ViewDelegate mViewDelegate = new ViewDelegate(this);
     /** 启动代理 **/
@@ -112,7 +114,102 @@ public class SupportActivity extends AppCompatActivity implements StarterProvide
         return false;
     }
 
+    public void start(Class<? extends StarterProvider> to) {
+        mStarterDelegate.start(new NavIntent(to));
+    }
+
+    public void startWithPop(Class<? extends StarterProvider> to, Class<? extends StarterProvider> popTo) {
+        NavIntent intent = new NavIntent(to);
+        intent.setPopTo(popTo, true);
+        mStarterDelegate.start(intent);
+    }
+
+    public void startWithPop(Class<? extends StarterProvider> to, Class<? extends StarterProvider> popTo, boolean inclusive) {
+        NavIntent intent = new NavIntent(to);
+        intent.setPopTo(popTo, inclusive);
+        mStarterDelegate.start(intent);
+    }
+
     public void start(NavIntent intent) {
         mStarterDelegate.start(intent);
     }
+
+    public boolean pop() {
+        return mStarterDelegate.pop();
+    }
+
+    public void popOrFinish() {
+        if (!pop()) {
+            mStarterDelegate.popParent();
+        }
+    }
+
+    public void popTo(Class<? extends StarterProvider> clazz) {
+        mStarterDelegate.popTo(clazz, true);
+    }
+
+    public void popTo(Class<? extends StarterProvider> clazz, boolean inclusive) {
+        mStarterDelegate.popTo(clazz, inclusive);
+    }
+
+    public void setIdle() {
+        mViewDelegate.setIdle();
+    }
+
+    public void setBusy() {
+        mViewDelegate.setBusy(null);
+    }
+
+    public void setBusy(String text) {
+        mViewDelegate.setBusy(text);
+    }
+
+    public void setEmpty() {
+        mViewDelegate.setEmpty(null);
+    }
+
+    public void setEmpty(String text) {
+        mViewDelegate.setEmpty(text);
+    }
+
+    public void setError() {
+        mViewDelegate.setError(null);
+    }
+
+    public void setError(String text) {
+        mViewDelegate.setError(text);
+    }
+
+    public void showError(String text) {
+        mToastDelegate.error(text);
+    }
+
+    public void showError(String text, int duration) {
+        mToastDelegate.error(text, duration);
+    }
+
+    public void showInfo(String text) {
+        mToastDelegate.info(text);
+    }
+
+    public void showInfo(String text, int duration) {
+        mToastDelegate.info(text, duration);
+    }
+
+    public void showSuccess(String text) {
+        mToastDelegate.success(text);
+    }
+
+    public void showSuccess(String text, int duration) {
+        mToastDelegate.success(text, duration);
+    }
+
+    public void showWarning(String text) {
+        mToastDelegate.warning(text);
+    }
+
+    public void showWarning(String text, int duration) {
+        mToastDelegate.warning(text, duration);
+    }
+
 }

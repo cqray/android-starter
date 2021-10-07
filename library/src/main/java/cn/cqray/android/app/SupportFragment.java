@@ -28,6 +28,7 @@ public class SupportFragment extends Fragment implements StarterProvider {
     public Toolbar mToolbar;
     /** 状态刷新控件 **/
     public StateRefreshLayout mRefreshLayout;
+    private final ToastDelegate mToastDelegate = new ToastDelegate();
     /** 布局代理 **/
     private final ViewDelegate mViewDelegate = new ViewDelegate(this);
     /** 启动代理 **/
@@ -121,6 +122,7 @@ public class SupportFragment extends Fragment implements StarterProvider {
         return false;
     }
 
+
     public void start(Class<? extends StarterProvider> to) {
         mStarterDelegate.start(new NavIntent(to));
     }
@@ -185,5 +187,37 @@ public class SupportFragment extends Fragment implements StarterProvider {
 
     public void setError(String text) {
         mViewDelegate.setError(text);
+    }
+
+    public void showError(String text) {
+        mToastDelegate.error(text);
+    }
+
+    public void showError(String text, int duration) {
+        mToastDelegate.error(text, duration);
+    }
+
+    public void showInfo(String text) {
+        mToastDelegate.info(text);
+    }
+
+    public void showInfo(String text, int duration) {
+        mToastDelegate.info(text, duration);
+    }
+
+    public void showSuccess(String text) {
+        mToastDelegate.success(text);
+    }
+
+    public void showSuccess(String text, int duration) {
+        mToastDelegate.success(text, duration);
+    }
+
+    public void showWarning(String text) {
+        mToastDelegate.warning(text);
+    }
+
+    public void showWarning(String text, int duration) {
+        mToastDelegate.warning(text, duration);
     }
 }
