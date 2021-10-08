@@ -126,7 +126,6 @@ public class SupportFragment extends Fragment implements StarterProvider {
         return false;
     }
 
-
     public void start(Class<? extends StarterProvider> to) {
         mStarterDelegate.start(new NavIntent(to));
     }
