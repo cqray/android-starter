@@ -6,12 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.state.StateRefreshLayout;
 import cn.cqray.android.widget.Toolbar;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 /**
  * 基础Activity
@@ -25,7 +28,9 @@ public class SupportActivity extends AppCompatActivity implements StarterProvide
     public Toolbar mToolbar;
     /** 状态刷新控件 **/
     public StateRefreshLayout mRefreshLayout;
-    
+
+    private final DisposablePool mDisposablePool = new DisposablePool(this);
+
     private final ToastDelegate mToastDelegate = new ToastDelegate();
     /** 布局代理 **/
     private final ViewDelegate mViewDelegate = new ViewDelegate(this);
@@ -212,4 +217,35 @@ public class SupportActivity extends AppCompatActivity implements StarterProvide
         mToastDelegate.warning(text, duration);
     }
 
+    public void addDisposable(Disposable disposable) {
+        mDisposablePool.add(disposable);
+    }
+
+    public void timer(Consumer<Long> consumer) {
+        mDisposablePool.timer(consumer, 0);
+    }
+
+    public void timer(Consumer<Long> consumer, long delay) {
+        mDisposablePool.timer(consumer, delay);
+    }
+
+    public Disposable interval(@NonNull Consumer<Long> consumer, long period) {
+        return mDisposablePool.interval(consumer, 0, period);
+    }
+
+    public Disposable interval(@NonNull Consumer<Long> consumer, long initialDelay, long period) {
+        return mDisposablePool.interval(consumer, initialDelay, period);
+    }
+
+    /**
+     * 有限的循环执行任务
+     * @param consumer 执行内容
+     * @param start 起始值
+     * @param count 循环次数
+     * @param initialDelay 初始延迟时间
+     * @param period 间隔时间
+     */
+    public Disposable intervalRange(@NonNull Consumer<Long> consumer, long start, long count, long initialDelay, long period) {
+        return mDisposablePool.intervalRange(consumer, start, count, initialDelay, period);
+    }
 }

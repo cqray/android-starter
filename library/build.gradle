@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-group='com.gitee.cqray'
 
 android {
     compileSdkVersion 30
@@ -52,6 +50,7 @@ dependencies {
     // RecyclerView Adapter
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
     // Json工具
+    //noinspection GradleDependency 2.8.8
     api 'com.google.code.gson:gson:2.8.5'
     // RxJava
     api 'io.reactivex.rxjava2:rxjava:2.2.21'

@@ -10,7 +10,6 @@ import java.util.List;
 import cn.cqray.android.app.MultiDelegate;
 import cn.cqray.android.app.NavIntent;
 import cn.cqray.android.app.StarterProvider;
-import cn.cqray.android.app.SupportActivity;
 import cn.cqray.android.app.SupportFragment;
 
 /**
@@ -30,7 +29,7 @@ public class MultiFragment extends SupportFragment {
     }
 
     @SuppressWarnings("unchecked")
-    public void loadMultiFragemts(@IdRes int containerId, @NonNull Class<? extends Fragment>... classes) {
+    public void loadMultiFragments(@IdRes int containerId, @NonNull Class<? extends Fragment>... classes) {
         NavIntent[] intents = new NavIntent[classes.length];
         for (int i = 0; i < classes.length; i++) {
             intents[i] = new NavIntent((Class<? extends StarterProvider>) classes[i]);
@@ -47,7 +46,7 @@ public class MultiFragment extends SupportFragment {
     }
 
     @SuppressWarnings("unchecked")
-    public void loadMultiFragemts(ViewPager2 vp, @NonNull Class<? extends Fragment>... classes) {
+    public void loadMultiFragments(ViewPager2 vp, @NonNull Class<? extends Fragment>... classes) {
         NavIntent[] intents = new NavIntent[classes.length];
         for (int i = 0; i < classes.length; i++) {
             intents[i] = new NavIntent((Class<? extends StarterProvider>) classes[i]);
