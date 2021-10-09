@@ -25,7 +25,7 @@ public abstract class PaginationActivity<T> extends SupportActivity {
     protected final PaginationDelegate<T> mPaginationDelegate = new PaginationDelegate<>(this);
 
     @Override
-    protected void onCreating(@Nullable Bundle savedInstanceState) {
+    public void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
         setContentView(R.layout._ui_pagination_layout);
         // 初始化适配器

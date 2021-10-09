@@ -28,7 +28,7 @@ public class MultiNavActivity extends SupportActivity {
     protected final MultiDelegate mMultiDelegate = new MultiDelegate(this);
 
     @Override
-    protected void onCreating(@Nullable Bundle savedInstanceState) {
+    public void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
         setNativeContentView(R.layout.starter_bottom_multi_layout);
         mViewPager = findViewById(R.id.starter_content_layout);

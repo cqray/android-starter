@@ -22,7 +22,7 @@ public class LineActivity extends SupportActivity {
     protected LineAdapter mLineAdapter;
 
     @Override
-    protected void onCreating(@Nullable Bundle savedInstanceState) {
+    public void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
         mLineAdapter = new LineAdapter();
         mRecyclerView = new RecyclerView(this);
