@@ -31,7 +31,8 @@ public class SupportFragment extends Fragment implements StarterProvider {
     /** 状态刷新控件 **/
     public StateRefreshLayout mRefreshLayout;
 
-    private final DisposablePool mDisposablePool = new DisposablePool(this);
+    private final ObservableDelegate mObservableDelegate = new ObservableDelegate(this);
+
     private final ToastDelegate mToastDelegate = new ToastDelegate();
     /** 布局代理 **/
     private final ViewDelegate mViewDelegate = new ViewDelegate(this);
@@ -224,35 +225,99 @@ public class SupportFragment extends Fragment implements StarterProvider {
         mToastDelegate.warning(text, duration);
     }
 
+    /**
+     * 添加默认标识的Disposable
+     * @param disposable Disposable
+     */
     public void addDisposable(Disposable disposable) {
-        mDisposablePool.add(disposable);
-    }
-
-    public void timer(Consumer<Long> consumer) {
-        mDisposablePool.timer(consumer, 0);
-    }
-
-    public void timer(Consumer<Long> consumer, long delay) {
-        mDisposablePool.timer(consumer, delay);
-    }
-
-    public Disposable interval(@NonNull Consumer<Long> consumer, long period) {
-        return mDisposablePool.interval(consumer, 0, period);
-    }
-
-    public Disposable interval(@NonNull Consumer<Long> consumer, long initialDelay, long period) {
-        return mDisposablePool.interval(consumer, initialDelay, period);
+        mObservableDelegate.addDisposable(disposable);
     }
 
     /**
-     * 有限的循环执行任务
-     * @param consumer 执行内容
-     * @param start 起始值
-     * @param count 循环次数
-     * @param initialDelay 初始延迟时间
-     * @param period 间隔时间
+     * 添加默认标识的Disposable
+     * @param disposables Disposable数组
      */
-    public Disposable intervalRange(@NonNull Consumer<Long> consumer, long start, long count, long initialDelay, long period) {
-        return mDisposablePool.intervalRange(consumer, start, count, initialDelay, period);
+    public void addDisposable(Disposable... disposables) {
+        mObservableDelegate.addDisposable(disposables);
+    }
+
+    /**
+     * 添加指定标识的Disposable，null为默认标识
+     * @param tag         指定标识
+     * @param disposables Disposable数组
+     */
+    public void addDisposable(Object tag, Disposable... disposables) {
+        mObservableDelegate.addDisposable(tag, disposables);
+    }
+
+    /**
+     * 延迟执行任务
+     * @param consumer 执行内容
+     * @param delay    延迟时间
+     */
+    public void timer(@NonNull Consumer<Long> consumer, long delay) {
+        mObservableDelegate.timer(consumer, delay);
+    }
+
+    /**
+     * 延迟执行任务
+     * @param tag      指定标识
+     * @param consumer 执行内容
+     * @param delay    延迟时间
+     */
+    public void timer(Object tag, @NonNull Consumer<Long> consumer, long delay) {
+        mObservableDelegate.timer(tag, consumer, delay);
+    }
+
+    /**
+     * 定时地执行任务（无限次）
+     * @param consumer 执行内容
+     * @param period   间隔时间
+     */
+    public void interval(@NonNull Consumer<Long> consumer, long period) {
+        mObservableDelegate.interval(consumer, period);
+    }
+
+    /**
+     * 定时地执行任务
+     * @param consumer     执行内容
+     * @param initialDelay 初始延迟时间
+     * @param period       间隔时间
+     */
+    public void interval(@NonNull Consumer<Long> consumer, long initialDelay, long period) {
+        mObservableDelegate.interval(consumer, initialDelay, period);
+    }
+
+    /**
+     * 定时地执行任务（无限次）
+     * @param tag      指定标识
+     * @param consumer 执行内容
+     * @param period   间隔时间
+     */
+    public void interval(Object tag, @NonNull Consumer<Long> consumer, long period) {
+        mObservableDelegate.interval(tag, consumer, period);
+    }
+
+    /**
+     * 定时地执行任务
+     * @param tag          指定标识
+     * @param consumer     执行内容
+     * @param initialDelay 初始延迟时间
+     * @param period       间隔时间
+     */
+    public void interval(Object tag, @NonNull Consumer<Long> consumer, long initialDelay, long period) {
+        mObservableDelegate.interval(tag, consumer, initialDelay, period);
+    }
+
+    /**
+     * 定时地执行任务
+     * @param tag          指定标识
+     * @param consumer     执行内容
+     * @param initialDelay 初始延迟时间
+     * @param period       间隔时间
+     * @param count        执行次数 <=0为无限次
+     */
+    public void interval(Object tag, @NonNull Consumer<Long> consumer, long initialDelay, long period, long count) {
+        mObservableDelegate.interval(tag, consumer, initialDelay, period, count);
     }
 }

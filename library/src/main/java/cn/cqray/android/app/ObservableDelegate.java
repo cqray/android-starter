@@ -11,74 +11,53 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import lombok.SneakyThrows;
 
 /**
- * @author Admin
- * @date 2021/10/9 16:18
+ * 观察者代理
+ * @author Cqray
  */
-public class RxDelegate {
+public class ObservableDelegate {
 
     private volatile CompositeDisposable mCompositeDisposable;
     private volatile Map<Object, List<Disposable>> mDisposableMap;
 
-    public RxDelegate() {
-
-    }
-
-    public RxDelegate(@NonNull LifecycleOwner owner) {
+    public ObservableDelegate(@NonNull LifecycleOwner owner) {
         owner.getLifecycle().addObserver(new DefaultLifecycleObserver() {
             @Override
             public void onDestroy(@NonNull LifecycleOwner owner) {
-                dispose();
+                // 释放资源
+                if (mCompositeDisposable != null) {
+                    mCompositeDisposable.dispose();
+                    mCompositeDisposable = null;
+                }
+
+                if (mDisposableMap != null) {
+                    mDisposableMap.clear();
+                    mDisposableMap = null;
+                }
             }
         });
-    }
-
-    @SneakyThrows
-    public static void main(String[] args) {
-        RxDelegate delegate = new RxDelegate();
-
-        delegate.interval(aLong -> {
-            System.out.println("数值【1】：" + aLong);
-            if (aLong >= 10) {
-                delegate.remove(null);
-            }
-        }, 1000);
-
-        Disposable d2 = Observable.interval(0, 1, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.io())
-                .subscribe(aLong -> {
-                    System.out.println("数值【2】：" + aLong);
-                });
-        delegate.add(2, d2);
-
-        delegate.interval(null, aLong -> {
-
-            System.out.println("循环执行：" + aLong);
-        }, 0, 1000, 0);
-
-        Thread.sleep(15000);
     }
 
     /**
      * 添加默认标识的Disposable
      * @param disposable Disposable
      */
-    public void add(Disposable disposable) {
-        add(null, disposable);
+    public void addDisposable(Disposable disposable) {
+        addDisposable(null, disposable);
     }
 
     /**
      * 添加默认标识的Disposable
      * @param disposables Disposable数组
      */
-    public void add(Disposable... disposables) {
-        add(null, disposables);
+    public void addDisposable(Disposable... disposables) {
+        addDisposable(null, disposables);
     }
 
     /**
@@ -86,9 +65,23 @@ public class RxDelegate {
      * @param tag         指定标识
      * @param disposables Disposable数组
      */
-    public void add(Object tag, Disposable... disposables) {
-        getCompositeDisposable().addAll(disposables);
-        addDisposableToMap(tag, disposables);
+    public void addDisposable(Object tag, Disposable... disposables) {
+        if (disposables != null && disposables.length > 0) {
+            // 获取对应标识下的列表
+            List<Disposable> list = getDisposableMap().get(tag);
+            if (list == null) {
+                list = new ArrayList<>();
+            }
+            // 遍历添加有效Disposable
+            for (Disposable d : disposables) {
+                if (d != null) {
+                    list.add(d);
+                    getCompositeDisposable().add(d);
+                }
+            }
+            // 更新列表数据
+            getDisposableMap().put(tag, list);
+        }
     }
 
     /**
@@ -163,7 +156,7 @@ public class RxDelegate {
         final Disposable[] disposables = new Disposable[1];
         Disposable d = Observable.interval(initialDelay, period, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
-                //.observeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
                     counter[0]++;
                     consumer.accept(aLong);
@@ -172,7 +165,7 @@ public class RxDelegate {
                     }
                 });
         disposables[0] = d;
-        add(tag, d);
+        addDisposable(tag, d);
     }
 
     /**
@@ -226,41 +219,10 @@ public class RxDelegate {
         }
     }
 
-    public void dispose() {
-        if (mCompositeDisposable != null) {
-            mCompositeDisposable.dispose();
-            mCompositeDisposable = null;
-        }
-    }
-
-
-    /**
-     * 将Disposable添加到Map中
-     * @param tag         指定标识
-     * @param disposables Disposable数组
-     */
-    private synchronized void addDisposableToMap(Object tag, Disposable... disposables) {
-        if (disposables != null) {
-            // 获取对应标识下的列表
-            List<Disposable> list = getDisposableMap().get(tag);
-            if (list == null) {
-                list = new ArrayList<>();
-            }
-            // 遍历添加有效Disposable
-            for (Disposable d : disposables) {
-                if (d != null) {
-                    list.add(d);
-                }
-            }
-            // 更新列表数据
-            getDisposableMap().put(tag, list);
-        }
-    }
-
     private Map<Object, List<Disposable>> getDisposableMap() {
         // 初始化Map
         if (mDisposableMap == null) {
-            synchronized (DisposablePool.class) {
+            synchronized (ObservableDelegate.class) {
                 if (mDisposableMap == null) {
                     mDisposableMap = new HashMap<>(1);
                 }
@@ -272,7 +234,7 @@ public class RxDelegate {
     private CompositeDisposable getCompositeDisposable() {
         // 初始化CompositeDisposable
         if (mCompositeDisposable == null) {
-            synchronized (DisposablePool.class) {
+            synchronized (ObservableDelegate.class) {
                 if (mCompositeDisposable == null) {
                     mCompositeDisposable = new CompositeDisposable();
                 }
