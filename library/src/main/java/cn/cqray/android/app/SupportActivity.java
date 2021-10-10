@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import cn.cqray.android.anim.FragmentAnimator;
@@ -315,6 +317,31 @@ public class SupportActivity extends AppCompatActivity implements StarterProvide
      */
     public void interval(Object tag, @NonNull Consumer<Long> consumer, long initialDelay, long period, long count) {
         mObservableDelegate.interval(tag, consumer, initialDelay, period, count);
+    }
+
+    /**
+     * 清除所有的Disposable
+     */
+    public synchronized void clear() {
+        mObservableDelegate.clear();
+    }
+
+    /**
+     * 清除指定标识的Disposable
+     * tag为null，清理默认Disposable
+     * @param tag 标识
+     */
+    public synchronized void remove(Object tag) {
+        mObservableDelegate.remove(tag);
+    }
+
+    /**
+     * 移除指定标识下的Disposable
+     * @param tag         指定标识
+     * @param disposables Disposable列表
+     */
+    public synchronized void remove(Object tag, Disposable... disposables) {
+        mObservableDelegate.remove(tag, disposables);
     }
 
 }
