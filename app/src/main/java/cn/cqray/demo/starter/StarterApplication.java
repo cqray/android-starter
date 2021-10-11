@@ -7,6 +7,10 @@ import android.graphics.drawable.ColorDrawable;
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
 import cn.cqray.android.anim.DefaultHorizontalAnimator;
+import cn.cqray.android.app.ToastDelegate;
+import cn.cqray.android.state.BusyAdapter;
+import cn.cqray.android.state.EmptyAdapter;
+import cn.cqray.android.state.ErrorAdapter;
 
 /**
  * @author Admin
@@ -17,11 +21,17 @@ public class StarterApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Starter.getInstance().initialize(this);
 
         StarterStrategy strategy = StarterStrategy.builder()
                 .fragmentAnimator(new DefaultHorizontalAnimator())
-                .fragmentDrawable(new ColorDrawable(Color.WHITE))
+                //.fragmentBackground(new ColorDrawable(Color.RED))
+                //.toolbarTitleTextColor(Color.WHITE)
+                //.toolbarTitleTextSize(14)
+                .fragmentBackgroundRes(R.color.background)
+                .busyAdapter(new BusyAdapter())
+                .emptyAdapter(new EmptyAdapter())
+                .errorAdapter(new ErrorAdapter())
                 .build();
+        Starter.getInstance().initialize(this, strategy);
     }
 }

@@ -23,6 +23,8 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
 import cn.cqray.android.R;
+import cn.cqray.android.Starter;
+import cn.cqray.android.StarterStrategy;
 import cn.cqray.android.exception.ExceptionManager;
 import cn.cqray.android.exception.ViewException;
 import cn.cqray.android.state.StateRefreshLayout;
@@ -63,11 +65,15 @@ public final class ViewDelegate {
     public ViewDelegate(AppCompatActivity activity) {
         mLifecycleOwner = activity;
         mLifecycleOwner.getLifecycle().addObserver(mEventObserver);
+        StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
+        setBackground(strategy.getActivityBackground());
     }
 
     public ViewDelegate(Fragment fragment) {
         mLifecycleOwner = fragment;
         mLifecycleOwner.getLifecycle().addObserver(mEventObserver);
+        StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
+        setBackground(strategy.getFragmentBackground());
     }
 
     /**
@@ -209,7 +215,7 @@ public final class ViewDelegate {
      * 设置背景
      * @param background 背景
      */
-    public void setBackground(Drawable background) {
+    public synchronized void setBackground(Drawable background) {
         if (mBackground == null) {
             mBackground = new MutableLiveData<>();
             mBackground.observe(mLifecycleOwner, drawable -> mContentView.setBackground(drawable));

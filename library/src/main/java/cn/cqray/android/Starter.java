@@ -22,6 +22,7 @@ public class Starter {
     private Application mApplication;
     /** Fragment切换动画 **/
     private FragmentAnimator mFragmentAnimator;
+    private StarterStrategy mStarterStrategy;
 
     private Starter() {
         mFragmentAnimator = new DefaultVerticalAnimator();
@@ -35,27 +36,41 @@ public class Starter {
      * 初始化AndroidLibrary
      * @param application Application
      */
-    public Starter initialize(Application application) {
+    public void initialize(Application application) {
+        initialize(application, StarterStrategy.builder().build());
+    }
+
+    /**
+     * 初始化AndroidLibrary
+     * @param application Application
+     * @param strategy 配置策略
+     */
+    public void initialize(Application application, StarterStrategy strategy) {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         int count = elements.length;
+        // 遍历方法堆栈，确保初始化进行在Application中
         for (int i = 0; i < count; i++) {
             StackTraceElement element = elements[i];
+            // 找到当前类的StackTraceElement
             if (getClass().getName().equals(element.getClassName())) {
                 if (i + 1 < count) {
                     StackTraceElement parentElement = elements[i + 1];
                     try {
                         Class<?> clazz = Class.forName(parentElement.getClassName());
+                        // 初始化进行在Application中，则进行初始化操作
                         if (Application.class.isAssignableFrom(clazz)) {
                             mApplication = application;
+                            mStarterStrategy = strategy;
                             ActivityUtils.initialize(application);
                             StarterDispatcher.initialize(application);
-                            return this;
+                            return;
                         }
                     } catch (ClassNotFoundException ignored) {}
                 }
             }
         }
-        throw new RuntimeException("You must initialize AndroidLibrary in class which extends Application.");
+        // 不是在Application中初始化，则抛出异常信息。
+        throw new RuntimeException("You must initialize Starter in class which extends Application.");
     }
 
     public Starter fragmentAnimator(FragmentAnimator animator) {
@@ -78,5 +93,9 @@ public class Starter {
 
     public FragmentAnimator getFragmentAnimator() {
         return mFragmentAnimator;
+    }
+
+    public StarterStrategy getStarterStrategy() {
+        return mStarterStrategy;
     }
 }
