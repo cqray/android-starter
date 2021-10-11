@@ -85,6 +85,57 @@ public class ObservableDelegate {
     }
 
     /**
+     * 清除所有的Disposable
+     */
+    public synchronized void clearDisposables() {
+        if (mCompositeDisposable != null) {
+            mCompositeDisposable.clear();
+        }
+        if (mDisposableMap != null) {
+            mDisposableMap.clear();
+        }
+    }
+
+    /**
+     * 清除指定标识的Disposable
+     * tag为null，清理默认Disposable
+     * @param tag 标识
+     */
+    public synchronized void removeDisposables(Object tag) {
+        removeDisposables(tag, (Disposable[]) null);
+    }
+
+    /**
+     * 移除指定标识下的Disposable
+     * @param tag         指定标识
+     * @param disposables Disposable列表
+     */
+    public synchronized void removeDisposables(Object tag, Disposable... disposables) {
+        List<Disposable> list = null;
+        if (disposables == null || disposables.length == 0) {
+            list = getDisposableMap().remove(tag);
+        } else {
+            List<Disposable> tmp = getDisposableMap().get(tag);
+            if (tmp != null && !tmp.isEmpty()) {
+                list = new ArrayList<>();
+                for (Disposable d : disposables) {
+                    if (d != null && tmp.contains(d)) {
+                        list.add(d);
+                        tmp.remove(d);
+                    }
+                }
+                getDisposableMap().put(tag, tmp);
+            }
+        }
+        // 从CompositeDisposable中移除
+        if (list != null && !list.isEmpty()) {
+            for (Disposable d : list) {
+                getCompositeDisposable().remove(d);
+            }
+        }
+    }
+
+    /**
      * 延迟执行任务
      * @param consumer 执行内容
      * @param delay    延迟时间
@@ -161,62 +212,11 @@ public class ObservableDelegate {
                     counter[0]++;
                     consumer.accept(aLong);
                     if (count >= 0 && counter[0] == count) {
-                        remove(tag, disposables);
+                        removeDisposables(tag, disposables);
                     }
                 });
         disposables[0] = d;
         addDisposable(tag, d);
-    }
-
-    /**
-     * 清除所有的Disposable
-     */
-    public synchronized void clear() {
-        if (mCompositeDisposable != null) {
-            mCompositeDisposable.clear();
-        }
-        if (mDisposableMap != null) {
-            mDisposableMap.clear();
-        }
-    }
-
-    /**
-     * 清除指定标识的Disposable
-     * tag为null，清理默认Disposable
-     * @param tag 标识
-     */
-    public synchronized void remove(Object tag) {
-        remove(tag, (Disposable[]) null);
-    }
-
-    /**
-     * 移除指定标识下的Disposable
-     * @param tag         指定标识
-     * @param disposables Disposable列表
-     */
-    public synchronized void remove(Object tag, Disposable... disposables) {
-        List<Disposable> list = null;
-        if (disposables == null || disposables.length == 0) {
-            list = getDisposableMap().remove(tag);
-        } else {
-            List<Disposable> tmp = getDisposableMap().get(tag);
-            if (tmp != null && !tmp.isEmpty()) {
-                list = new ArrayList<>();
-                for (Disposable d : disposables) {
-                    if (d != null && tmp.contains(d)) {
-                        list.add(d);
-                        tmp.remove(d);
-                    }
-                }
-                getDisposableMap().put(tag, tmp);
-            }
-        }
-        // 从CompositeDisposable中移除
-        if (list != null && !list.isEmpty()) {
-            for (Disposable d : list) {
-                getCompositeDisposable().remove(d);
-            }
-        }
     }
 
     private Map<Object, List<Disposable>> getDisposableMap() {
