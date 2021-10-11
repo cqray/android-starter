@@ -65,7 +65,6 @@ public class Starter {
         return this;
     }
 
-
     public Application getApplication() {
         if (mApplication == null) {
             throw new RuntimeException("You should call AndroidLibrary.getInstance().initialize() first.");
