@@ -367,12 +367,12 @@ public class Toolbar extends RelativeLayout {
         return this;
     }
 
-    public Toolbar setTitleText(@StringRes int id) {
+    public Toolbar setTitle(@StringRes int id) {
         mTitleView.setText(id);
         return this;
     }
 
-    public Toolbar setTitleText(CharSequence text) {
+    public Toolbar setTitle(CharSequence text) {
         mTitleView.setText(text);
         return this;
     }
