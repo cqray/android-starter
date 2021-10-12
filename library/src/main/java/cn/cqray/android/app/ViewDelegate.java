@@ -29,6 +29,7 @@ import cn.cqray.android.exception.ExceptionManager;
 import cn.cqray.android.exception.ViewException;
 import cn.cqray.android.state.StateRefreshLayout;
 import cn.cqray.android.util.ButterKnifeUtils;
+import cn.cqray.android.util.ObjectUtils;
 import cn.cqray.android.widget.Toolbar;
 
 /**
@@ -322,15 +323,17 @@ public final class ViewDelegate {
             ((SupportFragment) mLifecycleOwner).mContentView = mContentView;
             ((SupportFragment) mLifecycleOwner).mRefreshLayout = mRefreshLayout;
         }
-        // 初始化标题栏监听事件
-        if (mToolbar != null && mLifecycleOwner instanceof StarterProvider) {
-            mToolbar.setBackListener(v -> {
-                StarterDelegate delegate = ((StarterProvider) mLifecycleOwner).getStarterDelegate();
-                if (!delegate.pop()) {
-                    delegate.popParent();
-                }
-            });
+
+        StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
+        // 设置StateRefreshLayout相应状态的适配器
+        if (mRefreshLayout != null) {
+            mRefreshLayout.setBusyAdapter(ObjectUtils.deepClone(strategy.getBusyAdapter()));
+            mRefreshLayout.setEmptyAdapter(ObjectUtils.deepClone(strategy.getEmptyAdapter()));
+            mRefreshLayout.setErrorAdapter(ObjectUtils.deepClone(strategy.getErrorAdapter()));
         }
+
+
+        initToolbar();
 //        SupportHandler<CommonToolbar> tHandler = AndroidLibrary.getInstance().getToolbarHandler();
 //        SupportHandler<StateRefreshLayout> rHandler = AndroidLibrary.getInstance().getRefreshLayoutHandler();
 //        // 全局初始化Toolbar
@@ -343,6 +346,95 @@ public final class ViewDelegate {
 //        }
         // 初始化ButterKnife
         initUnBinder();
+    }
+
+    void initToolbar() {
+        // 初始化标题栏监听事件
+        if (mToolbar != null && mLifecycleOwner instanceof StarterProvider) {
+            mToolbar.setBackListener(v -> {
+                StarterDelegate delegate = ((StarterProvider) mLifecycleOwner).getStarterDelegate();
+                if (!delegate.pop()) {
+                    delegate.popParent();
+                }
+            });
+        }
+        StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
+        if (mToolbar != null) {
+            //===========标题部分===========//
+            // 设置标题背景
+            if (strategy.getToolbarBackground() != null) {
+                mToolbar.setBackground(strategy.getToolbarBackground());
+            }
+            // 设置标题文字颜色
+            if (strategy.getToolbarTitleTextColor() != Integer.MIN_VALUE) {
+                mToolbar.setTitleTextColor(strategy.getToolbarTitleTextColor());
+            }
+            // 设置标题文字大小
+            if (strategy.getToolbarTitleTextSize() != Integer.MIN_VALUE) {
+                mToolbar.setTitleTextSize(strategy.getToolbarTitleTextSize());
+            }
+            // 设置标题文字样式
+            if (strategy.getToolbarTitleTypeface() != null) {
+                mToolbar.setTitleTypeface(strategy.getToolbarTitleTypeface());
+            }
+            // 设置标题左右间隔
+            if (strategy.getToolbarTitleSpace() != Integer.MIN_VALUE) {
+                mToolbar.setTitleSpace(strategy.getToolbarTitleSpace());
+            }
+            //===========返回部分===========//
+            // 设置图标
+            if (strategy.getToolbarBackIcon() != null) {
+                mToolbar.setBackIcon(strategy.getToolbarBackIcon());
+            }
+            // 设置图标颜色
+            if (strategy.getToolbarBackIconTintColor() != Integer.MIN_VALUE) {
+                mToolbar.setBackIconTintColor(strategy.getToolbarBackIconTintColor());
+            }
+            // 设置标题返回文字颜色
+            if (strategy.getToolbarBackTextColor() != Integer.MIN_VALUE) {
+                mToolbar.setBackTextColor(strategy.getToolbarBackTextColor());
+            }
+            // 设置标题返回文字大小
+            if (strategy.getToolbarBackTextSize() != Integer.MIN_VALUE) {
+                mToolbar.setBackTextSize(strategy.getToolbarBackTextSize());
+            }
+            // 设置标题返回文字样式
+            if (strategy.getToolbarBackTypeface() != null) {
+                mToolbar.setBackTypeface(strategy.getToolbarBackTypeface());
+            }
+            //===========Action部分===========//
+            // 设置标题Action文字颜色
+            if (strategy.getToolbarActionTextColor() != Integer.MIN_VALUE) {
+                mToolbar.setActionTextColor(strategy.getToolbarActionTextColor());
+            }
+            // 设置标题Action文字大小
+            if (strategy.getToolbarActionTextSize() != Integer.MIN_VALUE) {
+                mToolbar.setActionTextSize(strategy.getToolbarActionTextSize());
+            }
+            // 设置标题Action文字样式
+            if (strategy.getToolbarActionTypeface() != null) {
+                mToolbar.setActionTypeface(strategy.getToolbarActionTypeface());
+            }
+            //===========分割线部分===========//
+            // 设置分割线颜色
+            if (strategy.getToolbarDividerColor() != Integer.MIN_VALUE) {
+                mToolbar.setDividerColor(strategy.getToolbarDividerColor());
+            }
+            // 设置分割线颜色
+            if (strategy.getToolbarDividerHeight() != Integer.MIN_VALUE) {
+                mToolbar.setDividerHeight(strategy.getToolbarDividerHeight());
+            }
+            // 设置分割线颜色
+            if (strategy.getToolbarDividerMargin() != Integer.MIN_VALUE) {
+                mToolbar.setDividerMargin(strategy.getToolbarDividerMargin());
+            }
+            System.out.println("标题居中|" + strategy.isToolbarTitleCenter());
+            // 其他属性
+            mToolbar.setTitleCenter(strategy.isToolbarTitleCenter())
+                    .setUseRipple(strategy.isToolbarUserRipple())
+                    .setBackText(strategy.getToolbarBackText())
+                    .setDividerVisible(strategy.isToolbarDividerVisible());
+        }
     }
 
     /**
@@ -374,4 +466,6 @@ public final class ViewDelegate {
         }
         return true;
     }
+
+
 }

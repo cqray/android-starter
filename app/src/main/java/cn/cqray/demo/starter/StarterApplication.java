@@ -27,11 +27,17 @@ public class StarterApplication extends Application {
                 //.fragmentBackground(new ColorDrawable(Color.RED))
                 //.toolbarTitleTextColor(Color.WHITE)
                 //.toolbarTitleTextSize(14)
+                .toolbarBackText("返回")
+                .toolbarDividerVisible(true)
+                .toolbarDividerHeight(2)
+                .toolbarBackIconRes(R.drawable.def_back_common_dark)
+                .toolbarTitleCenter(false)
                 .fragmentBackgroundRes(R.color.background)
                 .busyAdapter(new BusyAdapter())
                 .emptyAdapter(new EmptyAdapter())
                 .errorAdapter(new ErrorAdapter())
                 .build();
+
         Starter.getInstance().initialize(this, strategy);
     }
 }

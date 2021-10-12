@@ -319,19 +319,21 @@ public class Toolbar extends RelativeLayout {
         return this;
     }
 
-    public Toolbar setIconTintColor(int color) {
+    public Toolbar setBackIconTintColor(int color) {
         mBackLayout.setIconTintColor(color);
         return this;
     }
 
-    public Toolbar setIconTintList(ColorStateList tintList) {
+    public Toolbar setBackIconTintList(ColorStateList tintList) {
         mBackLayout.setIconTintList(tintList);
         return this;
     }
 
     public Toolbar setBackIconVisible(boolean visible) {
-        mBackLayout.getIconView().setVisibility(visible ? VISIBLE : GONE);
-        mPadding.setValue(mPadding.getValue());
+        if (visible != (mBackLayout.getIconView().getVisibility() == VISIBLE)) {
+            mBackLayout.getIconView().setVisibility(visible ? VISIBLE : GONE);
+            mPadding.setValue(mPadding.getValue());
+        }
         return this;
     }
 

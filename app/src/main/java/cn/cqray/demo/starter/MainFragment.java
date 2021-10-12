@@ -22,7 +22,7 @@ public class MainFragment extends SupportFragment {
 
         mToolbar.setTitleText("车时标题777777");
         mToolbar.setActionText(0, "确定");
-        mToolbar.setVisibility(View.GONE);
+        mToolbar.setVisibility(View.VISIBLE);
     }
 
     @Override
