@@ -20,7 +20,7 @@ public class MainFragment extends SupportFragment {
         super.onCreating(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mToolbar.setTitleText("车时标题777777");
+        mToolbar.setTitle("车时标题777777");
         mToolbar.setActionText(0, "确定");
         mToolbar.setVisibility(View.VISIBLE);
     }

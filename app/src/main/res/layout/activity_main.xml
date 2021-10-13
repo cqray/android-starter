@@ -20,6 +20,13 @@
         android:text="Hello World!77777777777" />
 
 
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/bg_btn_primary_small"
+        android:enabled="true"/>
 
 
 </LinearLayout>
