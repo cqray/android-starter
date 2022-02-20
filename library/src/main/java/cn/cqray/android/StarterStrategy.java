@@ -1,7 +1,6 @@
 package cn.cqray.android;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 
@@ -9,7 +8,7 @@ import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
 
 import cn.cqray.android.anim.FragmentAnimator;
-import cn.cqray.android.app.ToastDelegate;
+import cn.cqray.android.toast.ToastDelegate;
 import cn.cqray.android.state.StateAdapter;
 import lombok.AccessLevel;
 import lombok.Builder;

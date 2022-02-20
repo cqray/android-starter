@@ -25,14 +25,14 @@ import cn.cqray.android.exception.ExceptionManager;
 import cn.cqray.android.util.ActivityUtils;
 
 /**
- * FragmentManager委托
+ * Fragment启动委托
  * @author Cqray
  */
 public final class StarterDelegate {
 
-    private static final Map<LifecycleOwner, StarterDelegate> DELEGATE_MAP = new HashMap<>();
     private StarterCache mStarterCache;
     private final LifecycleOwner mLifecycleOwner;
+    private static final Map<LifecycleOwner, StarterDelegate> DELEGATE_MAP = new HashMap<>();
 
     @NonNull
     public static StarterDelegate get(@NonNull AppCompatActivity activity) {

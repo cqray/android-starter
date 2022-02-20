@@ -1,4 +1,4 @@
-package cn.cqray.android.app;
+package cn.cqray.android.toast;
 
 import android.content.Context;
 import android.widget.Toast;

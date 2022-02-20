@@ -19,7 +19,7 @@ public class MainActivity extends MultiTabActivity {
         );
 
         setDragEnable(true);
-        showFragment(1);
+//        showFragment(1);
 
 
 //        setContentView(R.layout.activity_main);

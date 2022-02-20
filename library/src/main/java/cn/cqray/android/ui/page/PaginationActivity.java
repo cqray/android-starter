@@ -27,7 +27,7 @@ public abstract class PaginationActivity<T> extends SupportActivity {
     @Override
     public void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
-        setContentView(R.layout._ui_pagination_layout);
+        setContentView(R.layout.starter_pagination_layout);
         // 初始化适配器
         mAdapter = onCreateAdapter();
         // 初始化控件

@@ -27,7 +27,7 @@ public abstract class PaginationFragment<T> extends SupportFragment {
     @Override
     public void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
-        setContentView(R.layout._ui_pagination_layout);
+        setContentView(R.layout.starter_pagination_layout);
         // 初始化适配器
         mAdapter = onCreateAdapter();
         mRecyclerView = findViewById(R.id.__android_recycler);

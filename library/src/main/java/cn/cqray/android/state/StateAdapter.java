@@ -3,6 +3,7 @@ package cn.cqray.android.state;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -37,15 +38,6 @@ public class StateAdapter implements Serializable {
 
     public StateAdapter(@LayoutRes int layoutResId) {
         mLayoutResId = layoutResId;
-    }
-
-    protected void onAttachedToWindow() {}
-
-    protected void onDetachedFromWindow() {
-        if (mParentView != null && mRootView != null) {
-            mParentView.removeView(mRootView);
-            mRootView = null;
-        }
     }
 
     protected void onViewCreated(@NonNull View view) {}
@@ -106,7 +98,6 @@ public class StateAdapter implements Serializable {
                 action.run();
             }
             mActions.clear();
-            onAttachedToWindow();
             onViewCreated(mRootView);
         }
     }

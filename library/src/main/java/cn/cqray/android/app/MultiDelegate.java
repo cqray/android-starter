@@ -21,8 +21,8 @@ import java.util.List;
 import cn.cqray.android.ui.multi.MultiFragmentAdapter;
 
 /**
+ * 多Fragment管理委托
  * @author Cqray
- * @date 2021/9/26 19:18
  */
 public class MultiDelegate {
 

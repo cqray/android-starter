@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import cn.cqray.android.R;
-import cn.cqray.android.widget.LoadingView;
+import cn.cqray.android.widget.SpinView;
 
 /**
  * 忙碌界面适配器
@@ -27,7 +27,7 @@ public class BusyAdapter extends StateAdapter {
         int primary = ContextCompat.getColor(context, R.color.colorPrimary);
         int accent = ContextCompat.getColor(context, R.color.colorAccent);
         ViewGroup parent = (ViewGroup) view;
-        LoadingView lv = (LoadingView) parent.getChildAt(0);
+        SpinView lv = (SpinView) parent.getChildAt(0);
         lv.setArcCount(4);
         lv.setArcShakeRatio(0.2f);
         lv.setArcStrokeWidth(4);

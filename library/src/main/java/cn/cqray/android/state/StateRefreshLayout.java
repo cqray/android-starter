@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -15,10 +16,7 @@ import com.scwang.smart.refresh.layout.api.RefreshFooter;
 import com.scwang.smart.refresh.layout.api.RefreshHeader;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import cn.cqray.android.R;
 
@@ -28,14 +26,22 @@ import cn.cqray.android.R;
  */
 public class StateRefreshLayout extends SmartRefreshLayout {
 
+    /** 空闲 **/
+    private static final int IDLE = 0;
+    /** 忙碌 **/
+    private static final int BUSY = 1;
+    /** 空 **/
+    private static final int EMPTY = 2;
+    /** 错误 **/
+    private static final int ERROR = 3;
     /** 状态根布局 **/
     private FrameLayout mRootLayout;
     /** 当前状态 **/
-    private State mCurState = State.IDLE;
+    private int mCurState = IDLE;
     /** 状态缓存 **/
     private final Boolean[] mEnableStates = new Boolean[3];
     /** 适配器集合 **/
-    private final HashMap<State, StateAdapter> mAdapters = new HashMap<>();
+    private final SparseArray<StateAdapter> mAdapters = new SparseArray<>();
 
     public StateRefreshLayout(Context context) {
         this(context, null);
@@ -52,56 +58,44 @@ public class StateRefreshLayout extends SmartRefreshLayout {
         }
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        Set<Map.Entry<State, StateAdapter>> entries = mAdapters.entrySet();
-        for (Map.Entry<State, StateAdapter> entry : entries) {
-            StateAdapter adapter = entry.getValue();
-            if (adapter != null) {
-                adapter.onDetachedFromWindow();
-            }
-        }
-    }
-
     public void setIdle() {
-        setState(State.IDLE, null);
+        setState(IDLE, null);
     }
 
     public void setBusy() {
-        setState(State.BUSY, null);
+        setState(BUSY, null);
     }
 
     public void setBusy(String text) {
-        setState(State.BUSY, text);
+        setState(BUSY, text);
     }
 
     public void setEmpty() {
-        setState(State.EMPTY, null);
+        setState(EMPTY, null);
     }
 
     public void setEmpty(String text) {
-        setState(State.EMPTY, text);
+        setState(EMPTY, text);
     }
 
     public void setError() {
-        setState(State.ERROR, null);
+        setState(ERROR, null);
     }
 
     public void setError(String text) {
-        setState(State.ERROR, text);
+        setState(ERROR, text);
     }
 
     public void setBusyAdapter(StateAdapter adapter) {
-        setStateAdapter(State.BUSY, adapter);
+        setStateAdapter(BUSY, adapter);
     }
 
     public void setEmptyAdapter(StateAdapter adapter) {
-        setStateAdapter(State.EMPTY, adapter);
+        setStateAdapter(EMPTY, adapter);
     }
 
     public void setErrorAdapter(StateAdapter adapter) {
-        setStateAdapter(State.ERROR, adapter);
+        setStateAdapter(ERROR, adapter);
     }
 
     /**
@@ -139,15 +133,14 @@ public class StateRefreshLayout extends SmartRefreshLayout {
     /**
      * 切换状态
      */
-    private void setState(State state, String text) {
+    private void setState(int state, String text) {
         saveEnableState();
         mCurState = state;
         // 初始化界面
         initStateLayout();
-        if (mCurState != State.BUSY) {
-            Set<Map.Entry<State, StateAdapter>> entries = mAdapters.entrySet();
-            for (Map.Entry<State, StateAdapter> entry : entries) {
-                StateAdapter adapter = entry.getValue();
+        if (mCurState != BUSY) {
+            for (int i = 0; i < mAdapters.size(); i++) {
+                StateAdapter adapter = mAdapters.valueAt(i);
                 if (adapter != null) {
                     adapter.hide();
                 }
@@ -165,49 +158,56 @@ public class StateRefreshLayout extends SmartRefreshLayout {
      * 保存刷新控件状态
      */
     private void saveEnableState() {
-        if (mCurState == State.IDLE) {
+        if (mCurState == IDLE) {
             mEnableStates[0] = mEnableRefresh;
             mEnableStates[1] = mEnableLoadMore;
             mEnableStates[2] = mEnableOverScrollDrag;
         }
     }
 
+    /**
+     * 恢复启用状态
+     */
     private void restoreEnableState() {
-        if (mCurState == State.IDLE) {
+        if (mCurState == IDLE) {
             mEnableRefresh = mEnableStates[0];
             mEnableLoadMore = mEnableStates[1];
             mEnableOverScrollDrag = mEnableStates[2];
         } else {
-            mEnableRefresh = mCurState != State.BUSY && mEnableStates[0];
+            mEnableRefresh = mCurState != BUSY && mEnableStates[0];
             mManualLoadMore = true;
             mEnableLoadMore = false;
             mEnableOverScrollDrag = false;
         }
     }
 
-    private void setStateAdapter(State state, StateAdapter adapter) {
+    /**
+     * 设置对应的状态适配器
+     * @param state 状态
+     * @param adapter 适配器
+     */
+    private void setStateAdapter(int state, StateAdapter adapter) {
         StateAdapter sAdapter = mAdapters.get(state);
         if (sAdapter != null) {
-            sAdapter.onDetachedFromWindow();
+            sAdapter.hide();
         }
         mAdapters.put(state, adapter);
     }
 
+    /**
+     * 获取对应状态的适配器
+     * @param state 指定状态
+     */
     @Nullable
-    private StateAdapter getAdapter(State state) {
+    private StateAdapter getAdapter(int state) {
         StateAdapter adapter = mAdapters.get(state);
         if (adapter == null) {
-            switch (state) {
-                case BUSY:
-                    adapter = new BusyAdapter();
-                    break;
-                case EMPTY:
-                    adapter = new EmptyAdapter();
-                    break;
-                case ERROR:
-                    adapter = new ErrorAdapter();
-                    break;
-                default:
+            if (state == BUSY) {
+                adapter = new BusyAdapter();
+            } else if (state == EMPTY) {
+                adapter = new EmptyAdapter();
+            } else if (state == ERROR) {
+                adapter = new ErrorAdapter();
             }
         }
         if (adapter != null) {
@@ -215,12 +215,5 @@ public class StateRefreshLayout extends SmartRefreshLayout {
             adapter.onAttach(this, mRootLayout);
         }
         return adapter;
-    }
-
-    enum State {
-        /** 忙 **/ BUSY,
-        /** 空 **/ EMPTY,
-        /** 错误 **/ ERROR,
-        /** 空闲 **/ IDLE
     }
 }

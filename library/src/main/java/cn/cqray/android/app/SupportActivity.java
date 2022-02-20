@@ -10,17 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.state.StateRefreshLayout;
+import cn.cqray.android.toast.ToastDelegate;
 import cn.cqray.android.widget.Toolbar;
-import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * 基础Activity

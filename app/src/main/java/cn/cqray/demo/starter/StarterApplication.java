@@ -1,13 +1,10 @@
 package cn.cqray.demo.starter;
 
 import android.app.Application;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
 import cn.cqray.android.anim.DefaultHorizontalAnimator;
-import cn.cqray.android.app.ToastDelegate;
 import cn.cqray.android.state.BusyAdapter;
 import cn.cqray.android.state.EmptyAdapter;
 import cn.cqray.android.state.ErrorAdapter;

@@ -28,7 +28,7 @@ import cn.cqray.android.R;
  * 加载控件
  * @author Cqray
  */
-public class LoadingView extends SurfaceView {
+public class LoadingView2 extends SurfaceView {
 
     private Paint mPaint;
     private RectF mArcRectF;
@@ -68,17 +68,17 @@ public class LoadingView extends SurfaceView {
         }
     });
 
-    public LoadingView(Context context) {
+    public LoadingView2(Context context) {
         super(context);
         init(context);
     }
 
-    public LoadingView(Context context, AttributeSet attrs) {
+    public LoadingView2(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public LoadingView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public LoadingView2(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
@@ -128,7 +128,7 @@ public class LoadingView extends SurfaceView {
         mViewHeight = MeasureSpec.getSize(heightMeasureSpec);
     }
 
-    public LoadingView setArcColors(@ColorInt int... colors) {
+    public LoadingView2 setArcColors(@ColorInt int... colors) {
         if (colors.length == 0) {
             this.mArcColors = new int[] {ContextCompat.getColor(getContext(), R.color.colorAccent)};
         } else {
@@ -140,7 +140,7 @@ public class LoadingView extends SurfaceView {
         return this;
     }
 
-    public LoadingView setArcCount(@IntRange(from = 1) int count) {
+    public LoadingView2 setArcCount(@IntRange(from = 1) int count) {
         mArcCount = count > 1 ? count : 1;
         return this;
     }
@@ -149,7 +149,7 @@ public class LoadingView extends SurfaceView {
      * 设置增量角度（仅对叶数为1有效）
      * @param add 增量角度
      */
-    public LoadingView setArcAddAngle(float add) {
+    public LoadingView2 setArcAddAngle(float add) {
         mAddAngle = add;
         return this;
     }
@@ -158,12 +158,12 @@ public class LoadingView extends SurfaceView {
      * 设置最小角度（仅对叶数为1有效）
      * @param min 最小角度
      */
-    public LoadingView setArcMinAngle(float min) {
+    public LoadingView2 setArcMinAngle(float min) {
         mMinAngle = min;
         return this;
     }
 
-    public LoadingView setArcIntervalAngle(float angle) {
+    public LoadingView2 setArcIntervalAngle(float angle) {
         mIntervalAngle = angle;
         return this;
     }
@@ -172,12 +172,12 @@ public class LoadingView extends SurfaceView {
      * 设置抖动比例(即改变弧的宽度)
      * @param ratio 抖动比例
      */
-    public LoadingView setArcShakeRatio(float ratio) {
+    public LoadingView2 setArcShakeRatio(float ratio) {
         mSnakeRatio = ratio;
         return this;
     }
 
-    public LoadingView setArcStrokeWidth(float width) {
+    public LoadingView2 setArcStrokeWidth(float width) {
         mStrokeWidth = getResources().getDisplayMetrics().density * width;
         return this;
     }
@@ -186,7 +186,7 @@ public class LoadingView extends SurfaceView {
      * 设置转一圈需要时间
      * @param time 转一圈需要时间
      */
-    public LoadingView setRoundUseTime(int time) {
+    public LoadingView2 setRoundUseTime(int time) {
         mRotateRate = 3600f / time;
         return this;
     }

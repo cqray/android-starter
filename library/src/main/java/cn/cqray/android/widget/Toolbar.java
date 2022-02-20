@@ -37,8 +37,8 @@ import com.google.android.material.shape.MaterialShapeUtils;
 import cn.cqray.android.R;
 
 /**
+ * 标题栏
  * @author Cqray
- * @date 2021/9/24 21:58
  */
 public class Toolbar extends RelativeLayout {
 

@@ -15,7 +15,6 @@ import java.util.List;
 
 import cn.cqray.android.R;
 
-
 /**
  * 行适配器
  * @author Cqray
@@ -23,8 +22,8 @@ import cn.cqray.android.R;
 public class LineAdapter extends BaseMultiItemQuickAdapter<LineItem<?>, BaseViewHolder> {
 
     public LineAdapter() {
-        addItemType(LineItem.BUTTON, R.layout._ui_item_line_button);
-        addItemType(LineItem.TEXT, R.layout._ui_item_line_text);
+        addItemType(LineItem.BUTTON, R.layout.starter_item_line_button);
+        addItemType(LineItem.TEXT, R.layout.starter_item_line_text);
     }
 
     public LineItem<?> getItemByTag(Object tag) {

@@ -219,7 +219,11 @@ public final class ViewDelegate {
     public synchronized void setBackground(Drawable background) {
         if (mBackground == null) {
             mBackground = new MutableLiveData<>();
-            mBackground.observe(mLifecycleOwner, drawable -> mContentView.setBackground(drawable));
+            mBackground.observe(mLifecycleOwner, drawable -> {
+                if (mContentView != null) {
+                    mContentView.setBackground(drawable);
+                }
+            });
         }
         mBackground.setValue(background);
     }
@@ -332,7 +336,6 @@ public final class ViewDelegate {
             mRefreshLayout.setErrorAdapter(ObjectUtils.deepClone(strategy.getErrorAdapter()));
         }
 
-
         initToolbar();
 //        SupportHandler<CommonToolbar> tHandler = AndroidLibrary.getInstance().getToolbarHandler();
 //        SupportHandler<StateRefreshLayout> rHandler = AndroidLibrary.getInstance().getRefreshLayoutHandler();
@@ -428,7 +431,6 @@ public final class ViewDelegate {
             if (strategy.getToolbarDividerMargin() != Integer.MIN_VALUE) {
                 mToolbar.setDividerMargin(strategy.getToolbarDividerMargin());
             }
-            System.out.println("标题居中|" + strategy.isToolbarTitleCenter());
             // 其他属性
             mToolbar.setTitleCenter(strategy.isToolbarTitleCenter())
                     .setUseRipple(strategy.isToolbarUserRipple())

@@ -5,11 +5,13 @@
     <dimen name="loading">30dp</dimen>
     <dimen name="divider">0.5dp</dimen>
     <dimen name="line">44dp</dimen>
+
     <dimen name="smaller">4dp</dimen>
-    <dimen name="small">8dp</dimen>
+    <dimen name="small">10dp</dimen>
     <dimen name="content">16dp</dimen>
     <dimen name="large">24dp</dimen>
     <dimen name="larger">40dp</dimen>
+
     <dimen name="h1">20sp</dimen>
     <dimen name="h2">18sp</dimen>
     <dimen name="h3">16sp</dimen>

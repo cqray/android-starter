@@ -131,14 +131,19 @@ public class StarterDispatcher {
         return isTranslucentOrFloating;
     }
 
+    /**
+     * Fragment生命周期回调
+     */
     static final class SupportFragmentCallbacks extends FragmentManager.FragmentLifecycleCallbacks {
 
         public SupportFragmentCallbacks(@NonNull AppCompatActivity activity) {
             activity.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
                 if (event == Lifecycle.Event.ON_DESTROY) {
+                    // 注销回调监听
                     activity.getSupportFragmentManager().unregisterFragmentLifecycleCallbacks(this);
                 }
             });
+            // 注册回调监听
             activity.getSupportFragmentManager().registerFragmentLifecycleCallbacks(this, true);
         }
 
