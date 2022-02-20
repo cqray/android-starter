@@ -17,6 +17,8 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.shape.MaterialShapeDrawable;
 import com.google.android.material.shape.MaterialShapeUtils;
@@ -113,6 +115,17 @@ public class ViewUtils {
 
         MaterialShapeUtils.setParentAbsoluteElevation(view);
         MaterialShapeUtils.setElevation(view, elevation);
+    }
+
+    public static void setOverScrollMode(View view, int overScrollMode) {
+        if (view instanceof ViewPager2) {
+            View child = ((ViewPager2) view).getChildAt(0);
+            if (child instanceof RecyclerView) {
+                child.setOverScrollMode(overScrollMode);
+            }
+        } else if (view != null) {
+            view.setOverScrollMode(overScrollMode);
+        }
     }
 
     @NonNull
