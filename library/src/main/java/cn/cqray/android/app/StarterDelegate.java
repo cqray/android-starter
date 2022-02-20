@@ -329,7 +329,7 @@ public final class StarterDelegate {
             if (parent == null) {
                 activityPop(fragment.requireActivity());
             } else {
-                fragmentPop(fragment);
+                fragmentPop(parent);
             }
         }
     }
