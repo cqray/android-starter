@@ -1,4 +1,4 @@
-package cn.cqray.android.toast;
+package cn.cqray.android.app;
 
 import android.content.Context;
 import android.widget.Toast;
@@ -17,13 +17,12 @@ import cn.cqray.android.Starter;
  */
 public class ToastDelegate {
 
-    public static final int NORMAL = 0;
     public static final int INFO = 1;
     public static final int WARNING = 2;
     public static final int ERROR = 3;
     public static final int SUCCESS = 4;
 
-    @IntDef({NORMAL, INFO, WARNING, ERROR, SUCCESS})
+    @IntDef({INFO, WARNING, ERROR, SUCCESS})
     @Retention(RetentionPolicy.RUNTIME)
     @interface Level {}
 
@@ -33,14 +32,6 @@ public class ToastDelegate {
     private volatile Adapter mAdapter;
 
     public ToastDelegate() {}
-
-    public void normal(String text) {
-        getAdapter().show(NORMAL, text, mDuration);
-    }
-
-    public void normal(String text, int duration) {
-        getAdapter().show(NORMAL, text, duration);
-    }
 
     public void info(String text) {
         getAdapter().show(INFO, text, mDuration);
