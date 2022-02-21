@@ -47,6 +47,7 @@ public class StateAdapter implements Serializable {
         post(() -> {
             if (mRootView.getParent() == null) {
                 mParentView.addView(mRootView);
+                mParentView.setVisibility(View.VISIBLE);
                 mRootView.bringToFront();
             }
         });
