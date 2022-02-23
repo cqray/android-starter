@@ -96,7 +96,6 @@ public class MultiTabFragment extends SupportFragment {
 
     public void showFragment(Fragment fragment) {
         mMultiDelegate.showFragment(fragment);
-
         mTabLayout.selectTab(mTabLayout.getTabAt(getFragments().indexOf(fragment)), true);
     }
 

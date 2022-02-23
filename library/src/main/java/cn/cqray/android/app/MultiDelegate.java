@@ -206,6 +206,12 @@ public class MultiDelegate {
             }
             ft.commitAllowingStateLoss();
         }
+        // 获取当前Index
+        if (mCurrentIndex == index) {
+            if (mCurrentIndex != 0 && mFragments.size() > 0) {
+                mCurrentIndex = mCurrentIndex - 1;
+            }
+        }
     }
 
     public void reset() {
