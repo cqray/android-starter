@@ -90,6 +90,13 @@ public class MultiDelegate {
         mViewPager = vp;
         mFragments.addAll(Arrays.asList(fragments));
         vp.setAdapter(getFragmentAdapter(mFragments));
+        vp.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                mCurrentIndex = position;
+            }
+        });
         View child = vp.getChildAt(0);
         if (child instanceof RecyclerView) {
             child.setOverScrollMode(View.OVER_SCROLL_NEVER);
