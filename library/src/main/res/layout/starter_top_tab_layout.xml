@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/tabbed"
         android:background="@color/foreground"
-        app:tabRippleColor="@color/transparent" />
+        app:tabRippleColor="@color/transparent"
+        app:tabIndicatorFullWidth="false"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@id/starter_content_layout"

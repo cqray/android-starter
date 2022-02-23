@@ -26,6 +26,7 @@ import cn.cqray.android.ui.multi.MultiFragmentAdapter;
  */
 public class MultiDelegate {
 
+    private int mContainerId;
     private int mCurrentIndex = 0;
     private ViewPager2 mViewPager;
     private final List<Fragment> mFragments;
@@ -60,6 +61,7 @@ public class MultiDelegate {
      * @param fragments Fragment列表
      */
     public void loadMultiFragments(@IdRes int containerId, Fragment...fragments) {
+        mContainerId = containerId;
         mFragments.addAll(Arrays.asList(fragments));
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         for (int i = 0; i < fragments.length; i++) {
@@ -103,7 +105,7 @@ public class MultiDelegate {
             return;
         }
         if (mViewPager != null) {
-            ((ViewPager2) mViewPager).setCurrentItem(index, mViewPager.isUserInputEnabled());
+            mViewPager.setCurrentItem(index, mViewPager.isUserInputEnabled());
             return;
         }
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -135,6 +137,77 @@ public class MultiDelegate {
         showFragment(index);
     }
 
+    /**
+     * 添加Fragment界面
+     * @param intent 意图
+     */
+    public void addFragment(NavIntent intent) {
+        addFragment(instantiateFragments(intent)[0]);
+    }
+
+    /**
+     * 添加Fragment界面
+     * @param fragment Fragment
+     */
+    public void addFragment(Fragment fragment) {
+        if (mViewPager != null) {
+            MultiFragmentAdapter adapter = (MultiFragmentAdapter) mViewPager.getAdapter();
+            assert adapter != null;
+            adapter.getFragmentList().add(fragment);
+            adapter.notifyItemInserted(adapter.getFragmentList().size() - 1);
+        } else {
+            mFragments.add(fragment);
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.add(mContainerId, fragment);
+            ft.setMaxLifecycle(fragment, Lifecycle.State.CREATED);
+            ft.commitAllowingStateLoss();
+        }
+    }
+
+    /**
+     * 移除指定的Fragment界面
+     * @param position 位置
+     */
+    public void removeFragment(int position) {
+        Fragment fragment = mFragments.get(position);
+        removeFragment(fragment);
+    }
+
+    /**
+     * 移除Fragment界面
+     * @param fragment Fragment
+     */
+    public void removeFragment(Fragment fragment) {
+        int index = mFragments.indexOf(fragment);
+        if (index < 0) {
+            return;
+        }
+        if (mViewPager != null) {
+            // 从ViewPager中移除Fragment
+            MultiFragmentAdapter adapter = (MultiFragmentAdapter) mViewPager.getAdapter();
+            assert adapter != null;
+            adapter.getFragmentList().remove(fragment);
+            adapter.notifyItemRemoved(index);
+        } else {
+            // 从列表中移除Fragment
+            Fragment cur = null;
+            mFragments.remove(fragment);
+            if (index == 0 && mFragments.size() > 0) {
+                cur = mFragments.get(0);
+            } else if (mFragments.size() > 0) {
+                cur = mFragments.get(index - 1);
+            }
+            // 从栈中移除Fragment
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.remove(fragment);
+            if (cur != null) {
+                ft.show(cur);
+                ft.setMaxLifecycle(cur, Lifecycle.State.RESUMED);
+            }
+            ft.commitAllowingStateLoss();
+        }
+    }
+
     public void reset() {
         for (Fragment fragment : mFragments) {
             FragmentManager fm = getFragmentManager();
@@ -146,6 +219,7 @@ public class MultiDelegate {
         mFragments.clear();
         mViewPager = null;
     }
+
 
     @NonNull
     public FragmentManager getFragmentManager() {

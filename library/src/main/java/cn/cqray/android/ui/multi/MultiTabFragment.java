@@ -70,6 +70,21 @@ public class MultiTabFragment extends SupportFragment {
         mMultiDelegate.loadMultiFragments(mViewPager, intents);
     }
 
+    public void addFragment(@NonNull MultiItem item) {
+        TabLayout.Tab tab = mTabLayout.newTab();
+        if (item.getIcon() != 0) {
+            tab.setIcon(item.getIcon());
+        }
+        tab.setText(item.getName());
+        mTabLayout.addTab(tab);
+        mMultiDelegate.addFragment(item.getIntent());
+    }
+
+    public void removeFragment(int position) {
+        mTabLayout.removeTabAt(position);
+        mMultiDelegate.removeFragment(position);
+    }
+
     public void setDragEnable(boolean enable) {
         mViewPager.setUserInputEnabled(enable);
     }

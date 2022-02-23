@@ -1,10 +1,9 @@
 package cn.cqray.demo.starter;
 
 import android.os.Bundle;
+import android.os.Handler;
 
-import com.google.android.material.appbar.MaterialToolbar;
 
-import cn.cqray.android.Starter;
 import cn.cqray.android.ui.multi.MultiItem;
 import cn.cqray.android.ui.multi.MultiTabActivity;
 
@@ -18,7 +17,17 @@ public class MainActivity extends MultiTabActivity {
                 new MultiItem(MainFragment2.class, "我的")//, R.drawable.ic_no_data_search)
         );
 
-        setDragEnable(true);
+        //setDragEnable(true);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                //getMultiDelegate().removeFragment(getFragments().get(1));
+                //addFragment(new MultiItem(MainFragment2.class, "我的2"));
+                removeFragment(1);
+            }
+        }, 2000);
 //        showFragment(1);
 
 

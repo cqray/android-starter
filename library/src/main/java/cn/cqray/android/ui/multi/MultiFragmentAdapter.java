@@ -35,4 +35,9 @@ public class MultiFragmentAdapter extends FragmentStateAdapter {
     public int getItemCount() {
         return fragmentList.size();
     }
+
+    @NonNull
+    public List<Fragment> getFragmentList() {
+        return fragmentList;
+    }
 }
