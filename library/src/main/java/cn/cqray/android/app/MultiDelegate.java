@@ -113,6 +113,7 @@ public class MultiDelegate {
         }
         if (mViewPager != null) {
             mViewPager.setCurrentItem(index, mViewPager.isUserInputEnabled());
+            mCurrentIndex = index;
             return;
         }
         FragmentTransaction ft = getFragmentManager().beginTransaction();
