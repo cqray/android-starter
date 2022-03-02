@@ -3,6 +3,7 @@ package cn.cqray.android.app;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentFactory;
@@ -108,7 +109,11 @@ final class StarterCache {
      * 获取回退栈栈顶的Fragment
      * @param delegate 代理
      */
+    @Nullable
     Fragment getTopFragment(@NonNull StarterDelegate delegate) {
+        if (mBackStack.size() == 0) {
+            return null;
+        }
         String fragmentTag = getFragmentTag(mBackStack.size() - 1);
         return delegate.getFragmentManager().findFragmentByTag(fragmentTag);
     }
