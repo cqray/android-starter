@@ -18,6 +18,8 @@ public class NavIntent {
     private Class<? extends StarterProvider> mTo;
     /** 回退标识Fragment **/
     private Class<? extends StarterProvider> mPopTo;
+    /** 是否允许相同Fragment重叠 **/
+    private boolean mSingleTop = true;
     /** 回退是否包含指定标识Fragment **/
     private boolean mPopToInclusive;
     /** Fragment动画 **/
@@ -49,6 +51,11 @@ public class NavIntent {
         return this;
     }
 
+    public NavIntent setSingleTop(boolean singleTop) {
+        mSingleTop = singleTop;
+        return this;
+    }
+
     public NavIntent setFragmentAnimator(FragmentAnimator animator) {
         mFragmentAnimator = animator;
         return this;
@@ -64,6 +71,10 @@ public class NavIntent {
 
     public boolean isPopToInclusive() {
         return mPopToInclusive;
+    }
+
+    public boolean isSingleTop() {
+        return mSingleTop;
     }
 
     public FragmentAnimator getFragmentAnimator() {

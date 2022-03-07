@@ -125,6 +125,14 @@ public final class StarterDelegate {
      * @param intent 意图
      */
     void startFragment(NavIntent intent) {
+
+        Fragment top = mStarterCache.getTopFragment(this);
+        if (top != null
+                && intent.isSingleTop()
+                && top.getClass().equals(intent.getToClass())) {
+            // 连续两个Fragment不重复
+            return;
+        }
         // 获取Fragment管理器
         FragmentManager fm = getFragmentManager();
         // 获取Fragment事务

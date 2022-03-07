@@ -48,7 +48,7 @@ public class EmptyAdapter extends StateAdapter {
         post(() -> {
             ViewGroup parent = (ViewGroup) getView();
             TextView tv = (TextView) parent.getChildAt(1);
-            tv.setText(TextUtils.isEmpty(text) ? "页面异常" : text);
+            tv.setText(TextUtils.isEmpty(text) ? "暂无数据" : text);
         });
     }
 }
