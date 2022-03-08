@@ -329,6 +329,10 @@ public final class StarterDelegate {
                 if (!((StarterProvider) top).onBackPressedSupport()) {
                     delegate.pop();
                 }
+            } else if (fragment instanceof StarterProvider) {
+                if (!((StarterProvider) fragment).onBackPressedSupport()) {
+                    delegate.pop();
+                }
             } else {
                 delegate.pop();
             }
