@@ -61,12 +61,21 @@ public class MultiDelegate {
      * @param fragments Fragment列表
      */
     public void loadMultiFragments(@IdRes int containerId, Fragment...fragments) {
+        loadMultiFragments(containerId, Arrays.asList(fragments));
+    }
+
+    /**
+     * 加载多个Fragment
+     * @param containerId 容器Id
+     * @param fragments Fragment列表
+     */
+    public void loadMultiFragments(@IdRes int containerId, List<Fragment> fragments) {
         mContainerId = containerId;
-        mFragments.addAll(Arrays.asList(fragments));
+        mFragments.addAll(fragments);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        for (int i = 0; i < fragments.length; i++) {
-            ft.add(containerId, fragments[i]);
-            ft.setMaxLifecycle(fragments[i], i == mCurrentIndex ? Lifecycle.State.RESUMED : Lifecycle.State.CREATED);
+        for (int i = 0; i < fragments.size(); i++) {
+            ft.add(containerId, fragments.get(i));
+            ft.setMaxLifecycle(fragments.get(i), i == mCurrentIndex ? Lifecycle.State.RESUMED : Lifecycle.State.CREATED);
         }
         ft.commitAllowingStateLoss();
     }
@@ -87,8 +96,17 @@ public class MultiDelegate {
      * @param fragments Fragment列表
      */
     public void loadMultiFragments(@NonNull ViewPager2 vp, Fragment... fragments) {
+        loadMultiFragments(vp, Arrays.asList(fragments));
+    }
+
+    /**
+     * 加载多个Fragment
+     * @param vp ViewPager2容器
+     * @param fragments Fragment列表
+     */
+    public void loadMultiFragments(@NonNull ViewPager2 vp, List<Fragment> fragments) {
         mViewPager = vp;
-        mFragments.addAll(Arrays.asList(fragments));
+        mFragments.addAll(fragments);
         vp.setAdapter(getFragmentAdapter(mFragments));
         vp.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
