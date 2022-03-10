@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 
+import cn.cqray.android.state.BusyDialog;
 import cn.cqray.android.ui.multi.MultiItem;
 import cn.cqray.android.ui.multi.MultiTabActivity;
 
@@ -29,6 +30,7 @@ public class MainActivity extends MultiTabActivity {
             }
         }, 2000);
 //        showFragment(1);
+
 
 
 //        setContentView(R.layout.activity_main);

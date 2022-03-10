@@ -20,11 +20,11 @@ public class MainFragment extends SupportFragment {
     @Override
     public void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setNativeContentView(R.layout.activity_main);
 
         //mToolbar.setTitleText("车时标题777777");
-        mToolbar.setActionText(0, "确定");
-        mToolbar.setVisibility(View.VISIBLE);
+        //mToolbar.setActionText(0, "确定");
+        //mToolbar.setVisibility(View.VISIBLE);
         setBusy();
 
 //        new Handler().postDelayed(new Runnable() {
@@ -53,10 +53,4 @@ public class MainFragment extends SupportFragment {
         Log.e("数据", "12313213");
     }
 
-    //    @Override
-//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//
-//
-//    }
 }

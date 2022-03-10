@@ -27,6 +27,7 @@ import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
 import cn.cqray.android.exception.ExceptionManager;
 import cn.cqray.android.exception.ViewException;
+import cn.cqray.android.state.BusyDialog;
 import cn.cqray.android.state.StateRefreshLayout;
 import cn.cqray.android.util.ButterKnifeUtils;
 import cn.cqray.android.util.ObjectUtils;
@@ -52,6 +53,8 @@ public final class ViewDelegate {
     private ViewGroup mActivityContent;
     /** ButterKnife绑定 **/
     private Object mUnBinder;
+    /** 忙碌对话框 **/
+    private BusyDialog mBusyDialog;
     /** Fragment、Activity背景 **/
     private MutableLiveData<Drawable> mBackground;
     /** 生命周期管理 **/
@@ -232,11 +235,22 @@ public final class ViewDelegate {
         if (mRefreshLayout != null) {
             mRefreshLayout.setIdle();
         }
+        if (mBusyDialog != null) {
+            mBusyDialog.dismiss();
+            mBusyDialog = null;
+        }
     }
 
     public void setBusy(String text) {
         if (mRefreshLayout != null) {
             mRefreshLayout.setBusy(text);
+        } else if (mBusyDialog == null) {
+            mBusyDialog = new BusyDialog();
+            if (mLifecycleOwner instanceof FragmentActivity) {
+                mBusyDialog.show(((FragmentActivity) mLifecycleOwner).getSupportFragmentManager(), null);
+            } else if (mLifecycleOwner instanceof Fragment) {
+                mBusyDialog.show(((Fragment) mLifecycleOwner).getChildFragmentManager(), null);
+            }
         }
     }
 
@@ -244,11 +258,19 @@ public final class ViewDelegate {
         if (mRefreshLayout != null) {
             mRefreshLayout.setEmpty(text);
         }
+        if (mBusyDialog != null) {
+            mBusyDialog.dismiss();
+            mBusyDialog = null;
+        }
     }
 
     public void setError(String text) {
         if (mRefreshLayout != null) {
             mRefreshLayout.setError(text);
+        }
+        if (mBusyDialog != null) {
+            mBusyDialog.dismiss();
+            mBusyDialog = null;
         }
     }
 

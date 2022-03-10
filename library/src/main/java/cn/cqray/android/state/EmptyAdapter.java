@@ -37,7 +37,6 @@ public class EmptyAdapter extends StateAdapter {
         });
     }
 
-
     @Override
     protected void show(String text) {
         super.show(text);
