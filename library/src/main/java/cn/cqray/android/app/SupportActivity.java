@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.state.StateRefreshLayout;
+import cn.cqray.android.view.ViewDelegate;
 import cn.cqray.android.widget.Toolbar;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
