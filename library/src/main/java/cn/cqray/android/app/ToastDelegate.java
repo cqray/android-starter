@@ -10,6 +10,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import cn.cqray.android.Starter;
+import cn.cqray.android.StarterStrategy;
 
 /**
  * Toast弹窗委托
@@ -73,10 +74,14 @@ public class ToastDelegate {
         if (mAdapter == null) {
             synchronized (ToastDelegate.class) {
                 if (mAdapter == null) {
-                    mAdapter = (Adapter) (level, text, duration) -> {
-                        Context context = Starter.getInstance().getContext();
-                        Toast.makeText(context, text, duration).show();
-                    };
+                    StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
+                    mAdapter = strategy.getToastAdapter();
+                    if (mAdapter == null) {
+                        mAdapter = (Adapter) (level, text, duration) -> {
+                            Context context = Starter.getInstance().getContext();
+                            Toast.makeText(context, text, duration).show();
+                        };
+                    }
                 }
             }
         }
