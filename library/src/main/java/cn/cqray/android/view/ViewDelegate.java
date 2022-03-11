@@ -1,4 +1,4 @@
-package cn.cqray.android.app;
+package cn.cqray.android.view;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
@@ -25,6 +25,10 @@ import androidx.lifecycle.MutableLiveData;
 import cn.cqray.android.R;
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
+import cn.cqray.android.app.StarterDelegate;
+import cn.cqray.android.app.StarterProvider;
+import cn.cqray.android.app.SupportActivity;
+import cn.cqray.android.app.SupportFragment;
 import cn.cqray.android.exception.ExceptionManager;
 import cn.cqray.android.exception.ViewException;
 import cn.cqray.android.state.StateRefreshLayout;
