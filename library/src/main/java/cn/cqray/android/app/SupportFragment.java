@@ -14,7 +14,10 @@ import androidx.fragment.app.Fragment;
 
 import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.state.StateRefreshLayout;
+import cn.cqray.android.tip.TipDelegate;
+import cn.cqray.android.tip.TipProvider;
 import cn.cqray.android.view.ViewDelegate;
+import cn.cqray.android.view.ViewProvider;
 import cn.cqray.android.widget.Toolbar;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -23,7 +26,7 @@ import io.reactivex.functions.Consumer;
  * 基础Fragment
  * @author Cqray
  */
-public class SupportFragment extends Fragment implements StarterProvider {
+public class SupportFragment extends Fragment implements StarterProvider, ViewProvider, TipProvider {
 
     /** 设置的布局 **/
     public View mContentView;
@@ -34,7 +37,7 @@ public class SupportFragment extends Fragment implements StarterProvider {
 
     private final ObservableDelegate mObservableDelegate = new ObservableDelegate(this);
 
-    private final ToastDelegate mToastDelegate = new ToastDelegate();
+    private final TipDelegate mTipDelegate = new TipDelegate(this);
     /** 布局代理 **/
     private final ViewDelegate mViewDelegate = new ViewDelegate(this);
     /** 启动代理 **/
@@ -53,64 +56,99 @@ public class SupportFragment extends Fragment implements StarterProvider {
 
     public void onCreating(@Nullable Bundle savedInstanceState) {}
 
+    @Override
+    public ViewDelegate getViewDelegate() {
+        return mViewDelegate;
+    }
+
+    @Override
+    public <T extends View> T findViewById(@IdRes int resId) {
+        return mViewDelegate.findViewById(resId);
+    }
+
+    @Override
     public void setContentView(View view) {
         mViewDelegate.setContentView(view);
     }
 
+    @Override
     public void setContentView(int layoutResId) {
         mViewDelegate.setContentView(layoutResId);
     }
 
-    public void setContentView(View view, ViewGroup.LayoutParams params) {
-        mViewDelegate.setContentView(view);
-    }
-
+    @Override
     public void setNativeContentView(View view) {
         mViewDelegate.setNativeContentView(view);
     }
 
+    @Override
     public void setNativeContentView(int layoutResId) {
         mViewDelegate.setNativeContentView(layoutResId);
     }
 
+    @Override
     public void setHeaderView(int layoutResId) {
         mViewDelegate.setHeaderView(layoutResId);
     }
 
+    @Override
     public void setHeaderView(View view) {
         mViewDelegate.setHeaderView(view);
     }
 
+    @Override
     public void setHeaderFloating(boolean floating) {
         mViewDelegate.setHeaderFloating(floating);
     }
 
+    @Override
     public void setFooterView(int layoutResId) {
         mViewDelegate.setFooterView(layoutResId);
     }
 
+    @Override
     public void setFooterView(View view) {
         mViewDelegate.setFooterView(view);
     }
 
+    @Override
     public void setFooterFloating(boolean floating) {
         mViewDelegate.setFooterFloating(floating);
     }
 
+    @Override
     public void setBackgroundRes(@DrawableRes int resId) {
         mViewDelegate.setBackgroundRes(resId);
     }
 
+    @Override
     public void setBackgroundColor(int color) {
         mViewDelegate.setBackgroundColor(color);
     }
 
+    @Override
     public void setBackground(Drawable background) {
         mViewDelegate.setBackground(background);
     }
 
-    public <T extends View> T findViewById(@IdRes int resId) {
-        return mViewDelegate.findViewById(resId);
+    @Override
+    public void setIdle() {
+        mViewDelegate.setIdle();
+    }
+
+    @Override
+    public void setBusy(String... texts) {
+        mViewDelegate.setBusy(texts == null || texts.length == 0 ? null : texts[0]);
+    }
+
+    @Override
+    public void setEmpty(String... texts) {
+        mViewDelegate.setEmpty(texts == null || texts.length == 0 ? null : texts[0]);
+    }
+
+    @Override
+    public void setError(String... texts) {
+        mViewDelegate.setError(texts == null || texts.length == 0 ? null : texts[0]);
     }
 
     @Override
@@ -166,64 +204,49 @@ public class SupportFragment extends Fragment implements StarterProvider {
         mStarterDelegate.popTo(clazz, inclusive);
     }
 
-    public void setIdle() {
-        mViewDelegate.setIdle();
+    @Override
+    public TipDelegate getTipDelegate() {
+        return mTipDelegate;
     }
 
-    public void setBusy() {
-        mViewDelegate.setBusy(null);
-    }
-
-    public void setBusy(String text) {
-        mViewDelegate.setBusy(text);
-    }
-
-    public void setEmpty() {
-        mViewDelegate.setEmpty(null);
-    }
-
-    public void setEmpty(String text) {
-        mViewDelegate.setEmpty(text);
-    }
-
-    public void setError() {
-        mViewDelegate.setError(null);
-    }
-
-    public void setError(String text) {
-        mViewDelegate.setError(text);
-    }
-
-    public void showError(String text) {
-        mToastDelegate.error(text);
-    }
-
-    public void showError(String text, int duration) {
-        mToastDelegate.error(text, duration);
-    }
-
+    @Override
     public void showInfo(String text) {
-        mToastDelegate.info(text);
+        mTipDelegate.showInfo(text);
     }
 
+    @Override
     public void showInfo(String text, int duration) {
-        mToastDelegate.info(text, duration);
+        mTipDelegate.showInfo(text, duration);
     }
 
-    public void showSuccess(String text) {
-        mToastDelegate.success(text);
-    }
-
-    public void showSuccess(String text, int duration) {
-        mToastDelegate.success(text, duration);
-    }
-
+    @Override
     public void showWarning(String text) {
-        mToastDelegate.warning(text);
+        mTipDelegate.showWarning(text);
     }
 
+    @Override
     public void showWarning(String text, int duration) {
-        mToastDelegate.warning(text, duration);
+        mTipDelegate.showWarning(text, duration);
+    }
+
+    @Override
+    public void showError(String text) {
+        mTipDelegate.showError(text);
+    }
+
+    @Override
+    public void showError(String text, int duration) {
+        mTipDelegate.showError(text, duration);
+    }
+
+    @Override
+    public void showSuccess(String text) {
+        mTipDelegate.showSuccess(text);
+    }
+
+    @Override
+    public void showSuccess(String text, int duration) {
+        mTipDelegate.showSuccess(text, duration);
     }
 
     /**

@@ -59,7 +59,6 @@ public final class ActivityUtils {
             @Override
             public void onActivityStarted(@NonNull Activity activity) {
                 if (Holder.INSTANCE.mAliveCount == 0) {
-                    //
                     Holder.INSTANCE.mBackgroundState.postValue(false);
                 }
                 Holder.INSTANCE.mAliveCount ++;
