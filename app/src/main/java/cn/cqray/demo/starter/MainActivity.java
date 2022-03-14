@@ -35,7 +35,7 @@ public class MainActivity extends MultiTabActivity {
             @Override
             public void run() {
 
-                new TipDelegate(MainActivity.this).showInfo("我的消息");
+                new TipDelegate().showInfo("我的消息");
             }
         }).start();
 

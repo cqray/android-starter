@@ -8,7 +8,6 @@ import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
 
 import cn.cqray.android.anim.FragmentAnimator;
-import cn.cqray.android.app.ToastDelegate;
 import cn.cqray.android.state.StateAdapter;
 import cn.cqray.android.tip.TipAdapter;
 import lombok.AccessLevel;
@@ -41,8 +40,6 @@ public class StarterStrategy {
     private StateAdapter emptyAdapter;
     /** 错误布局适配器 **/
     private StateAdapter errorAdapter;
-    /** Toast适配器 **/
-    private ToastDelegate.Adapter toastAdapter;
     /** 提示适配器 **/
     private TipAdapter tipAdapter;
     /** 标题背景资源 **/
