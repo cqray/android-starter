@@ -7,10 +7,10 @@ import androidx.annotation.ColorRes;
 import androidx.annotation.DimenRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
+import androidx.core.content.ContextCompat;
 
 import cn.cqray.android.R;
-import cn.cqray.android.util.Colors;
-import cn.cqray.android.util.Dimens;
+import cn.cqray.android.util.DimenUtils;
 
 /**
  * 带图标行
@@ -30,8 +30,8 @@ abstract class IconLineItem<T extends IconLineItem<T>> extends LineItem<T> {
     public IconLineItem(CharSequence text) {
         super();
         mText = text;
-        mTextColor = Colors.text();
-        mTextSize = Dimens.h3();
+        mTextColor = ContextCompat.getColor(getContext(), R.color.text);
+        mTextSize = DimenUtils.get(R.dimen.h3);
         mNext = R.drawable.def_line_next;
     }
 
@@ -74,12 +74,12 @@ abstract class IconLineItem<T extends IconLineItem<T>> extends LineItem<T> {
     }
 
     public T textSize(float size) {
-        mTextSize = Dimens.toPx(size);
+        mTextSize = DimenUtils.toPx(size);
         return (T) this;
     }
 
     public T textSizeRes(@DimenRes int resId) {
-        mTextSize = Dimens.get(resId);
+        mTextSize = DimenUtils.get(resId);
         return (T) this;
     }
 
@@ -100,7 +100,7 @@ abstract class IconLineItem<T extends IconLineItem<T>> extends LineItem<T> {
             if (mTextColorRes == 0) {
                 mTextColorStateList = ColorStateList.valueOf(mTextColor);
             } else {
-                mTextColorStateList = Colors.getStateList(mTextColorRes);
+                mTextColorStateList =ContextCompat.getColorStateList(getContext(), mTextColorRes);
             }
         }
         return mTextColorStateList;

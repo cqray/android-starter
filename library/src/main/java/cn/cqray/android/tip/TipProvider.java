@@ -1,16 +1,11 @@
 package cn.cqray.android.tip;
 
+/**
+ * 提示操作提供者
+ * @author Cqray
+ * @date 2022/3/12
+ */
 public interface TipProvider {
 
-    void showInfo(String text);
-
-    void showInfo(String text, int duration);
-
-    void showSuccess(String text);
-
-    void showSuccess(String text, int duration);
-
-    void showFailure(String text);
-
-    void showFailure(String text, int duration);
+    TipDelegate getTipDelegate();
 }

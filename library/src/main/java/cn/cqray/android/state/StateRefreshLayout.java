@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -26,18 +27,10 @@ import cn.cqray.android.R;
  */
 public class StateRefreshLayout extends SmartRefreshLayout {
 
-    /** 空闲 **/
-    private static final int IDLE = 0;
-    /** 忙碌 **/
-    private static final int BUSY = 1;
-    /** 空 **/
-    private static final int EMPTY = 2;
-    /** 错误 **/
-    private static final int ERROR = 3;
     /** 状态根布局 **/
     private FrameLayout mRootLayout;
     /** 当前状态 **/
-    private int mCurState = IDLE;
+    private ViewState mCurState = ViewState.IDLE;
     /** 状态缓存 **/
     private final Boolean[] mEnableStates = new Boolean[3];
     /** 适配器集合 **/
@@ -59,43 +52,64 @@ public class StateRefreshLayout extends SmartRefreshLayout {
     }
 
     public void setIdle() {
-        setState(IDLE, null);
+        setState(ViewState.IDLE, null);
     }
 
     public void setBusy() {
-        setState(BUSY, null);
+        setState(ViewState.BUSY, null);
     }
 
     public void setBusy(String text) {
-        setState(BUSY, text);
+        setState(ViewState.BUSY, text);
     }
 
     public void setEmpty() {
-        setState(EMPTY, null);
+        setState(ViewState.EMPTY, null);
     }
 
     public void setEmpty(String text) {
-        setState(EMPTY, text);
+        setState(ViewState.EMPTY, text);
     }
 
     public void setError() {
-        setState(ERROR, null);
+        setState(ViewState.ERROR, null);
     }
 
     public void setError(String text) {
-        setState(ERROR, text);
+        setState(ViewState.ERROR, text);
+    }
+
+    public void setState(ViewState state, String text) {
+        saveEnableState();
+        mCurState = state;
+        // 初始化界面
+        initStateLayout();
+        if (mCurState != ViewState.BUSY) {
+            for (int i = 0; i < mAdapters.size(); i++) {
+                StateAdapter adapter = mAdapters.valueAt(i);
+                if (adapter != null) {
+                    adapter.hide();
+                }
+            }
+        }
+        // 显示指定状态的界面
+        StateAdapter adapter = getAdapter(mCurState);
+        if (adapter != null) {
+            adapter.show(text);
+        }
+        restoreEnableState();
     }
 
     public void setBusyAdapter(StateAdapter adapter) {
-        setStateAdapter(BUSY, adapter);
+        setStateAdapter(ViewState.BUSY, adapter);
     }
 
     public void setEmptyAdapter(StateAdapter adapter) {
-        setStateAdapter(EMPTY, adapter);
+        setStateAdapter(ViewState.EMPTY, adapter);
     }
 
     public void setErrorAdapter(StateAdapter adapter) {
-        setStateAdapter(ERROR, adapter);
+        setStateAdapter(ViewState.ERROR, adapter);
     }
 
     /**
@@ -131,34 +145,10 @@ public class StateRefreshLayout extends SmartRefreshLayout {
     }
 
     /**
-     * 切换状态
-     */
-    private void setState(int state, String text) {
-        saveEnableState();
-        mCurState = state;
-        // 初始化界面
-        initStateLayout();
-        if (mCurState != BUSY) {
-            for (int i = 0; i < mAdapters.size(); i++) {
-                StateAdapter adapter = mAdapters.valueAt(i);
-                if (adapter != null) {
-                    adapter.hide();
-                }
-            }
-        }
-        // 显示指定状态的界面
-        StateAdapter adapter = getAdapter(mCurState);
-        if (adapter != null) {
-            adapter.show(text);
-        }
-        restoreEnableState();
-    }
-
-    /**
      * 保存刷新控件状态
      */
     private void saveEnableState() {
-        if (mCurState == IDLE) {
+        if (mCurState == ViewState.IDLE) {
             mEnableStates[0] = mEnableRefresh;
             mEnableStates[1] = mEnableLoadMore;
             mEnableStates[2] = mEnableOverScrollDrag;
@@ -169,12 +159,12 @@ public class StateRefreshLayout extends SmartRefreshLayout {
      * 恢复启用状态
      */
     private void restoreEnableState() {
-        if (mCurState == IDLE) {
+        if (mCurState == ViewState.IDLE) {
             mEnableRefresh = mEnableStates[0];
             mEnableLoadMore = mEnableStates[1];
             mEnableOverScrollDrag = mEnableStates[2];
         } else {
-            mEnableRefresh = mCurState != BUSY && mEnableStates[0];
+            mEnableRefresh = mCurState != ViewState.BUSY && mEnableStates[0];
             mManualLoadMore = true;
             mEnableLoadMore = false;
             mEnableOverScrollDrag = false;
@@ -186,12 +176,12 @@ public class StateRefreshLayout extends SmartRefreshLayout {
      * @param state 状态
      * @param adapter 适配器
      */
-    private void setStateAdapter(int state, StateAdapter adapter) {
-        StateAdapter sAdapter = mAdapters.get(state);
+    private void setStateAdapter(@NonNull ViewState state, StateAdapter adapter) {
+        StateAdapter sAdapter = mAdapters.get(state.ordinal());
         if (sAdapter != null) {
             sAdapter.hide();
         }
-        mAdapters.put(state, adapter);
+        mAdapters.put(state.ordinal(), adapter);
     }
 
     /**
@@ -199,19 +189,19 @@ public class StateRefreshLayout extends SmartRefreshLayout {
      * @param state 指定状态
      */
     @Nullable
-    private StateAdapter getAdapter(int state) {
-        StateAdapter adapter = mAdapters.get(state);
+    private StateAdapter getAdapter(@NonNull ViewState state) {
+        StateAdapter adapter = mAdapters.get(state.ordinal());
         if (adapter == null) {
-            if (state == BUSY) {
+            if (state == ViewState.BUSY) {
                 adapter = new BusyAdapter();
-            } else if (state == EMPTY) {
+            } else if (state == ViewState.EMPTY) {
                 adapter = new EmptyAdapter();
-            } else if (state == ERROR) {
+            } else if (state == ViewState.ERROR) {
                 adapter = new ErrorAdapter();
             }
         }
         if (adapter != null) {
-            mAdapters.put(state, adapter);
+            mAdapters.put(state.ordinal(), adapter);
             adapter.onAttach(this, mRootLayout);
         }
         return adapter;

@@ -33,6 +33,7 @@ import cn.cqray.android.exception.ExceptionManager;
 import cn.cqray.android.exception.ViewException;
 import cn.cqray.android.state.BusyDialog;
 import cn.cqray.android.state.StateRefreshLayout;
+import cn.cqray.android.state.ViewState;
 import cn.cqray.android.util.ButterKnifeUtils;
 import cn.cqray.android.util.ObjectUtils;
 import cn.cqray.android.widget.Toolbar;
@@ -275,6 +276,12 @@ public final class ViewDelegate {
         if (mBusyDialog != null) {
             mBusyDialog.dismiss();
             mBusyDialog = null;
+        }
+    }
+
+    public void setState(ViewState state, String text) {
+        if (mRefreshLayout != null) {
+            mRefreshLayout.setState(state, text);
         }
     }
 
