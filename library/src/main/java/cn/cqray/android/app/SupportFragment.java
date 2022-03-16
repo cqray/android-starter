@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.state.StateRefreshLayout;
+import cn.cqray.android.state.ViewState;
 import cn.cqray.android.tip.TipDelegate;
 import cn.cqray.android.tip.TipProvider;
 import cn.cqray.android.view.ViewDelegate;
@@ -143,6 +144,10 @@ public class SupportFragment extends Fragment implements ViewProvider, StarterPr
 
     public void setError(String text) {
         mViewDelegate.setError(text);
+    }
+
+    public void setState(ViewState state, String text) {
+
     }
 
     @Override
