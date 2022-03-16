@@ -119,35 +119,35 @@ public class SupportFragment extends Fragment implements ViewProvider, StarterPr
     }
 
     public void setIdle() {
-        mViewDelegate.setIdle();
+        mViewDelegate.setState(ViewState.IDLE, null);
     }
 
     public void setBusy() {
-        mViewDelegate.setBusy(null);
+        mViewDelegate.setState(ViewState.BUSY, null);
     }
 
     public void setBusy(String text) {
-        mViewDelegate.setBusy(text);
+        mViewDelegate.setState(ViewState.BUSY, text);
     }
 
     public void setEmpty() {
-        mViewDelegate.setEmpty(null);
+        mViewDelegate.setState(ViewState.EMPTY, null);
     }
 
     public void setEmpty(String text) {
-        mViewDelegate.setEmpty(text);
+        mViewDelegate.setState(ViewState.EMPTY, text);
     }
 
     public void setError() {
-        mViewDelegate.setError(null);
+        mViewDelegate.setState(ViewState.ERROR, null);
     }
 
     public void setError(String text) {
-        mViewDelegate.setError(text);
+        mViewDelegate.setState(ViewState.ERROR, text);
     }
 
     public void setState(ViewState state, String text) {
-
+        mViewDelegate.setState(state, text);
     }
 
     @Override

@@ -237,51 +237,36 @@ public final class ViewDelegate {
     }
 
     public void setIdle() {
-        if (mRefreshLayout != null) {
-            mRefreshLayout.setIdle();
-        }
-        if (mBusyDialog != null) {
-            mBusyDialog.dismiss();
-            mBusyDialog = null;
-        }
+        setState(ViewState.IDLE, null);
     }
 
     public void setBusy(String text) {
-        if (mRefreshLayout != null) {
-            mRefreshLayout.setBusy(text);
-        } else if (mBusyDialog == null) {
-            mBusyDialog = new BusyDialog();
-            if (mLifecycleOwner instanceof FragmentActivity) {
-                mBusyDialog.show(((FragmentActivity) mLifecycleOwner).getSupportFragmentManager(), null);
-            } else if (mLifecycleOwner instanceof Fragment) {
-                mBusyDialog.show(((Fragment) mLifecycleOwner).getChildFragmentManager(), null);
-            }
-        }
+        setState(ViewState.BUSY, text);
     }
 
     public void setEmpty(String text) {
-        if (mRefreshLayout != null) {
-            mRefreshLayout.setEmpty(text);
-        }
-        if (mBusyDialog != null) {
-            mBusyDialog.dismiss();
-            mBusyDialog = null;
-        }
+        setState(ViewState.EMPTY, text);
     }
 
     public void setError(String text) {
-        if (mRefreshLayout != null) {
-            mRefreshLayout.setError(text);
-        }
-        if (mBusyDialog != null) {
-            mBusyDialog.dismiss();
-            mBusyDialog = null;
-        }
+        setState(ViewState.ERROR, text);
     }
 
     public void setState(ViewState state, String text) {
         if (mRefreshLayout != null) {
             mRefreshLayout.setState(state, text);
+        } else {
+            if (state == ViewState.BUSY && mBusyDialog == null) {
+                mBusyDialog = new BusyDialog();
+                if (mLifecycleOwner instanceof FragmentActivity) {
+                    mBusyDialog.show(((FragmentActivity) mLifecycleOwner).getSupportFragmentManager(), null);
+                } else if (mLifecycleOwner instanceof Fragment) {
+                    mBusyDialog.show(((Fragment) mLifecycleOwner).getChildFragmentManager(), null);
+                }
+            } else if (mBusyDialog != null) {
+                mBusyDialog.dismiss();
+                mBusyDialog = null;
+            }
         }
     }
 
