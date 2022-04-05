@@ -15,12 +15,13 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 
-/**
- * Fragment数据缓存
- * 用以管理AppCompatActivity和Fragment下的回退栈及其他缓存数据
- * @author cqray
- */
-final class StarterCache {
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+@Accessors(prefix = "m")
+public class StarterCache2 {
 
     /** id关键字 **/
     private static final String FRAGMENT_ID_KEY = "starter:fragment_id";
@@ -45,9 +46,17 @@ final class StarterCache {
     }
 
     /** 容器Id **/
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
     private int mContainerId;
     /** 回退栈 **/
-    private Stack<String> mBackStack = new Stack<>();
+    private final Stack<String> mBackStack = new Stack<>();
+    /** Fragment管理器 **/
+    private final FragmentManager mFragmentManager;
+
+    private StarterCache2(FragmentManager fm) {
+        mFragmentManager = fm;
+    }
 
     @Nullable
     static FragmentManager getFragmentManager(LifecycleOwner owner) {
@@ -73,14 +82,6 @@ final class StarterCache {
 
     int getBackStackCount() {
         return mBackStack.size();
-    }
-
-    int getContainerId() {
-        return mContainerId;
-    }
-
-    void setContainerId(int containerId) {
-        mContainerId = containerId;
     }
 
     void addToBackStack(String name) {

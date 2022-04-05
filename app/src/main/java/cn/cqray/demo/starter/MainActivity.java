@@ -2,8 +2,10 @@ package cn.cqray.demo.starter;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 
+import cn.cqray.android.app.NavActivity;
 import cn.cqray.android.tip.TipDelegate;
 import cn.cqray.android.ui.multi.MultiItem;
 import cn.cqray.android.ui.multi.MultiTabActivity;
@@ -18,55 +20,12 @@ public class MainActivity extends MultiTabActivity {
                 new MultiItem(MainFragment2.class, "我的")//, R.drawable.ic_no_data_search)
         );
 
-        //setDragEnable(true);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                //getMultiDelegate().removeFragment(getFragments().get(1));
-                //addFragment(new MultiItem(MainFragment2.class, "我的2"));
-                removeFragment(1);
-            }
-        }, 2000);
-//        showFragment(1);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                new TipDelegate().showInfo("我的消息");
-            }
-        }).start();
-
-
-
-//        setContentView(R.layout.activity_main);
-
 //        loadRootFragment(MainFragment.class);
-//        setHeaderView(R.layout.header);
-//
-//        StateLayout stateLayout = findViewById(R.id.state_layout);
-//        stateLayout.setBusy();
-//
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                stateLayout.setIdle();
-//            }
-//        }, 1500);
+    }
 
-//        ViewGroup ll = findViewById(R.id.ll);
-//
-//        ViewGroup content = findViewById(android.R.id.content);
-//
-//        while (ll != content) {
-//
-//            Log.e("数据", ll.getClass().getName());
-//            ll = (ViewGroup) ll.getParent();
-//        }
-//        Log.e("数据", content.getClass().getName());
-//        Log.e("数据", content.getParent().getClass().getName());
-
+    @Override
+    public boolean onBackPressedSupport() {
+        Log.e("数据", "Activity onBackPressedSupport");
+        return super.onBackPressedSupport();
     }
 }

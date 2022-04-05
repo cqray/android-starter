@@ -22,10 +22,12 @@ public class MainFragment extends SupportFragment {
         super.onCreating(savedInstanceState);
         setNativeContentView(R.layout.activity_main);
 
+//        start(MainFragment2.class);
+
         //mToolbar.setTitleText("车时标题777777");
         //mToolbar.setActionText(0, "确定");
         //mToolbar.setVisibility(View.VISIBLE);
-        setBusy();
+//        setBusy();
 
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
@@ -40,6 +42,14 @@ public class MainFragment extends SupportFragment {
 //        super.onResume();
 //        setBusy();
 //    }
+
+
+    @Override
+    public boolean onBackPressedSupport() {
+
+        Log.e("数据", "MainFragment onBackPressedSupport");
+        return super.onBackPressedSupport();
+    }
 
     @Override
     public void onDestroy() {

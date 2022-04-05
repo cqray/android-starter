@@ -2,6 +2,7 @@ package cn.cqray.android.app;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
@@ -216,6 +217,7 @@ public final class StarterDelegate {
     }
 
     public boolean popEnable() {
+        Log.e("数据", mStarterCache.getBackStackCount() + "|" );
         return mStarterCache.getBackStackCount() > 1 && !getFragmentManager().isStateSaved();
     }
 

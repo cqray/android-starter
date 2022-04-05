@@ -37,6 +37,13 @@ public class MainFragment2 extends SupportFragment {
     }
 
     @Override
+    public boolean onBackPressedSupport() {
+
+        Log.e("数据", "MainFragment2 onBackPressedSupport");
+        return super.onBackPressedSupport();
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         view.findViewById(R.id.tv).setOnClickListener(new View.OnClickListener() {
