@@ -16,6 +16,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +25,7 @@ import java.util.Map;
 import cn.cqray.android.Starter;
 import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.exception.ExceptionManager;
+import cn.cqray.android.lifecycle.LifecycleViewModelProvider;
 import cn.cqray.android.util.ActivityUtils;
 
 /**
@@ -76,6 +79,10 @@ public final class StarterDelegate {
                 }
             });
         }
+        //new ViewModelProvider((ViewModelStoreOwner) mLifecycleOwner).get(StarterViewModel.class);
+
+        new LifecycleViewModelProvider(mLifecycleOwner).get(LifecycleViewModel2.class);
+
     }
 
     void onDestroyed() {

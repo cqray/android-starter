@@ -34,6 +34,9 @@ dependencies {
     //noinspection GradleDependency
     api 'com.google.android.material:material:1.2.1'
 
+    // 常用工具类
+    api 'com.blankj:utilcodex:1.30.6'
+
 //    api ('com.google.android.material:material:1.2.1') {
 //        exclude group: 'androidx.constraintlayout', module: 'constraintlayout'
 //        exclude group: 'androidx.dynamicanimation', module: 'dynamicanimation'
@@ -46,9 +49,9 @@ dependencies {
     api 'com.scwang.smart:refresh-layout-kernel:2.0.3'
 //    api 'com.scwang.smart:refresh-header-classics:2.0.3'
     // JetPack Lifecycle、LiveData、ViewModel扩展
-    api 'androidx.lifecycle:lifecycle-common-java8:2.3.1'
+    api 'androidx.lifecycle:lifecycle-common-java8:2.4.0'
     // RecyclerView Adapter
-    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7'
     // Json工具
     //noinspection GradleDependency 2.8.8
     api 'com.google.code.gson:gson:2.8.5'
