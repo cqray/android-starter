@@ -185,14 +185,8 @@ public class SupportFragment extends Fragment implements ViewProvider, StarterPr
         mStarterDelegate.start(intent);
     }
 
-    public boolean pop() {
-        return mStarterDelegate.pop();
-    }
-
-    public void popOrFinish() {
-        if (!pop()) {
-            mStarterDelegate.popParent();
-        }
+    public void pop() {
+        mStarterDelegate.pop();
     }
 
     public void popTo(Class<? extends StarterProvider> clazz) {

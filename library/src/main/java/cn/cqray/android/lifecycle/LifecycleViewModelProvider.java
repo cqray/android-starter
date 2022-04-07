@@ -1,6 +1,8 @@
 package cn.cqray.android.lifecycle;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,8 +21,12 @@ public class LifecycleViewModelProvider extends ViewModelProvider {
         super(owner, getInstance(owner));
     }
 
-    public LifecycleViewModelProvider(@NonNull LifecycleOwner owner) {
-        this((ViewModelStoreOwner) owner);
+    public LifecycleViewModelProvider(@NonNull Fragment fragment) {
+        this((ViewModelStoreOwner) fragment);
+    }
+
+    public LifecycleViewModelProvider(@NonNull FragmentActivity activity) {
+        this((ViewModelStoreOwner) activity);
     }
 
     /** 工厂实例缓存Map **/

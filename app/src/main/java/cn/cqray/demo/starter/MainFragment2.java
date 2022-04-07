@@ -7,6 +7,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import cn.cqray.android.anim.DefaultHorizontalAnimator;
+import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.app.NavIntent;
 import cn.cqray.android.app.SupportFragment;
 
@@ -42,6 +44,8 @@ public class MainFragment2 extends SupportFragment {
         Log.e("数据", "MainFragment2 onBackPressedSupport");
         return super.onBackPressedSupport();
     }
+
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

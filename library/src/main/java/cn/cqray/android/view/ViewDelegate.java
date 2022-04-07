@@ -374,9 +374,7 @@ public final class ViewDelegate {
         if (mToolbar != null && mLifecycleOwner instanceof StarterProvider) {
             mToolbar.setBackListener(v -> {
                 StarterDelegate delegate = ((StarterProvider) mLifecycleOwner).getStarterDelegate();
-                if (!delegate.pop()) {
-                    delegate.popParent();
-                }
+                delegate.pop();
             });
         }
         StarterStrategy strategy = Starter.getInstance().getStarterStrategy();

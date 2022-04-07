@@ -181,14 +181,8 @@ public class SupportActivity extends AppCompatActivity implements ViewProvider, 
         mStarterDelegate.start(intent);
     }
 
-    public boolean pop() {
-        return mStarterDelegate.pop();
-    }
-
-    public void popOrFinish() {
-        if (!pop()) {
-            mStarterDelegate.popParent();
-        }
+    public void pop() {
+        mStarterDelegate.pop();
     }
 
     public void popTo(Class<? extends StarterProvider> clazz) {

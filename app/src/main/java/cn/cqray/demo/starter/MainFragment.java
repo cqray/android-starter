@@ -22,7 +22,7 @@ public class MainFragment extends SupportFragment {
         super.onCreating(savedInstanceState);
         setNativeContentView(R.layout.activity_main);
 
-//        start(MainFragment2.class);
+
 
         //mToolbar.setTitleText("车时标题777777");
         //mToolbar.setActionText(0, "确定");
@@ -35,6 +35,9 @@ public class MainFragment extends SupportFragment {
 //                setIdle();
 //            }
 //        }, 1500);
+        findViewById(R.id.btn).setOnClickListener(v -> {
+            start(MainFragment2.class);
+        });
     }
 //
 //    @Override
