@@ -3,10 +3,11 @@ package cn.cqray.android;
 import android.app.Application;
 import android.content.Context;
 
+import com.blankj.utilcode.util.Utils;
+
 import cn.cqray.android.anim.DefaultVerticalAnimator;
 import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.app.StarterDispatcher;
-import cn.cqray.android.util.ActivityUtils;
 
 /**
  * Android库入口
@@ -61,7 +62,7 @@ public class Starter {
                         if (Application.class.isAssignableFrom(clazz)) {
                             mApplication = application;
                             mStarterStrategy = strategy;
-                            ActivityUtils.initialize(application);
+                            Utils.init(application);
                             StarterDispatcher.initialize(application);
                             return;
                         }

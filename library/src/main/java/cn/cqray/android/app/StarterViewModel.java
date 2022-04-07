@@ -1,7 +1,5 @@
 package cn.cqray.android.app;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.IdRes;
@@ -17,8 +15,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 
-import com.blankj.utilcode.util.ActivityUtils;
-
 import java.util.Objects;
 import java.util.Stack;
 import java.util.UUID;
@@ -27,26 +23,30 @@ import cn.cqray.android.Starter;
 import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.exception.ExceptionManager;
 import cn.cqray.android.lifecycle.LifecycleViewModel;
+import cn.cqray.android.lifecycle.LifecycleViewModelProvider;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
 /**
- *
+ * Fragment启动器ViewModel，依附于Activity
+ * <P>本来想实现可依附于Fragment，但是会层层嵌套，导致逻辑变复杂，不利于排错</p>
+ * <p>所以简化逻辑，只能依附于Activity，通过{@link LifecycleViewModelProvider}获取</P>
  * @author Cqray
  */
 @Accessors(prefix = "m")
 public final class StarterViewModel extends LifecycleViewModel {
-
     /** id关键字 **/
     private static final String FRAGMENT_ID_KEY = "starter:fragment_id";
     /** 容器Id **/
-    @Getter
-    private int mContainerId;
+    private @Getter int mContainerId;
     /** 回退栈 **/
     private final Stack<String> mBackStack = new Stack<>();
 
     public StarterViewModel(@NonNull LifecycleOwner owner) {
         super(owner);
+        if (!(owner instanceof FragmentActivity) || !(owner instanceof StarterProvider)) {
+            throw new RuntimeException("StarterViewModel can only get by FragmentActivity which implements StarterProvider.");
+        }
     }
 
     @Override
@@ -55,26 +55,14 @@ public final class StarterViewModel extends LifecycleViewModel {
         mBackStack.clear();
     }
 
-    @Nullable
-    public FragmentActivity getActivity() {
-        LifecycleOwner owner = getLifecycleOwner();
-        if (owner instanceof FragmentActivity) {
-            return (FragmentActivity) owner;
-        } else if (owner instanceof Fragment) {
-            return ((Fragment) owner).requireActivity();
-        }
-        return null;
+    @NonNull
+    public FragmentActivity requireActivity() {
+        return (FragmentActivity) getLifecycleOwner();
     }
 
-    @Nullable
+    @NonNull
     public FragmentManager getFragmentManager() {
-        LifecycleOwner owner = getLifecycleOwner();
-        if (owner instanceof FragmentActivity) {
-            return ((FragmentActivity) owner).getSupportFragmentManager();
-        } else if (owner instanceof Fragment) {
-            return ((Fragment) owner).getChildFragmentManager();
-        }
-        return null;
+        return requireActivity().getSupportFragmentManager();
     }
 
     /**
@@ -82,42 +70,32 @@ public final class StarterViewModel extends LifecycleViewModel {
      */
     public void onBackPressed() {
         Fragment fragment = getTopFragment();
+        // 栈顶元素为空，说明没有调用LoadRootFragment。
         if (fragment == null) {
-            // 栈顶Fragment为空，直接回退
-            pop();
+            // 因为LifecycleOwner即Activity
+            // 所有获取拦截结果，决定是否回退
+            StarterProvider provider = (StarterProvider) getLifecycleOwner();
+            if (!provider.onBackPressedSupport()) {
+                pop();
+            }
             return;
         }
         // 栈顶Fragment不为空，回退栈顶Fragment
-        if (fragment instanceof StarterProvider) {
-            // 判断是否进行回退拦截
-            if (mBackStack.size() > 1) {
-                // 如果回退栈的数量大于1，则仅需判断当前Fragment的回退拦截
-                if (!((StarterProvider) fragment).onBackPressedSupport()) {
-                    pop();
-                }
-            } else {
-                // 如果回退栈的数量为1，则还需判断父级回退拦截
-                if (!((StarterProvider) fragment).onBackPressedSupport()) {
-                    // 如果Fragment回退未被拦截，则传递给父级
-                    boolean parentPressed = false;
-                    Fragment parent = fragment.getParentFragment();
-                    if (parent == null) {
-                        // 获取父级Activity的回退拦截状态
-                        FragmentActivity act = fragment.requireActivity();
-                        if (act instanceof StarterProvider) {
-                            parentPressed = ((StarterProvider) act).onBackPressedSupport();
-                        }
-                    } else if (parent instanceof StarterProvider) {
-                        // 获取父级Fragment的回退拦截状态
-                        parentPressed = ((StarterProvider) parent).onBackPressedSupport();
-                    }
-                    if (!parentPressed) {
-                        pop();
-                    }
-                }
+        // 判断是否进行回退拦截
+        if (mBackStack.size() > 1) {
+            // 如果回退栈的数量大于1，则仅需判断当前Fragment的回退拦截
+            if (!((StarterProvider) fragment).onBackPressedSupport()) {
+                pop();
             }
         } else {
-            pop();
+            // 如果回退栈的数量为1，则还需判断父级回退拦截
+            if (!((StarterProvider) fragment).onBackPressedSupport()) {
+                // 如果Fragment回退未被拦截，则传递给父级
+                StarterProvider provider = (StarterProvider) getLifecycleOwner();
+                if (!provider.onBackPressedSupport()) {
+                    pop();
+                }
+            }
         }
     }
 
@@ -127,13 +105,10 @@ public final class StarterViewModel extends LifecycleViewModel {
      */
     @NonNull
     public Fragment generateFragment(@NonNull NavIntent intent) {
-        if (getActivity() == null) {
-            throw new NullPointerException("Do you initialize in Fragment or FragmentActivity?");
-        }
         // Fragment工厂
         FragmentFactory factory = Objects.requireNonNull(getFragmentManager()).getFragmentFactory();
         // 类加载器
-        ClassLoader loader = getActivity().getClassLoader();
+        ClassLoader loader = requireActivity().getClassLoader();
         // 获取参数
         Bundle arguments = intent.getArguments();
         // 设置ID
@@ -151,11 +126,10 @@ public final class StarterViewModel extends LifecycleViewModel {
      */
     @Nullable
     public Fragment getTopFragment() {
-        FragmentManager fm = getFragmentManager();
-        if (fm == null || mBackStack.isEmpty()) {
+        if (mBackStack.isEmpty()) {
             return null;
         }
-        return fm.findFragmentByTag(mBackStack.peek());
+        return getFragmentManager().findFragmentByTag(mBackStack.peek());
     }
 
     /**
@@ -207,18 +181,7 @@ public final class StarterViewModel extends LifecycleViewModel {
         if (needPop) {
             popTo(intent.getPopToClass(), intent.isPopToInclusive());
         }
-        // 如果toClass是Activity, 则直接操作Activity
-        if (Activity.class.isAssignableFrom(intent.getToClass())) {
-            Activity activity = ActivityUtils.getTopActivity();
-            Intent actIntent = new Intent(activity, intent.getToClass());
-            actIntent.putExtras(intent.getArguments());
-            activity.startActivity(actIntent);
-            return;
-        }
-        startFragment(intent);
-    }
-
-    public void startFragment(NavIntent intent) {
+        // 获取栈顶Fragment
         Fragment top = getTopFragment();
         if (top != null
                 && intent.isSingleTop()
@@ -228,9 +191,6 @@ public final class StarterViewModel extends LifecycleViewModel {
         }
         // 获取Fragment管理器
         FragmentManager fm = getFragmentManager();
-        if (fm == null) {
-            return;
-        }
         // 获取Fragment事务
         FragmentTransaction ft = fm.beginTransaction();
         // 生成Fragment
@@ -271,20 +231,11 @@ public final class StarterViewModel extends LifecycleViewModel {
      * @param popTo 指定的Fragment
      * @param inclusive 是否包含指定的Fragment
      */
-    @SuppressWarnings("unchecked")
     public void popTo(Class<?> popTo, boolean inclusive) {
         FragmentManager fm = getFragmentManager();
-        if (fm == null) {
-            return;
-        }
-        // 如果popTo是Activity, 则直接操作Activity
-        if (Activity.class.isAssignableFrom(popTo)) {
-            cn.cqray.android.util.ActivityUtils.popTo((Class<? extends Activity>) popTo, inclusive);
-            return;
-        }
         // 如果是第一个入栈的Fragment并且需要销毁，则父级pop。
         if (isRootFragment(popTo) && inclusive) {
-            popParent();
+            requireActivity().finish();
             return;
         }
         // 操作当前Fragment回退栈中的Fragment
@@ -310,30 +261,18 @@ public final class StarterViewModel extends LifecycleViewModel {
     }
 
     /**
-     * 父级Fragment或Activity退出
-     */
-    public void popParent() {
-        LifecycleOwner owner = getLifecycleOwner();
-        if (owner instanceof Activity) {
-            // 依附于Activity的ViewModel，直接Finish
-            ((Activity) owner).finish();
-        }
-    }
-
-    /**
      * 回退Fragment
      */
     public void pop() {
         if (mBackStack.size() <= 1) {
-            popParent();
+            requireActivity().finish();
             return;
         }
         FragmentManager fm = getFragmentManager();
-        if (fm == null || fm.isStateSaved()) {
-            return;
+        if (!fm.isStateSaved()) {
+            // Fragment回退
+            fm.popBackStack(mBackStack.pop(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
-        // Fragment回退
-        fm.popBackStack(mBackStack.pop(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     /**
@@ -361,7 +300,7 @@ public final class StarterViewModel extends LifecycleViewModel {
         }
         // 父级自定义动画
         if (fa == null) {
-            fa = getFragmentAnimator(getLifecycleOwner());
+            fa = ((StarterProvider) getLifecycleOwner()).onCreateFragmentAnimator();
         }
         // 全局默认的动画
         if (fa == null) {
@@ -369,26 +308,4 @@ public final class StarterViewModel extends LifecycleViewModel {
         }
         return fa;
     }
-
-    /**
-     * 获取Fragment或Activity的动画
-     * @param owner Fragment或Activity实例
-     */
-    @Nullable
-    private FragmentAnimator getFragmentAnimator(@NonNull LifecycleOwner owner) {
-        FragmentAnimator fa = null;
-        if (owner instanceof StarterProvider) {
-            fa = ((StarterProvider) owner).onCreateFragmentAnimator();
-        }
-        if (fa == null && owner instanceof Fragment) {
-            Fragment parent = ((Fragment) owner).getParentFragment();
-            if (parent == null) {
-                fa = getFragmentAnimator(((Fragment) owner).requireActivity());
-            } else {
-                fa = getFragmentAnimator(parent);
-            }
-        }
-        return fa;
-    }
-
 }

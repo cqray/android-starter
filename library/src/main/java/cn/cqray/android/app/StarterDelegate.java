@@ -21,9 +21,11 @@ import cn.cqray.android.lifecycle.LifecycleViewModelProvider;
  */
 public final class StarterDelegate {
 
-    private final LifecycleOwner mLifecycleOwner;
-    private StarterViewModel mMainViewModel;
+    /** 委托缓存集合 **/
     private static final Map<LifecycleOwner, StarterDelegate> DELEGATE_MAP = new HashMap<>();
+
+    private StarterViewModel mMainViewModel;
+    private final LifecycleOwner mLifecycleOwner;
 
     @NonNull
     public static StarterDelegate get(@NonNull AppCompatActivity activity) {

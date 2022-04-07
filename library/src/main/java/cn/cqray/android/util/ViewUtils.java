@@ -20,6 +20,8 @@ import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.blankj.utilcode.util.ActivityUtils;
+import com.blankj.utilcode.util.Utils;
 import com.google.android.material.shape.MaterialShapeDrawable;
 import com.google.android.material.shape.MaterialShapeUtils;
 
@@ -52,9 +54,13 @@ public class ViewUtils {
      * @return 界面
      */
     public static View inflate(@LayoutRes int resId) {
-        Activity act = ActivityUtils.requireCurrent();
-        ViewGroup root = act.findViewById(android.R.id.content);
-        return LayoutInflater.from(act).inflate(resId, root, false);
+        Activity act = ActivityUtils.getTopActivity();
+        if (act != null) {
+            ViewGroup root = act.findViewById(android.R.id.content);
+            return LayoutInflater.from(act).inflate(resId, root, false);
+        } else {
+            return LayoutInflater.from(Utils.getApp()).inflate(resId, null, false);
+        }
     }
 
     public static void setDpMargin(@NonNull View view, float margin) {

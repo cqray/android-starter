@@ -16,6 +16,10 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.blankj.utilcode.util.ActivityUtils;
+
+import cn.cqray.android.Starter;
+
 /**
  * 屏幕管理工具
  * @author Cqray
@@ -161,10 +165,10 @@ public class ScreenUtils {
 
 
     private static Context getContext() {
-        Activity act = ActivityUtils.getCurrent();
-//        if (act == null) {
-//            return AndroidCore.getApplication().getApplicationContext();
-//        }
+        Activity act = ActivityUtils.getTopActivity();
+        if (act == null) {
+            return Starter.getInstance().getContext();
+        }
         return act;
     }
 }

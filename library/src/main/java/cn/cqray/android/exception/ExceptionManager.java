@@ -3,8 +3,9 @@ package cn.cqray.android.exception;
 import android.content.Context;
 import android.content.Intent;
 
+import com.blankj.utilcode.util.ActivityUtils;
+
 import cn.cqray.android.Starter;
-import cn.cqray.android.util.ActivityUtils;
 
 /**
  * 异常管理界面
@@ -29,7 +30,7 @@ public class ExceptionManager {
     }
 
     public void showException(Exception exc) {
-        Context context = ActivityUtils.getCurrent();
+        Context context = ActivityUtils.getTopActivity();
         if (context == null) {
             context = Starter.getInstance().getContext();
         }

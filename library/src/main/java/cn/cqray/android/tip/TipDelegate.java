@@ -4,11 +4,12 @@ import android.app.Activity;
 
 import androidx.annotation.Nullable;
 
-import java.util.Stack;
+import com.blankj.utilcode.util.ActivityUtils;
+
+import java.util.List;
 
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
-import cn.cqray.android.util.ActivityUtils;
 
 /**
  * 提示消息展示委托
@@ -76,7 +77,7 @@ public class TipDelegate {
      * @param duration 提示时长
      */
     private void show(TipLevel level, String text, int duration) {
-        Stack<Activity> activities = ActivityUtils.getActivityStack();
+        List<Activity> activities = ActivityUtils.getActivityList();
         if (activities.isEmpty()) {
             return;
         }

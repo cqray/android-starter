@@ -4,178 +4,120 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
- * ButterKnife反射调用工具，主要是为了方便
- * 全局绑定控件，需要加混淆规则。
+ * ButterKnife工具类
  * @author Cqray
  */
-public final class ButterKnifeUtils {
+public class ButterKnifeUtils {
 
-    /** 是否支持ButterKnife **/
-    private static boolean sSupport = true;
-    private static Class<?> sButterKnifeClass;
-    private static Class<?> sUnbindClass;
-    private static Method sBindActivityMethod;
-    private static Method sBindDialogMethod;
-    private static Method sBindViewMethod;
-    private static Method sBindObjectViewMethod;
-    private static Method sBindObjectDialogMethod;
-    private static Method sBindObjectActivityMethod;
-    private static Method sUnbindMethod;
+    /** ButterKnife是否可用 **/
+    private static boolean sButterKnifeUsable = true;
 
     private ButterKnifeUtils() {}
 
-    public static void bind(Activity act) {
-        Class<?> btClass = getButterKnifeClass();
-        if (btClass != null) {
-            try {
-                if (sBindActivityMethod == null) {
-                    sBindActivityMethod = sButterKnifeClass.getMethod("bind", Activity.class);
-                }
-                sBindActivityMethod.invoke(null, act);
-            } catch (NoSuchMethodException e) {
-                sSupport = false;
-            } catch (IllegalAccessException e) {
-                sSupport = false;
-            } catch (InvocationTargetException e) {
-                sSupport = false;
-            }
-        }
-    }
-
-    public static void bind(View view) {
-        Class<?> btClass = getButterKnifeClass();
-        if (btClass != null) {
-            try {
-                if (sBindViewMethod == null) {
-                    sBindViewMethod = sButterKnifeClass.getMethod("bind", View.class);
-                }
-                sBindViewMethod.invoke(null, view);
-            } catch (NoSuchMethodException e) {
-                sSupport = false;
-            } catch (IllegalAccessException e) {
-                sSupport = false;
-            } catch (InvocationTargetException e) {
-                sSupport = false;
-            }
-        }
-    }
-
-    public static void bind(Dialog dlg) {
-        Class<?> btClass = getButterKnifeClass();
-        if (btClass != null) {
-            try {
-                if (sBindDialogMethod == null) {
-                    sBindDialogMethod = sButterKnifeClass.getMethod("bind", Dialog.class);
-                }
-                sBindDialogMethod.invoke(null, dlg);
-            } catch (NoSuchMethodException e) {
-                sSupport = false;
-            } catch (IllegalAccessException e) {
-                sSupport = false;
-            } catch (InvocationTargetException e) {
-                sSupport = false;
-            }
-        }
-    }
-
+    /**
+     * ButterKnife绑定Activity实例
+     * @param target Activity实例
+     * @return 绑定实例
+     */
     @Nullable
-    public static Object bind(Object obj, View source) {
-        Class<?> btClass = getButterKnifeClass();
-        if (btClass != null) {
+    public static Object bind(@NonNull Activity target) {
+        if (sButterKnifeUsable) {
             try {
-                if (sBindObjectViewMethod == null) {
-                    sBindObjectViewMethod = sButterKnifeClass.getMethod("bind", Object.class, View.class);
-                }
-                return sBindObjectViewMethod.invoke(null, obj, source);
-            } catch (NoSuchMethodException e) {
-                sSupport = false;
-            } catch (IllegalAccessException e) {
-                sSupport = false;
-            } catch (InvocationTargetException e) {
-                sSupport = false;
+                return ButterKnife.bind(target);
+            } catch (Throwable t) {
+                checkClassNotFound(t);
+                return null;
             }
         }
         return null;
     }
 
+    /**
+     * ButterKnife绑定控件
+     * @param target 控件
+     * @return 绑定实例
+     */
     @Nullable
-    public static Object bind(Object obj, Dialog source) {
-        Class<?> btClass = getButterKnifeClass();
-        if (btClass != null) {
+    public static Object bind(@NonNull View target) {
+        if (sButterKnifeUsable) {
             try {
-                if (sBindObjectDialogMethod == null) {
-                    sBindObjectDialogMethod = sButterKnifeClass.getMethod("bind", Object.class, Dialog.class);
-                }
-                return sBindObjectDialogMethod.invoke(null, obj, source);
-            } catch (NoSuchMethodException e) {
-                sSupport = false;
-            } catch (IllegalAccessException e) {
-                sSupport = false;
-            } catch (InvocationTargetException e) {
-                sSupport = false;
+                return ButterKnife.bind(target);
+            } catch (Throwable t) {
+                checkClassNotFound(t);
+                return null;
             }
         }
         return null;
     }
 
+    /**
+     * ButterKnife绑定对话框
+     * @param target 控件
+     * @return 绑定实例
+     */
     @Nullable
-    public static Object bind(Object obj, Activity source) {
-        Class<?> btClass = getButterKnifeClass();
-        if (btClass != null) {
+    public static Object bind(@NonNull Dialog target) {
+        if (sButterKnifeUsable) {
             try {
-                if (sBindObjectActivityMethod == null) {
-                    sBindObjectActivityMethod = sButterKnifeClass.getMethod("bind", Object.class, Activity.class);
-                }
-                return sBindObjectActivityMethod.invoke(null, obj, source);
-            } catch (NoSuchMethodException e) {
-                sSupport = false;
-            } catch (IllegalAccessException e) {
-                sSupport = false;
-            } catch (InvocationTargetException e) {
-                sSupport = false;
+                return ButterKnife.bind(target);
+            } catch (Throwable t) {
+                checkClassNotFound(t);
+                return null;
             }
         }
         return null;
     }
 
+    /**
+     * ButterKnife绑定控件
+     * @param target 目标
+     * @param source 来源
+     * @return 绑定实例
+     */
+    @Nullable
+    public static Object bind(Object target, @NonNull View source) {
+        if (sButterKnifeUsable) {
+            try {
+                return ButterKnife.bind(target, source);
+            } catch (Throwable t) {
+                checkClassNotFound(t);
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 解除ButterKnife绑定
+     * @param unBinder 绑定实例
+     */
     public static void unbind(Object unBinder) {
-        if (sSupport && unBinder != null) {
-            try {
-                if (sUnbindClass == null) {
-                    sUnbindClass = Class.forName("butterknife.Unbinder");
-                }
-                if (sUnbindMethod == null) {
-                    sUnbindMethod = sUnbindClass.getMethod("unbind");
-                }
-                sUnbindMethod.invoke(unBinder);
-            } catch (ClassNotFoundException e) {
-                sSupport = false;
-            } catch (NoSuchMethodException e) {
-                sSupport = false;
-            } catch (IllegalAccessException e) {
-                sSupport = false;
-            } catch (InvocationTargetException e) {
-                sSupport = false;
+        if (unBinder == null || !sButterKnifeUsable) {
+            return;
+        }
+        try {
+            if (unBinder instanceof Unbinder) {
+                ((Unbinder) unBinder).unbind();
             }
+        } catch (Throwable t) {
+            checkClassNotFound(t);
         }
     }
 
-    private static Class<?> getButterKnifeClass() {
-        if (sSupport) {
-            if (sButterKnifeClass == null) {
-                try {
-                    sButterKnifeClass = Class.forName("butterknife.ButterKnife");
-                } catch (ClassNotFoundException e) {
-                    sSupport = false;
-                }
-            }
+    /**
+     * 检查是否是类没有找到的异常
+     * @param t 异常
+     */
+    private static void checkClassNotFound(Throwable t) {
+        if (t instanceof NoClassDefFoundError) {
+            sButterKnifeUsable = false;
         }
-        return sButterKnifeClass;
     }
 }
