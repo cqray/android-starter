@@ -38,6 +38,7 @@ public class MainFragment extends SupportFragment {
         findViewById(R.id.btn).setOnClickListener(v -> {
             start(MainFragment2.class);
         });
+//        setHeaderFloating(false);
     }
 //
 //    @Override

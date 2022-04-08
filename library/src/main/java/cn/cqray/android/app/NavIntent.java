@@ -15,9 +15,9 @@ import cn.cqray.android.anim.FragmentAnimator;
 public class NavIntent {
 
     /** 目标Fragment **/
-    private Class<? extends StarterProvider> mTo;
+    private Class<? extends SupportProvider> mTo;
     /** 回退标识Fragment **/
-    private Class<? extends StarterProvider> mPopTo;
+    private Class<? extends SupportProvider> mPopTo;
     /** 是否允许相同Fragment重叠 **/
     private boolean mSingleTop = true;
     /** 回退是否包含指定标识Fragment **/
@@ -29,23 +29,23 @@ public class NavIntent {
 
     public NavIntent() {}
 
-    public NavIntent(Class<? extends StarterProvider> cls) {
+    public NavIntent(Class<? extends SupportProvider> cls) {
         mTo = cls;
     }
 
-    public NavIntent(Class<? extends StarterProvider> cls, Bundle arguments) {
+    public NavIntent(Class<? extends SupportProvider> cls, Bundle arguments) {
         mTo = cls;
         if (arguments != null) {
             mArguments.putAll(arguments);
         }
     }
 
-    public NavIntent setClass(Class<? extends StarterProvider> cls) {
+    public NavIntent setClass(Class<? extends SupportProvider> cls) {
         mTo = cls;
         return this;
     }
 
-    public NavIntent setPopTo(Class<? extends StarterProvider> popTo, boolean inclusive) {
+    public NavIntent setPopTo(Class<? extends SupportProvider> popTo, boolean inclusive) {
         mPopTo = popTo;
         mPopToInclusive = inclusive;
         return this;
@@ -61,11 +61,11 @@ public class NavIntent {
         return this;
     }
 
-    public Class<? extends StarterProvider> getToClass() {
+    public Class<? extends SupportProvider> getToClass() {
         return mTo;
     }
 
-    public Class<? extends StarterProvider> getPopToClass() {
+    public Class<? extends SupportProvider> getPopToClass() {
         return mPopTo;
     }
 

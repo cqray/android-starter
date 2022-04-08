@@ -1,22 +1,15 @@
 package cn.cqray.android.swipe;
 
-import android.app.Activity;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 
-import cn.cqray.android.app.StarterProvider;
+import cn.cqray.android.app.SupportProvider;
 import cn.cqray.android.util.CheckUtils;
 import io.reactivex.functions.Consumer;
 
@@ -29,9 +22,9 @@ public final class SwipeBackDelegate {
     private static final float SWIPE_EDGE_PERCENT = 0.2f;
     private SwipeBackLayout mSwipeLayout;
     //private DisposablePool mDisposablePool;
-    private final StarterProvider mDelegateProvider;
+    private final SupportProvider mDelegateProvider;
 
-    public SwipeBackDelegate(@NonNull StarterProvider provider) {
+    public SwipeBackDelegate(@NonNull SupportProvider provider) {
         CheckUtils.checkDelegateProvider(provider);
         mDelegateProvider = provider;
         LifecycleOwner owner = (LifecycleOwner) provider;
@@ -179,7 +172,7 @@ public final class SwipeBackDelegate {
         return this;
     }
 
-    public StarterProvider getSupportDelegateProvider() {
+    public SupportProvider getSupportDelegateProvider() {
         return mDelegateProvider;
     }
 

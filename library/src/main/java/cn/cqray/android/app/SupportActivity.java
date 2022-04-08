@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.state.StateRefreshLayout;
 import cn.cqray.android.state.ViewState;
 import cn.cqray.android.tip.TipDelegate;
@@ -25,7 +24,7 @@ import io.reactivex.functions.Consumer;
  * 基础Activity
  * @author Cqray
  */
-public class SupportActivity extends AppCompatActivity implements ViewProvider, StarterProvider, TipProvider {
+public class SupportActivity extends AppCompatActivity implements ViewProvider, SupportProvider, TipProvider {
 
     /** 设置的布局 **/
     public View mContentView;
@@ -40,7 +39,7 @@ public class SupportActivity extends AppCompatActivity implements ViewProvider, 
     /** 布局代理 **/
     private final ViewDelegate mViewDelegate = new ViewDelegate(this);
     /** 启动代理 **/
-    private final StarterDelegate mStarterDelegate = StarterDelegate.get(this);
+    private final SupportDelegate mSupportDelegate = SupportDelegate.get(this);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,6 +48,12 @@ public class SupportActivity extends AppCompatActivity implements ViewProvider, 
     }
 
     public void onCreating(@Nullable Bundle savedInstanceState) {}
+
+    @Override
+    @Deprecated
+    public final void onBackPressed() {
+        super.onBackPressed();
+    }
 
     @Override
     public ViewDelegate getViewDelegate() {
@@ -147,50 +152,40 @@ public class SupportActivity extends AppCompatActivity implements ViewProvider, 
     }
 
     @Override
-    public StarterDelegate getStarterDelegate() {
-        return mStarterDelegate;
+    public SupportDelegate getStarterDelegate() {
+        return mSupportDelegate;
     }
 
-    @Override
-    public FragmentAnimator onCreateFragmentAnimator() {
-        return null;
+    public void start(Class<? extends SupportProvider> to) {
+        mSupportDelegate.start(new NavIntent(to));
     }
 
-    @Override
-    public boolean onBackPressedSupport() {
-        return false;
-    }
-
-    public void start(Class<? extends StarterProvider> to) {
-        mStarterDelegate.start(new NavIntent(to));
-    }
-
-    public void startWithPop(Class<? extends StarterProvider> to, Class<? extends StarterProvider> popTo) {
+    public void startWithPop(Class<? extends SupportProvider> to, Class<? extends SupportProvider> popTo) {
         NavIntent intent = new NavIntent(to);
         intent.setPopTo(popTo, true);
-        mStarterDelegate.start(intent);
+        mSupportDelegate.start(intent);
     }
 
-    public void startWithPop(Class<? extends StarterProvider> to, Class<? extends StarterProvider> popTo, boolean inclusive) {
+    public void startWithPop(Class<? extends SupportProvider> to, Class<? extends SupportProvider> popTo, boolean inclusive) {
         NavIntent intent = new NavIntent(to);
         intent.setPopTo(popTo, inclusive);
-        mStarterDelegate.start(intent);
+        mSupportDelegate.start(intent);
     }
 
     public void start(NavIntent intent) {
-        mStarterDelegate.start(intent);
+        mSupportDelegate.start(intent);
     }
 
     public void pop() {
-        mStarterDelegate.pop();
+        mSupportDelegate.pop();
     }
 
-    public void popTo(Class<? extends StarterProvider> clazz) {
-        mStarterDelegate.popTo(clazz, true);
+    public void popTo(Class<? extends SupportProvider> clazz) {
+        mSupportDelegate.popTo(clazz, true);
     }
 
-    public void popTo(Class<? extends StarterProvider> clazz, boolean inclusive) {
-        mStarterDelegate.popTo(clazz, inclusive);
+    public void popTo(Class<? extends SupportProvider> clazz, boolean inclusive) {
+        mSupportDelegate.popTo(clazz, inclusive);
     }
 
     @Override

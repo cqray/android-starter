@@ -8,4 +8,12 @@ package cn.cqray.android.view;
 public interface ViewProvider {
 
     ViewDelegate getViewDelegate();
+
+    default boolean onSupportKeyboardAutoHide() {
+        return true;
+    }
+
+    default boolean onSupportSwipeBack() {
+        return false;
+    }
 }

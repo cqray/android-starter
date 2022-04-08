@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll"
+
     android:layout_width="match_parent"
 
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -22,10 +23,7 @@
         android:background="@color/colorPrimary"
         android:text="Hello World!88888888" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="40dp"/>

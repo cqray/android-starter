@@ -1,6 +1,7 @@
 package cn.cqray.demo.starter;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
@@ -23,7 +24,10 @@ public class MainFragment2 extends SupportFragment {
         super.onCreating(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        mToolbar.setElevation(30);
+        findViewById(R.id.tv).setOnClickListener(v -> {
+            Log.e("数据", "点击");
+            start(MainFragment.class);
+        });
     }
 
     @Override
@@ -39,6 +43,12 @@ public class MainFragment2 extends SupportFragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        Log.e("数据", "onStop");
+    }
+
+    @Override
     public boolean onBackPressedSupport() {
 
         Log.e("数据", "MainFragment2 onBackPressedSupport");
@@ -46,15 +56,9 @@ public class MainFragment2 extends SupportFragment {
     }
 
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        view.findViewById(R.id.tv).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                start(new NavIntent(MainFragment2.class));
-            }
-        });
+
     }
 }

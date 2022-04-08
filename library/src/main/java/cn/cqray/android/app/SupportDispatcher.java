@@ -24,10 +24,10 @@ import java.lang.reflect.Method;
  * 用来统一调度AppCompatActivity和Fragment的生命周期
  * @author Cqray
  */
-public class StarterDispatcher {
+public class SupportDispatcher {
 
     /** 调度器单例 **/
-    private static volatile StarterDispatcher sInstance;
+    private static volatile SupportDispatcher sInstance;
 
     /**
      * 初始化调度器
@@ -35,20 +35,20 @@ public class StarterDispatcher {
      */
     public static void initialize(Application application) {
         if (sInstance == null) {
-            synchronized (StarterDispatcher.class) {
+            synchronized (SupportDispatcher.class) {
                 if (sInstance == null) {
-                    sInstance = new StarterDispatcher(application);
+                    sInstance = new SupportDispatcher(application);
                 }
             }
         }
     }
 
-    private StarterDispatcher(@NonNull Application application) {
+    private SupportDispatcher(@NonNull Application application) {
         application.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
-                if (activity instanceof AppCompatActivity) {
-                    StarterDelegate.get((AppCompatActivity) activity).onCreated();
+                if (activity instanceof SupportProvider) {
+                    SupportDelegate.get((SupportProvider) activity).onCreated();
                     new SupportFragmentCallbacks((AppCompatActivity) activity);
                 }
                 hookOrientation(activity);
@@ -71,8 +71,8 @@ public class StarterDispatcher {
 
             @Override
             public void onActivityDestroyed(@NonNull Activity activity) {
-                if (activity instanceof AppCompatActivity) {
-                    StarterDelegate.get((AppCompatActivity) activity).onDestroyed();
+                if (activity instanceof SupportProvider) {
+                    SupportDelegate.get((SupportProvider) activity).onDestroyed();
                 }
             }
         });
@@ -150,13 +150,17 @@ public class StarterDispatcher {
         @Override
         public void onFragmentCreated(@NonNull FragmentManager fm, @NonNull Fragment f, @Nullable Bundle savedInstanceState) {
             super.onFragmentCreated(fm, f, savedInstanceState);
-            StarterDelegate.get(f).onCreated();
+            if (f instanceof SupportProvider) {
+                SupportDelegate.get((SupportProvider) f).onCreated();
+            }
         }
 
         @Override
         public void onFragmentDestroyed(@NonNull FragmentManager fm, @NonNull Fragment f) {
             super.onFragmentDestroyed(fm, f);
-            StarterDelegate.get(f).onDestroyed();
+            if (f instanceof SupportProvider) {
+                SupportDelegate.get((SupportProvider) f).onDestroyed();
+            }
         }
     }
 }

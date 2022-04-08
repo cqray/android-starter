@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import cn.cqray.android.app.StarterProvider;
+import cn.cqray.android.app.SupportProvider;
 
 /**
  * 检查工具
@@ -17,7 +17,7 @@ public class CheckUtils {
         if (!(provider instanceof AppCompatActivity) && !(provider instanceof Fragment)) {
             throw new IllegalArgumentException(name + " must extend AppCompatActivity or Fragment.");
         }
-        if (!(provider instanceof StarterProvider)) {
+        if (!(provider instanceof SupportProvider)) {
             throw new IllegalArgumentException(name + " must implements SupportDelegateProvider.");
         }
     }

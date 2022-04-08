@@ -3,8 +3,8 @@ package cn.cqray.android.ui.multi;
 import androidx.annotation.DrawableRes;
 import androidx.fragment.app.Fragment;
 
+import cn.cqray.android.app.SupportProvider;
 import cn.cqray.android.app.NavIntent;
-import cn.cqray.android.app.StarterProvider;
 
 /**
  * Tab项
@@ -18,12 +18,12 @@ public class MultiItem {
     private NavIntent mIntent;
 
     public MultiItem(Class<? extends Fragment> clazz, String name) {
-        mIntent = new NavIntent((Class<? extends StarterProvider>) clazz);
+        mIntent = new NavIntent((Class<? extends SupportProvider>) clazz);
         mName = name;
     }
 
     public MultiItem(Class<? extends Fragment> clazz, String name, @DrawableRes int icon) {
-        mIntent = new NavIntent((Class<? extends StarterProvider>) clazz);
+        mIntent = new NavIntent((Class<? extends SupportProvider>) clazz);
         mName = name;
         mIcon = icon;
     }

@@ -7,9 +7,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.List;
 
+import cn.cqray.android.app.SupportProvider;
 import cn.cqray.android.app.MultiDelegate;
 import cn.cqray.android.app.NavIntent;
-import cn.cqray.android.app.StarterProvider;
 import cn.cqray.android.app.SupportActivity;
 
 /**
@@ -32,7 +32,7 @@ public class MultiActivity extends SupportActivity {
     public void loadMultiFragemts(@IdRes int containerId, @NonNull Class<? extends Fragment>... classes) {
         NavIntent[] intents = new NavIntent[classes.length];
         for (int i = 0; i < classes.length; i++) {
-            intents[i] = new NavIntent((Class<? extends StarterProvider>) classes[i]);
+            intents[i] = new NavIntent((Class<? extends SupportProvider>) classes[i]);
         }
         mMultiDelegate.loadMultiFragments(containerId, intents);
     }
@@ -49,7 +49,7 @@ public class MultiActivity extends SupportActivity {
     public void loadMultiFragemts(ViewPager2 vp, @NonNull Class<? extends Fragment>... classes) {
         NavIntent[] intents = new NavIntent[classes.length];
         for (int i = 0; i < classes.length; i++) {
-            intents[i] = new NavIntent((Class<? extends StarterProvider>) classes[i]);
+            intents[i] = new NavIntent((Class<? extends SupportProvider>) classes[i]);
         }
         mMultiDelegate.loadMultiFragments(vp, intents);
     }

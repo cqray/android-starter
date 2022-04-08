@@ -7,6 +7,7 @@
 -keep public class * extends android.content.BroadcastReceiver
 -keep public class * extends android.content.ContentProvider
 -keep public class * extends android.preference.Preference
+-keepnames public class * extends androidx.fragment.app.Fragment
 
 # 保证AndroidViewModel构造函数不被混淆
 -keepclassmembers class * extends androidx.lifecycle.AndroidViewModel {

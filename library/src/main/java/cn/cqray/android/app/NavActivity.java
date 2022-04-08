@@ -18,7 +18,7 @@ public class NavActivity extends SupportActivity {
         setNativeContentView(R.layout.starter_navigation_layout);
     }
 
-    public void loadRootFragment(Class<? extends SupportFragment> fragmentClass) {
+    public void loadRootFragment(Class<? extends SupportProvider> fragmentClass) {
         NavIntent intent = new NavIntent(fragmentClass);
         getStarterDelegate().loadRootFragment(R.id.starter_content_layout, intent);
     }

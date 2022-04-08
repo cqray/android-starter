@@ -25,12 +25,12 @@ import androidx.lifecycle.MutableLiveData;
 import cn.cqray.android.R;
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
-import cn.cqray.android.app.StarterDelegate;
-import cn.cqray.android.app.StarterProvider;
+import cn.cqray.android.app.SupportDelegate;
+import cn.cqray.android.app.SupportProvider;
 import cn.cqray.android.app.SupportActivity;
 import cn.cqray.android.app.SupportFragment;
-import cn.cqray.android.exception.ExceptionManager;
-import cn.cqray.android.exception.ViewException;
+import cn.cqray.android.exception.ExceptionDispatcher;
+import cn.cqray.android.exception.ExceptionType;
 import cn.cqray.android.state.BusyDialog;
 import cn.cqray.android.state.StateRefreshLayout;
 import cn.cqray.android.state.ViewState;
@@ -145,7 +145,7 @@ public final class ViewDelegate {
      */
     public void setHeaderView(View view) {
         if (mHeaderLayout == null) {
-            ExceptionManager.getInstance().showException(new ViewException("不支持设置Header。"));
+            ExceptionDispatcher.dispatchThrowable(mLifecycleOwner, ExceptionType.HEADER_UNSUPPORTED);
         } else {
             mHeaderLayout.removeAllViews();
             mHeaderLayout.addView(view);
@@ -159,7 +159,7 @@ public final class ViewDelegate {
      */
     public void setHeaderFloating(boolean floating) {
         if (mHeaderLayout == null) {
-            ExceptionManager.getInstance().showException(new ViewException("不支持设置Header。"));
+            ExceptionDispatcher.dispatchThrowable(mLifecycleOwner, ExceptionType.HEADER_UNSUPPORTED);
         } else {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mRefreshLayout.getLayoutParams();
             params.addRule(RelativeLayout.BELOW, floating ? R.id.toolbar : R.id.header_layout);
@@ -181,7 +181,7 @@ public final class ViewDelegate {
      */
     public void setFooterView(View view) {
         if (mFooterLayout == null) {
-            ExceptionManager.getInstance().showException(new ViewException("不支持设置Footer。"));
+            ExceptionDispatcher.dispatchThrowable(mLifecycleOwner, ExceptionType.FOOTER_UNSUPPORTED);
         } else {
             mFooterLayout.removeAllViews();
             mFooterLayout.addView(view);
@@ -195,7 +195,7 @@ public final class ViewDelegate {
      */
     public void setFooterFloating(boolean floating) {
         if (mFooterLayout == null) {
-            ExceptionManager.getInstance().showException(new ViewException("不支持设置Footer。"));
+            ExceptionDispatcher.dispatchThrowable(mLifecycleOwner, ExceptionType.FOOTER_UNSUPPORTED);
         } else {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mRefreshLayout.getLayoutParams();
             params.addRule(RelativeLayout.ABOVE, floating ? 0 : R.id.footer_layout);
@@ -371,9 +371,9 @@ public final class ViewDelegate {
 
     void initToolbar() {
         // 初始化标题栏监听事件
-        if (mToolbar != null && mLifecycleOwner instanceof StarterProvider) {
+        if (mToolbar != null && mLifecycleOwner instanceof SupportProvider) {
             mToolbar.setBackListener(v -> {
-                StarterDelegate delegate = ((StarterProvider) mLifecycleOwner).getStarterDelegate();
+                SupportDelegate delegate = ((SupportProvider) mLifecycleOwner).getStarterDelegate();
                 delegate.pop();
             });
         }
@@ -479,11 +479,10 @@ public final class ViewDelegate {
      */
     boolean isContentViewExist() {
         if (mContentView == null) {
-            ExceptionManager.getInstance().showException(null);
+            ExceptionDispatcher.dispatchThrowable(mLifecycleOwner, ExceptionType.CONTENT_VIEW_NULL);
             return false;
         }
         return true;
     }
-
 
 }

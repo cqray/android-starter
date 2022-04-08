@@ -7,7 +7,7 @@ import com.blankj.utilcode.util.Utils;
 
 import cn.cqray.android.anim.DefaultVerticalAnimator;
 import cn.cqray.android.anim.FragmentAnimator;
-import cn.cqray.android.app.StarterDispatcher;
+import cn.cqray.android.app.SupportDispatcher;
 
 /**
  * Android库入口
@@ -63,7 +63,7 @@ public class Starter {
                             mApplication = application;
                             mStarterStrategy = strategy;
                             Utils.init(application);
-                            StarterDispatcher.initialize(application);
+                            SupportDispatcher.initialize(application);
                             return;
                         }
                     } catch (ClassNotFoundException ignored) {}

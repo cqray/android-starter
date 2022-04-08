@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.cqray.android.R;
-import cn.cqray.android.app.StarterProvider;
+import cn.cqray.android.app.SupportProvider;
 
 /**
  * 滑动返回控件
@@ -79,9 +79,9 @@ public class SwipeBackLayout extends FrameLayout {
     /** 滑动拖拽辅助类 **/
     private ViewDragHelper mHelper;
     /** Activity **/
-    private StarterProvider mActivityProvider;
+    private SupportProvider mActivityProvider;
     /** Fragment **/
-    private StarterProvider mFragmentProvider;
+    private SupportProvider mFragmentProvider;
 
     public SwipeBackLayout(Context context) {
         this(context, null);
@@ -260,7 +260,7 @@ public class SwipeBackLayout extends FrameLayout {
         }
     }
 
-    public void attachToActivity(StarterProvider provider) {
+    public void attachToActivity(SupportProvider provider) {
         if (getParent() == null) {
             mActivityProvider = provider;
             AppCompatActivity act = (AppCompatActivity) provider;
@@ -279,7 +279,7 @@ public class SwipeBackLayout extends FrameLayout {
         }
     }
 
-    public void attachToFragment(@NonNull StarterProvider fragment, @NonNull View view) {
+    public void attachToFragment(@NonNull SupportProvider fragment, @NonNull View view) {
         if (view.getParent() == null) {
             addView(view);
             mFragmentProvider = fragment;

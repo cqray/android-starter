@@ -3,6 +3,8 @@
 
     <application>
 
-        <activity android:name=".exception.ExceptionActivity" />
+        <activity
+            android:name=".exception.ExceptionActivity"
+            android:launchMode="singleTop" />
     </application>
 </manifest>
