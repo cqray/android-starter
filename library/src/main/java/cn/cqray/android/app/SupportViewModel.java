@@ -1,6 +1,8 @@
 package cn.cqray.android.app;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.IdRes;
@@ -15,6 +17,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
+
+import com.blankj.utilcode.util.ActivityUtils;
 
 import java.util.Stack;
 import java.util.UUID;
@@ -75,7 +79,7 @@ public final class SupportViewModel extends LifecycleViewModel {
                 pop();
             }
             return;
-        }
+        }  
         // 栈顶Fragment不为空，回退栈顶Fragment
         // 判断是否进行回退拦截
         if (mBackStack.size() > 1) {
@@ -168,6 +172,7 @@ public final class SupportViewModel extends LifecycleViewModel {
      * @param intent NavIntent
      */
     public void start(@NonNull NavIntent intent) {
+        // 未设置布局ID
         if (mContainerId == 0) {
             ExceptionDispatcher.dispatchStarterThrowable(
                     null,
@@ -175,11 +180,26 @@ public final class SupportViewModel extends LifecycleViewModel {
                     "未设置ContainerId，便开始调用start()方法。");
             return;
         }
+        // 未设置目标Class
+        if (intent.getToClass() == null) {
+            ExceptionDispatcher.dispatchStarterThrowable(
+                    null,
+                    "未设置目标Class。",
+                    "start()跳转界面时没设置目标Class。");
+            return;
+        }
         // 是否需要回退
         boolean needPop = intent.getPopToClass() != null;
         // 回退到指定的Fragment
         if (needPop) {
             popTo(intent.getPopToClass(), intent.isPopToInclusive());
+        }
+        // 跳转到指定Activity
+        if (Activity.class.isAssignableFrom(intent.getToClass())) {
+            Intent actIntent = new Intent(ActivityUtils.getTopActivity(), intent.getToClass());
+            actIntent.putExtras(intent.getArguments());
+            ActivityUtils.startActivity(actIntent);
+            return;
         }
         // 获取栈顶Fragment
         Fragment top = getTopFragment();
@@ -227,12 +247,18 @@ public final class SupportViewModel extends LifecycleViewModel {
     }
 
     /**
-     * 回退到指定的Fragment
-     * @param popTo 指定的Fragment
-     * @param inclusive 是否包含指定的Fragment
+     * 回退到指定的Fragment或Activity
+     * @param popTo 指定的Fragment或Activity
+     * @param inclusive 是否包含指定的Fragment或Activity
      */
+    @SuppressWarnings("unchecked")
     public void popTo(Class<?> popTo, boolean inclusive) {
         FragmentManager fm = mActivity.getSupportFragmentManager();
+        // 回退到指定的Activity
+        if (Activity.class.isAssignableFrom(popTo)) {
+            ActivityUtils.finishToActivity((Class<? extends Activity>) popTo, inclusive);
+            return;
+        }
         // 如果是第一个入栈的Fragment并且需要销毁，则父级pop。
         if (isRootFragment(popTo) && inclusive) {
             mActivity.finish();

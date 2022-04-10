@@ -1,7 +1,5 @@
 package cn.cqray.android.lifecycle;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModel;

@@ -37,19 +37,22 @@ import cn.cqray.android.state.ViewState;
 import cn.cqray.android.util.ButterKnifeUtils;
 import cn.cqray.android.util.ObjectUtils;
 import cn.cqray.android.widget.Toolbar;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
 /**
  * 界面布局代理
  * @author Cqray
  */
+@Accessors(prefix = "m")
 public final class ViewDelegate {
 
     /** 内容控件 **/
-    private View mContentView;
+    private @Getter View mContentView;
     /** 标题 **/
-    private Toolbar mToolbar;
+    private @Getter Toolbar mToolbar;
     /** 刷新控件 **/
-    private StateRefreshLayout mRefreshLayout;
+    private @Getter StateRefreshLayout mRefreshLayout;
     /** 头部容器 **/
     private FrameLayout mHeaderLayout;
     /** 底部容器 **/
@@ -279,18 +282,6 @@ public final class ViewDelegate {
         return isContentViewExist() ? mContentView.findViewById(resId) : null;
     }
 
-    public Toolbar getToolbar() {
-        return mToolbar;
-    }
-
-    public StateRefreshLayout getRefreshLayout() {
-        return mRefreshLayout;
-    }
-
-    public View getContentView() {
-        return mContentView;
-    }
-
     public Context getContext() {
         if (mLifecycleOwner instanceof AppCompatActivity) {
             return (Context) mLifecycleOwner;
@@ -355,17 +346,6 @@ public final class ViewDelegate {
         }
 
         initToolbar();
-//        SupportHandler<CommonToolbar> tHandler = AndroidLibrary.getInstance().getToolbarHandler();
-//        SupportHandler<StateRefreshLayout> rHandler = AndroidLibrary.getInstance().getRefreshLayoutHandler();
-//        // 全局初始化Toolbar
-//        if (tHandler != null && mToolbar != null) {
-//            tHandler.onHandle(mDelegateProvider, mToolbar);
-//        }
-//        // 全局初始化刷新控件
-//        if (rHandler != null && mRefreshLayout != null) {
-//            rHandler.onHandle(mDelegateProvider, mRefreshLayout);
-//        }
-        // 初始化ButterKnife
         initUnBinder();
     }
 
