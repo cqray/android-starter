@@ -36,7 +36,7 @@ public class ErrorAdapter extends StateAdapter {
 
     public void setButtonVisible(final boolean visible) {
         post(() -> {
-            ViewGroup parent = (ViewGroup) getView();
+            ViewGroup parent = (ViewGroup) getContentView();
             TextView btn = (TextView) parent.getChildAt(2);
             btn.setVisibility(visible ? View.VISIBLE : View.GONE);
         });
@@ -54,7 +54,7 @@ public class ErrorAdapter extends StateAdapter {
 
     protected void setText(final String text) {
         post(() -> {
-            ViewGroup parent = (ViewGroup) getView();
+            ViewGroup parent = (ViewGroup) getContentView();
             TextView tv = (TextView) parent.getChildAt(1);
             tv.setText(TextUtils.isEmpty(text) ? "页面异常" : text);
         });

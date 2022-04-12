@@ -20,6 +20,6 @@
     <item name="starter_tab_layout" type="id" />
 
     <item name="starter_toolbar_title" type="id" />
-    <item name="starter_toolbar_back_layout" type="id" />
+    <item name="starter_toolbar_back_view" type="id" />
     <item name="starter_toolbar_action_layout" type="id" />
 </resources>

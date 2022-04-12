@@ -15,10 +15,14 @@ import androidx.core.view.ViewCompat;
 import java.io.Serializable;
 import java.util.Vector;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
 /**
  * 状态适配器
  * @author Cqray
  */
+@Accessors(prefix = "m")
 public class StateAdapter implements Serializable {
 
     /** 是否连接父容器 **/
@@ -26,13 +30,13 @@ public class StateAdapter implements Serializable {
     /** 资源ID **/
     private int mLayoutResId;
     /** 文本内容 **/
-    private String mText;
+    private @Getter String mText;
     /** 根布局 **/
-    private View mRootView;
+    private @Getter View mContentView;
+    /** 刷新控件 **/
+    private @Getter StateRefreshLayout mRefreshLayout;
     /** 父容器 **/
     private FrameLayout mParentView;
-    /** 刷新控件 **/
-    private StateRefreshLayout mRefreshLayout;
     /** 事务 **/
     private Vector<Runnable> mActions = new Vector<>();
 
@@ -45,17 +49,17 @@ public class StateAdapter implements Serializable {
     protected void show(String text) {
         mText = text;
         post(() -> {
-            if (mRootView.getParent() == null) {
-                mParentView.addView(mRootView);
+            if (mContentView.getParent() == null) {
+                mParentView.addView(mContentView);
                 mParentView.setVisibility(View.VISIBLE);
-                mRootView.bringToFront();
+                mContentView.bringToFront();
             }
         });
     }
 
     protected void hide() {
         post(() -> {
-            mParentView.removeView(mRootView);
+            mParentView.removeView(mContentView);
             mParentView.setVisibility(View.GONE);
         });
     }
@@ -73,33 +77,21 @@ public class StateAdapter implements Serializable {
     }
 
     public void setBackground(final Drawable background) {
-        post(() -> ViewCompat.setBackground(mRootView, background));
-    }
-
-    public String getText() {
-        return mText;
-    }
-
-    public StateRefreshLayout getRefreshLayout() {
-        return mRefreshLayout;
-    }
-
-    public View getView() {
-        return mRootView;
+        post(() -> ViewCompat.setBackground(mContentView, background));
     }
 
     void onAttach(StateRefreshLayout refreshLayout, FrameLayout parent) {
-        if (mRootView == null) {
+        if (mContentView == null) {
             Context context = parent.getContext();
             mAttached = true;
             mParentView = parent;
             mRefreshLayout = refreshLayout;
-            mRootView = LayoutInflater.from(context).inflate(mLayoutResId, parent, false);
+            mContentView = LayoutInflater.from(context).inflate(mLayoutResId, parent, false);
             for (Runnable action : mActions) {
                 action.run();
             }
             mActions.clear();
-            onViewCreated(mRootView);
+            onViewCreated(mContentView);
         }
     }
 }

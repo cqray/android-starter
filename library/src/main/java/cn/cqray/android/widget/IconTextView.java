@@ -24,6 +24,8 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.ImageViewCompat;
 
+import com.blankj.utilcode.util.SizeUtils;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -31,10 +33,10 @@ import cn.cqray.android.R;
 import cn.cqray.android.util.ViewUtils;
 
 /**
- * 图标文本布局
+ * 图标文本控件
  * @author Cqray
  */
-public class IconTextLayout extends LinearLayout {
+public class IconTextView extends LinearLayout {
 
     public static final int GRAVITY_LEFT = 0;
     public static final int GRAVITY_TOP = 1;
@@ -56,26 +58,26 @@ public class IconTextLayout extends LinearLayout {
     /** 图标与文字的间隔 **/
     private int mItvSpace;
 
-    public IconTextLayout(Context context) {
+    public IconTextView(Context context) {
         this(context, null);
     }
 
-    public IconTextLayout(Context context, @Nullable AttributeSet attrs) {
+    public IconTextView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public IconTextLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public IconTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         // 获取属性
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.IconTextLayout);
-        mItvGravity = ta.getInt(R.styleable.IconTextLayout_itlGravity, GRAVITY_LEFT);
-        mItvSpace = ta.getDimensionPixelSize(R.styleable.IconTextLayout_itlSpace, getResources().getDimensionPixelSize(R.dimen.small));
-        boolean useRipple = ta.getBoolean(R.styleable.IconTextLayout_itlUseRipple, true);
-        String text = ta.getString(R.styleable.IconTextLayout_android_text);
-        int textSize = ta.getDimensionPixelSize(R.styleable.IconTextLayout_android_textSize, getResources().getDimensionPixelSize(R.dimen.body));
-        int textColor = ta.getColor(R.styleable.IconTextLayout_android_textColor, ContextCompat.getColor(context, R.color.text));
-        int textStyle = ta.getInt(R.styleable.IconTextLayout_android_textStyle, 0);
-        Drawable drawable = ta.getDrawable(R.styleable.IconTextLayout_android_src);
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.IconTextView);
+        mItvGravity = ta.getInt(R.styleable.IconTextView_sGravity, GRAVITY_LEFT);
+        mItvSpace = ta.getDimensionPixelSize(R.styleable.IconTextView_sSpace, getResources().getDimensionPixelSize(R.dimen.small));
+        String text = ta.getString(R.styleable.IconTextView_android_text);
+        int textColor = ta.getColor(R.styleable.IconTextView_android_textColor, ContextCompat.getColor(context, R.color.text));
+        int textSize = ta.getDimensionPixelSize(R.styleable.IconTextView_android_textSize, getResources().getDimensionPixelSize(R.dimen.body));
+        int textStyle = ta.getInt(R.styleable.IconTextView_android_textStyle, 0);
+        boolean useRipple = ta.getBoolean(R.styleable.IconTextView_sUseRipple, true);
+        Drawable drawable = ta.getDrawable(R.styleable.IconTextView_android_src);
         ta.recycle();
         // 设置方向
         boolean horizontal = mItvGravity == GRAVITY_LEFT || mItvGravity == GRAVITY_RIGHT;
@@ -111,7 +113,7 @@ public class IconTextLayout extends LinearLayout {
         setOnClickListener(null);
     }
 
-    public IconTextLayout setIconGravity(@Gravity int gravity) {
+    public IconTextView setIconGravity(@Gravity int gravity) {
         removeAllViews();
         mItvGravity = gravity;
         boolean horizontal = mItvGravity == GRAVITY_LEFT || mItvGravity == GRAVITY_RIGHT;
@@ -124,72 +126,76 @@ public class IconTextLayout extends LinearLayout {
         return this;
     }
 
-    public IconTextLayout setSpace(float space) {
+    public IconTextView setSpace(float space) {
+        return setSpace(space, TypedValue.COMPLEX_UNIT_DIP);
+    }
+
+    public IconTextView setSpace(float space, int unit) {
         boolean horizontal = mItvGravity == GRAVITY_LEFT || mItvGravity == GRAVITY_RIGHT;
-        mItvSpace = (int) (getResources().getDisplayMetrics().density * space + 0.5f);
+        mItvSpace = (int) SizeUtils.applyDimension(space, unit);
         mSpaceView.setLayoutParams(new ViewGroup.LayoutParams(horizontal ? mItvSpace : -1, !horizontal ? mItvSpace : -1));
         return this;
     }
 
-    public IconTextLayout setUseRipple(boolean useRipple) {
+    public IconTextView setUseRipple(boolean useRipple) {
         ViewUtils.setRippleBackground(mIconView, useRipple);
         ViewUtils.setRippleBackground(mTextView, useRipple);
         return this;
     }
 
-    public IconTextLayout setIconDrawable(Drawable drawable) {
+    public IconTextView setIconDrawable(Drawable drawable) {
         mIconView.setImageDrawable(drawable);
         return this;
     }
 
-    public IconTextLayout setIconBitmap(Bitmap bitmap) {
+    public IconTextView setIconBitmap(Bitmap bitmap) {
         mIconView.setImageBitmap(bitmap);
         return this;
     }
 
-    public IconTextLayout setIconResource(@DrawableRes int resId) {
+    public IconTextView setIconResource(@DrawableRes int resId) {
         mIconView.setImageResource(resId);
         return this;
     }
 
-    public IconTextLayout setIconTintColor(int color) {
+    public IconTextView setIconTintColor(int color) {
         ImageViewCompat.setImageTintList(mIconView, ColorStateList.valueOf(color));
         return this;
     }
 
-    public IconTextLayout setIconTintList(ColorStateList tintList) {
+    public IconTextView setIconTintList(ColorStateList tintList) {
         ImageViewCompat.setImageTintList(mIconView, tintList);
         return this;
     }
 
-    public IconTextLayout setText(@StringRes int resId) {
+    public IconTextView setText(@StringRes int resId) {
         mTextView.setText(resId);
         mSpaceView.setVisibility(TextUtils.isEmpty(mTextView.getText()) ? GONE : VISIBLE);
         return this;
     }
 
-    public IconTextLayout setText(CharSequence text) {
+    public IconTextView setText(CharSequence text) {
         mTextView.setText(text);
         mSpaceView.setVisibility(TextUtils.isEmpty(mTextView.getText()) ? GONE : VISIBLE);
         return this;
     }
 
-    public IconTextLayout setTextColor(int color) {
+    public IconTextView setTextColor(int color) {
         mTextView.setTextColor(color);
         return this;
     }
 
-    public IconTextLayout setTextSize(float textSize) {
+    public IconTextView setTextSize(float textSize) {
         mTextView.setTextSize(textSize);
         return this;
     }
 
-    public IconTextLayout setTextSize(int unit, float textSize) {
+    public IconTextView setTextSize(float textSize, int unit) {
         mTextView.setTextSize(unit, textSize);
         return this;
     }
 
-    public IconTextLayout setTypeface(Typeface typeface) {
+    public IconTextView setTypeface(Typeface typeface) {
         mTextView.setTypeface(typeface);
         return this;
     }

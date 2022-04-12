@@ -29,7 +29,7 @@ public class BusyAdapter extends StateAdapter {
         ViewGroup parent = (ViewGroup) view;
         SpinView lv = (SpinView) parent.getChildAt(0);
         lv.setArcCount(4);
-        lv.setArcShakeRatio(0.2f);
+        lv.setArcShakeRatio(0.1f);
         lv.setArcStrokeWidth(4);
         lv.setArcColors(primary, accent);
     }

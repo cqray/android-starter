@@ -135,7 +135,6 @@ public class SpinView extends View {
                 (Math.abs(size - mViewWidth) >> 1) + size - strokeWidth,
                 (Math.abs(size - mViewHeight) >> 1) + size - strokeWidth);
         for (int i = 0; i < mArcCount; i++) {
-
             mPaint.setColor(mArcColors[i % mArcColors.length]);
             mPaint.setStyle(Paint.Style.STROKE);
             mPaint.setStrokeWidth(strokeWidth);
@@ -168,9 +167,9 @@ public class SpinView extends View {
             this.mArcColors = new int[] {ContextCompat.getColor(getContext(), R.color.colorAccent)};
         } else {
             this.mArcColors = colors;
-            if (colors.length > mArcCount) {
-                mArcCount = colors.length;
-            }
+//            if (colors.length > mArcCount) {
+//                mArcCount = colors.length;
+//            }
         }
         return this;
     }

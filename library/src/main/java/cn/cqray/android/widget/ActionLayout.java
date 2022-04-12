@@ -1,13 +1,14 @@
 package cn.cqray.android.widget;
 
 import android.content.Context;
-import android.content.res.Resources;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,17 +16,19 @@ import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.ImageViewCompat;
+
+import com.blankj.utilcode.util.SizeUtils;
 
 import cn.cqray.android.R;
 import cn.cqray.android.util.ViewUtils;
-
-import static android.util.TypedValue.COMPLEX_UNIT_PX;
 
 /**
  * Action布局控件
@@ -63,25 +66,25 @@ public class ActionLayout extends LinearLayout {
     public ActionLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ActionLayout);
-        mActionSpace = ta.getDimensionPixelSize(R.styleable.ActionLayout_alActionSpace,
+        mActionSpace = ta.getDimensionPixelSize(R.styleable.ActionLayout_sActionSpace,
                 getResources().getDimensionPixelSize(R.dimen.content)) / 2;
-        mActionTextSize = ta.getDimensionPixelSize(R.styleable.ActionLayout_alActionTextSize,
+        mActionTextSize = ta.getDimensionPixelSize(R.styleable.ActionLayout_sActionTextSize,
                 getResources().getDimensionPixelSize(R.dimen.body));
-        mActionTextColor = ta.getColor(R.styleable.ActionLayout_alActionTextColor,
+        mActionTextColor = ta.getColor(R.styleable.ActionLayout_sActionTextColor,
                 ContextCompat.getColor(context, R.color.text));
-        mActionTextStyle = ta.getInt(R.styleable.ActionLayout_alActionTextStyle, 0);
-        mUseRipple = ta.getBoolean(R.styleable.ActionLayout_alUseRipple, true);
+        mActionTextStyle = ta.getInt(R.styleable.ActionLayout_sActionTextStyle, 0);
+        mUseRipple = ta.getBoolean(R.styleable.ActionLayout_sUseRipple, true);
         ta.recycle();
         mLeftSpace = new Space(context);
         mRightSpace = new Space(context);
         addView(mLeftSpace);
         addView(mRightSpace);
-        setActionSpace(Float.MIN_VALUE);
+        setActionSpace(mActionSpace, TypedValue.COMPLEX_UNIT_PX);
     }
 
     @Override
     public void setPaddingRelative(int start, int top, int end, int bottom) {
-        // Not do anything.
+        // do nothing.
     }
 
     public ActionLayout setActionText(int key, @StringRes int resId) {
@@ -93,7 +96,7 @@ public class ActionLayout extends LinearLayout {
         boolean horizontal = getOrientation() == HORIZONTAL;
         TextView tv = new AppCompatTextView(getContext());
         tv.setText(text);
-        tv.setTextSize(COMPLEX_UNIT_PX, mActionTextSize);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, mActionTextSize);
         tv.setTextColor(mActionTextColor);
         tv.setGravity(Gravity.CENTER);
         tv.setPadding(mActionSpace, 0, mActionSpace, 0);
@@ -108,7 +111,7 @@ public class ActionLayout extends LinearLayout {
         return this;
     }
 
-    public ActionLayout setActionTextColor(int color) {
+    public ActionLayout setDefaultActionTextColor(@ColorInt int color) {
         mActionTextColor = color;
         for (int i = 0; i < mViewArray.size(); i++) {
             View view = mViewArray.valueAt(i);
@@ -119,7 +122,7 @@ public class ActionLayout extends LinearLayout {
         return this;
     }
 
-    public ActionLayout setActionTextColor(int key, int color) {
+    public ActionLayout setActionTextColor(int key, @ColorInt int color) {
         View view = mViewArray.get(key);
         if (view instanceof TextView) {
             ((TextView) view).setTextColor(color);
@@ -127,26 +130,34 @@ public class ActionLayout extends LinearLayout {
         return this;
     }
 
-    public ActionLayout setActionTextSize(float size) {
-        mActionTextSize = toPx(size);
+    public ActionLayout setDefaultActionTextSize(float size) {
+        return setDefaultActionTextSize(size, TypedValue.COMPLEX_UNIT_DIP);
+    }
+
+    public ActionLayout setDefaultActionTextSize(float size, int unit) {
+        mActionTextSize = (int) SizeUtils.applyDimension(size, unit);
         for (int i = 0; i < mViewArray.size(); i++) {
             View view = mViewArray.valueAt(i);
             if (view instanceof TextView) {
-                ((TextView) view).setTextSize(COMPLEX_UNIT_PX, mActionTextSize);
+                ((TextView) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, mActionTextSize);
             }
         }
         return this;
     }
 
     public ActionLayout setActionTextSize(int key, float size) {
+        return setActionTextSize(key, size, TypedValue.COMPLEX_UNIT_DIP);
+    }
+
+    public ActionLayout setActionTextSize(int key, float size, int unit) {
         View view = mViewArray.get(key);
         if (view instanceof TextView) {
-            ((TextView) view).setTextSize(size);
+            ((TextView) view).setTextSize(unit, size);
         }
         return this;
     }
 
-    public ActionLayout setActionTypeface(Typeface typeface) {
+    public ActionLayout setDefaultActionTypeface(Typeface typeface) {
         for (int i = 0; i < mViewArray.size(); i++) {
             View view = mViewArray.valueAt(i);
             if (view instanceof TextView) {
@@ -168,7 +179,15 @@ public class ActionLayout extends LinearLayout {
         return setActionIcon(key, ContextCompat.getDrawable(getContext(), resId));
     }
 
+    public ActionLayout setActionIcon(int key, @DrawableRes int resId, @ColorInt int tint) {
+        return setActionIcon(key, ContextCompat.getDrawable(getContext(), resId), tint);
+    }
+
     public ActionLayout setActionIcon(int key, Drawable drawable) {
+        return setActionIcon(key, drawable, null);
+    }
+
+    public ActionLayout setActionIcon(int key, Drawable drawable, @Nullable @ColorInt Integer tintColor) {
         int index = indexOf(key);
         boolean horizontal = getOrientation() == HORIZONTAL;
         ImageView iv = new AppCompatImageView(getContext());
@@ -180,6 +199,9 @@ public class ActionLayout extends LinearLayout {
         iv.setVisibility(mVisibleArray.get(key) ? VISIBLE : GONE);
         addView(iv, index);
         ViewUtils.setRippleBackground(iv, mUseRipple);
+        if (tintColor != null) {
+            ImageViewCompat.setImageTintList(iv, ColorStateList.valueOf(tintColor));
+        }
         mViewArray.put(key, iv);
         return this;
     }
@@ -203,7 +225,7 @@ public class ActionLayout extends LinearLayout {
         return this;
     }
 
-    public ActionLayout setUseRipple(boolean useRipple) {
+    public ActionLayout setDefaultUseRipple(boolean useRipple) {
         mUseRipple = useRipple;
         for (int i = 0; i < mViewArray.size(); i++) {
             View view = mViewArray.valueAt(i);
@@ -222,9 +244,11 @@ public class ActionLayout extends LinearLayout {
     }
 
     public ActionLayout setActionSpace(float space) {
-        if (space != Float.MIN_VALUE) {
-            mActionSpace = toPx(space / 2);
-        }
+        return setActionSpace(space, TypedValue.COMPLEX_UNIT_DIP);
+    }
+
+    public ActionLayout setActionSpace(float space, int unit) {
+        mActionSpace = (int) SizeUtils.applyDimension(space, unit);
         boolean horizontal = getOrientation() == HORIZONTAL;
         mLeftSpace.getLayoutParams().width = horizontal ? mActionSpace : 0;
         mLeftSpace.getLayoutParams().height = !horizontal ? mActionSpace : 0;
@@ -277,10 +301,5 @@ public class ActionLayout extends LinearLayout {
             mVisibleArray.put(key, true);
         }
         return index + 1;
-    }
-
-    private int toPx(float dip) {
-        float density = Resources.getSystem().getDisplayMetrics().density;
-        return (int) (dip * density +0.5f);
     }
 }

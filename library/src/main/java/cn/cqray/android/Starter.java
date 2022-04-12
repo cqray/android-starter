@@ -8,11 +8,17 @@ import com.blankj.utilcode.util.Utils;
 import cn.cqray.android.anim.DefaultVerticalAnimator;
 import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.app.SupportDispatcher;
+import cn.cqray.android.strategy.StateStrategy;
+import cn.cqray.android.strategy.ToolbarStrategy;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.experimental.Accessors;
 
 /**
  * Android库入口
  * @author Cqray
  */
+@Accessors(prefix = "m")
 public class Starter {
 
     private static final class Holder {
@@ -24,6 +30,9 @@ public class Starter {
     /** Fragment切换动画 **/
     private FragmentAnimator mFragmentAnimator;
     private StarterStrategy mStarterStrategy;
+
+    private @NonNull @Getter StateStrategy mStateStrategy = StateStrategy.builder().build();
+    private @NonNull @Getter ToolbarStrategy mToolbarStrategy = ToolbarStrategy.builder().build();
 
     private Starter() {
         mFragmentAnimator = new DefaultVerticalAnimator();

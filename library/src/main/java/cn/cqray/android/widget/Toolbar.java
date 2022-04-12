@@ -3,7 +3,6 @@ package cn.cqray.android.widget;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 
 import android.graphics.Bitmap;
@@ -19,6 +18,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +31,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
 import androidx.lifecycle.MutableLiveData;
 
+import com.blankj.utilcode.util.SizeUtils;
 import com.google.android.material.shape.MaterialShapeDrawable;
 import com.google.android.material.shape.MaterialShapeUtils;
 
@@ -45,13 +46,14 @@ public class Toolbar extends RelativeLayout {
     /** 标题控件 **/
     private TextView mTitleView;
     private View mDividerView;
-    private IconTextLayout mBackLayout;
+    private IconTextView mBackView;
     private ActionLayout mActionLayout;
 
     private int mTitleSpace;
     private boolean mTitleCenter;
     private LifecycleRegistry mLifecycleRegistry;
     private LifecycleOwner mLifecycleOwner;
+
     private final MutableLiveData<Integer> mPadding = new MutableLiveData<>();
     private final MutableLiveData<Boolean> mUseRipple = new MutableLiveData<>();
     private final MutableLiveData<Boolean> mTitleCenterData = new MutableLiveData<>();
@@ -70,36 +72,21 @@ public class Toolbar extends RelativeLayout {
         mLifecycleOwner = () -> mLifecycleRegistry;
         mLifecycleRegistry = new LifecycleRegistry(mLifecycleOwner);
         mLifecycleRegistry.setCurrentState(Lifecycle.State.INITIALIZED);
-        // 设置属性
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.Toolbar);
-        int padding = ta.getDimensionPixelSize(R.styleable.Toolbar_tbPadding, getResources().getDimensionPixelSize(R.dimen.content));
-        float elevation = ta.getDimension(R.styleable.Toolbar_tbElevation, getResources().getDimension(R.dimen.elevation));
-        boolean useRipple = ta.getBoolean(R.styleable.Toolbar_tbUseRipple, true);
-        boolean titleEditable = ta.getBoolean(R.styleable.Toolbar_tbTitleEditable, false);
-        mTitleCenter = ta.getBoolean(R.styleable.Toolbar_tbTitleCenter, false);
-        mTitleSpace = ta.getDimensionPixelSize(R.styleable.Toolbar_tbTitleSpace, getResources().getDimensionPixelSize(R.dimen.content));
-        ta.recycle();
-        int primaryColor = ContextCompat.getColor(context, R.color.colorPrimary);
-        Drawable background = getBackground() == null ? new ColorDrawable(primaryColor) : getBackground();
-        // 设置MaterialShapeDrawable
-        if (background instanceof ColorDrawable) {
-            ViewCompat.setBackground(this, createMaterialShapeDrawableBackground(background));
-        }
         // 设置默认Id
         if (getId() == NO_ID) {
             setId(R.id.starter_toolbar);
         }
-
-        mTitleCenterData.postValue(mTitleCenter);
-        mTitleEditable.setValue(titleEditable);
-        mUseRipple.setValue(useRipple);
-        mPadding.setValue(padding);
-
-        setElevation(elevation);
+        // 初始化一些基础属性
+        initToolbarBasic(attrs);
+        // 初始化回退按钮
         initToolbarBack(attrs);
+        // 初始化Action
         initToolbarAction(attrs);
+        // 初始化标题
         initToolbarTittle(attrs);
+        // 初始化分割线
         initToolbarDivider(attrs);
+        // 初始化LiveData
         initLiveData();
     }
 
@@ -116,53 +103,68 @@ public class Toolbar extends RelativeLayout {
         mLifecycleRegistry.setCurrentState(Lifecycle.State.DESTROYED);
     }
 
+    private void initToolbarBasic(AttributeSet attrs) {
+        Context context = getContext();
+        int size = getResources().getDimensionPixelSize(R.dimen.content);
+        int elev = getResources().getDimensionPixelSize(R.dimen.elevation);
+        // 获取默认属性
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.Toolbar);
+        int padding = ta.getDimensionPixelSize(R.styleable.Toolbar_sPadding, size);
+        float elevation = ta.getDimension(R.styleable.Toolbar_sElevation, elev);
+        boolean useRipple = ta.getBoolean(R.styleable.Toolbar_sUseRipple, true);
+        boolean titleEditable = ta.getBoolean(R.styleable.Toolbar_sTitleEditable, false);
+        mTitleCenter = ta.getBoolean(R.styleable.Toolbar_sTitleCenter, false);
+        mTitleSpace = ta.getDimensionPixelSize(R.styleable.Toolbar_sTitleSpace, size);
+        ta.recycle();
+        // 设置标题栏背景
+        int primaryColor = ContextCompat.getColor(context, R.color.colorPrimary);
+        Drawable background = getBackground() == null ? new ColorDrawable(primaryColor) : getBackground();
+        ViewCompat.setBackground(this, createMaterialShapeDrawableBackground(background));
+        // 其他属性
+        mTitleCenterData.postValue(mTitleCenter);
+        mTitleEditable.setValue(titleEditable);
+        mUseRipple.setValue(useRipple);
+        mPadding.setValue(padding);
+        setElevation(elevation);
+    }
+
     private void initToolbarBack(AttributeSet attrs) {
         Context context = getContext();
+        // 获取属性
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.Toolbar);
-        Drawable drawable = ta.getDrawable(R.styleable.Toolbar_tbBackIcon);
-        String text = ta.getString(R.styleable.Toolbar_tbBackText);
-        boolean iconVisible = ta.getBoolean(R.styleable.Toolbar_tbBackIconVisible, true);
-        int backTextColor = ta.getColor(R.styleable.Toolbar_tbBackTextColor, Color.WHITE);
-        int backTextSize = ta.getDimensionPixelSize(R.styleable.Toolbar_tbBackTextSize, getResources().getDimensionPixelSize(R.dimen.h3));
-        int backTextStyle = ta.getInt(R.styleable.Toolbar_tbBackTextStyle, 0);
+        Drawable drawable = ta.getDrawable(R.styleable.Toolbar_sBackIcon);
+        String text = ta.getString(R.styleable.Toolbar_sBackText);
+        boolean iconVisible = ta.getBoolean(R.styleable.Toolbar_sBackIconVisible, true);
+        int backTextColor = ta.getColor(R.styleable.Toolbar_sBackTextColor, Color.WHITE);
+        int backTextSize = ta.getDimensionPixelSize(R.styleable.Toolbar_sBackTextSize, getResources().getDimensionPixelSize(R.dimen.h3));
+        int backTextStyle = ta.getInt(R.styleable.Toolbar_sBackTextStyle, 0);
         ta.recycle();
         // 设置Nav布局
         LayoutParams params = new LayoutParams(-2, -1);
-        mBackLayout = new IconTextLayout(context);
-        mBackLayout.setId(R.id.starter_toolbar_back_layout);
-        mBackLayout.setLayoutParams(params);
-        mBackLayout.setText(text);
-        mBackLayout.setTextColor(backTextColor);
-        mBackLayout.setTextSize(TypedValue.COMPLEX_UNIT_PX, backTextSize);
-        mBackLayout.setTypeface(Typeface.defaultFromStyle(backTextStyle));
-        mBackLayout.getIconView().setVisibility(iconVisible ? VISIBLE : GONE);
+        mBackView = new IconTextView(context);
+        mBackView.setId(R.id.starter_toolbar_back_view);
+        mBackView.setLayoutParams(params);
+        mBackView.setText(text);
+        mBackView.setTextColor(backTextColor);
+        mBackView.setTextSize(backTextSize, TypedValue.COMPLEX_UNIT_PX);
+        mBackView.setTypeface(Typeface.defaultFromStyle(backTextStyle));
+        mBackView.getIconView().setVisibility(iconVisible ? VISIBLE : GONE);
         if (drawable == null) {
-            mBackLayout.setIconResource(R.drawable.def_back_material_light);
+            mBackView.setIconResource(R.drawable.def_back_material_light);
         } else {
-            mBackLayout.setIconDrawable(drawable);
+            mBackView.setIconDrawable(drawable);
         }
-        addView(mBackLayout);
+        addView(mBackView);
     }
 
     private void initToolbarAction(AttributeSet attrs) {
         Context context = getContext();
-        float density = getResources().getDisplayMetrics().density;
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.Toolbar);
-        int actionTextColor = ta.getColor(R.styleable.Toolbar_tbActionTextColor, Color.WHITE);
-        int actionTextSize = ta.getDimensionPixelSize(R.styleable.Toolbar_tbActionTextSize, getResources().getDimensionPixelSize(R.dimen.h3));
-        int actionTextStyle = ta.getInt(R.styleable.Toolbar_tbActionTextStyle, 0);
-        int actionSpace = ta.getDimensionPixelSize(R.styleable.Toolbar_tbActionSpace, getResources().getDimensionPixelSize(R.dimen.content));
-        ta.recycle();
         // 设置Action布局
         LayoutParams params = new LayoutParams(-2, -1);
         params.addRule(Build.VERSION.SDK_INT >= 17 ? ALIGN_PARENT_END : ALIGN_PARENT_RIGHT);
-        mActionLayout = new ActionLayout(context);
+        mActionLayout = new ActionLayout(context, attrs);
         mActionLayout.setId(R.id.starter_toolbar_action_layout);
         mActionLayout.setLayoutParams(params);
-        mActionLayout.setActionTextColor(actionTextColor);
-        mActionLayout.setActionTextSize(actionTextSize / density);
-        mActionLayout.setActionTypeface(Typeface.defaultFromStyle(actionTextStyle));
-        mActionLayout.setActionSpace(actionSpace / density);
         addView(mActionLayout);
         mActionLayout.requestLayout();
     }
@@ -170,10 +172,10 @@ public class Toolbar extends RelativeLayout {
     private void initToolbarTittle(AttributeSet attrs) {
         Context context = getContext();
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.Toolbar);
-        String titleText = ta.getString(R.styleable.Toolbar_tbTitleText);
-        int titleTextColor = ta.getColor(R.styleable.Toolbar_tbTitleTextColor, Color.WHITE);
-        int titleTextSize = ta.getDimensionPixelSize(R.styleable.Toolbar_tbTitleTextSize, getResources().getDimensionPixelSize(R.dimen.h2));
-        int titleTextStyle = ta.getInt(R.styleable.Toolbar_tbTitleTextStyle, 0);
+        String titleText = ta.getString(R.styleable.Toolbar_sTitleText);
+        int titleTextColor = ta.getColor(R.styleable.Toolbar_sTitleTextColor, Color.WHITE);
+        int titleTextSize = ta.getDimensionPixelSize(R.styleable.Toolbar_sTitleTextSize, getResources().getDimensionPixelSize(R.dimen.h2));
+        int titleTextStyle = ta.getInt(R.styleable.Toolbar_sTitleTextStyle, 0);
         ta.recycle();
         // 设置标题
         mTitleView = new AppCompatEditText(context);
@@ -189,10 +191,10 @@ public class Toolbar extends RelativeLayout {
     private void initToolbarDivider(AttributeSet attrs) {
         Context context = getContext();
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.Toolbar);
-        int dividerColor = ta.getColor(R.styleable.Toolbar_tbDividerColor, ContextCompat.getColor(context, R.color.divider));
-        int dividerHeight = ta.getDimensionPixelSize(R.styleable.Toolbar_tbDividerHeight, 0);
-        int dividerMargin = ta.getDimensionPixelSize(R.styleable.Toolbar_tbDividerMargin, 0);
-        boolean dividerVisible = ta.getBoolean(R.styleable.Toolbar_tbDividerVisible, true);
+        int dividerColor = ta.getColor(R.styleable.Toolbar_sDividerColor, ContextCompat.getColor(context, R.color.divider));
+        int dividerHeight = ta.getDimensionPixelSize(R.styleable.Toolbar_sDividerHeight, 0);
+        int dividerMargin = ta.getDimensionPixelSize(R.styleable.Toolbar_sDividerMargin, 0);
+        boolean dividerVisible = ta.getBoolean(R.styleable.Toolbar_sDividerVisible, true);
         ta.recycle();
         // 设置分割线
         LayoutParams params = new LayoutParams(-1, dividerHeight);
@@ -207,13 +209,14 @@ public class Toolbar extends RelativeLayout {
 
     @SuppressLint("InlinedApi")
     private void initLiveData() {
+        // 标题居中监听
         mTitleCenterData.observe(mLifecycleOwner, center -> {
             boolean isNewApi = Build.VERSION.SDK_INT >= 17;
             int padding = mPadding.getValue() == null ? 0 : mPadding.getValue();
-            boolean iconVisible = mBackLayout.getIconView().getVisibility() == View.VISIBLE;
+            boolean iconVisible = mBackView.getIconView().getVisibility() == View.VISIBLE;
             LayoutParams params = (LayoutParams) mTitleView.getLayoutParams();
             if (center) {
-                int leftWidth = mBackLayout.getWidth() + (iconVisible ? mTitleSpace - padding : 0);
+                int leftWidth = mBackView.getWidth() + (iconVisible ? mTitleSpace - padding : 0);
                 int actionWidth = mActionLayout.getWidth() + mTitleSpace - mActionLayout.getActionSpace();
                 int m = Math.max(leftWidth, actionWidth);
                 params.addRule(isNewApi ? RelativeLayout.START_OF : RelativeLayout.LEFT_OF, -1);
@@ -223,7 +226,7 @@ public class Toolbar extends RelativeLayout {
                 mTitleView.setGravity(Gravity.CENTER);
             } else {
                 params.addRule(isNewApi ? RelativeLayout.START_OF : RelativeLayout.LEFT_OF, R.id.starter_toolbar_action_layout);
-                params.addRule(isNewApi ? RelativeLayout.END_OF : RelativeLayout.RIGHT_OF, R.id.starter_toolbar_back_layout);
+                params.addRule(isNewApi ? RelativeLayout.END_OF : RelativeLayout.RIGHT_OF, R.id.starter_toolbar_back_view);
                 params.leftMargin = iconVisible ? mTitleSpace - padding : 0;
                 params.rightMargin = mTitleSpace - mActionLayout.getActionSpace();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -235,14 +238,14 @@ public class Toolbar extends RelativeLayout {
             }
             mTitleView.setLayoutParams(params);
         });
+        // 监听设置标题栏是否可编辑
         mTitleEditable.observe(mLifecycleOwner, aBoolean -> {
             mTitleView.setFocusableInTouchMode(aBoolean);
             mTitleView.setClickable(aBoolean);
             mTitleView.setFocusable(aBoolean);
             mTitleView.setEnabled(aBoolean);
             if (aBoolean) {
-                TypedArray ta = getContext().obtainStyledAttributes(new int[]{
-                        android.R.attr.editTextBackground});
+                TypedArray ta = getContext().obtainStyledAttributes(new int[]{android.R.attr.editTextBackground});
                 Drawable drawable = ta.getDrawable(0);
                 ta.recycle();
                 ViewCompat.setBackground(mTitleView, drawable);
@@ -250,14 +253,16 @@ public class Toolbar extends RelativeLayout {
                 ViewCompat.setBackground(mTitleView, null);
             }
         });
+        // 是否使用水波纹
         mUseRipple.observe(mLifecycleOwner, aBoolean -> {
-            mBackLayout.setUseRipple(aBoolean);
-            mActionLayout.setUseRipple(aBoolean);
+            mBackView.setUseRipple(aBoolean);
+            mActionLayout.setDefaultUseRipple(aBoolean);
         });
+        // 间隔大小监听
         mPadding.observe(mLifecycleOwner, aInteger -> {
             // 设置BackLayout内部间隔
-            boolean iconVisible = mBackLayout.getIconView().getVisibility() == View.VISIBLE;
-            mBackLayout.setPadding(aInteger, 0, iconVisible ? aInteger : 0, 0);
+            boolean iconVisible = mBackView.getIconView().getVisibility() == View.VISIBLE;
+            mBackView.setPadding(aInteger, 0, iconVisible ? aInteger : 0, 0);
             // 设置ActionLayout右部间隔
             LayoutParams params = (LayoutParams) mActionLayout.getLayoutParams();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -285,7 +290,12 @@ public class Toolbar extends RelativeLayout {
     public void setGravity(int gravity) {}
 
     public Toolbar setPadding(float padding) {
-        mPadding.setValue(toPx(padding));
+        setPadding(padding, TypedValue.COMPLEX_UNIT_DIP);
+        return this;
+    }
+
+    public Toolbar setPadding(float padding, int unit) {
+        mPadding.setValue((int) SizeUtils.applyDimension(padding, unit));
         return this;
     }
 
@@ -295,75 +305,80 @@ public class Toolbar extends RelativeLayout {
     }
 
     public Toolbar setTitleCenter(boolean center) {
-        mTitleCenterData.postValue(center);
+        mTitleCenterData.setValue(center);
         return this;
     }
 
     public Toolbar setBackSpace(float space) {
-        mBackLayout.setSpace(space);
+        mBackView.setSpace(space);
         return this;
     }
 
     public Toolbar setBackIcon(@DrawableRes int resId) {
-        mBackLayout.setIconResource(resId);
+        mBackView.setIconResource(resId);
         return this;
     }
 
     public Toolbar setBackIcon(Drawable drawable) {
-        mBackLayout.setIconDrawable(drawable);
+        mBackView.setIconDrawable(drawable);
         return this;
     }
 
     public Toolbar setBackIcon(Bitmap bitmap) {
-        mBackLayout.setIconBitmap(bitmap);
+        mBackView.setIconBitmap(bitmap);
         return this;
     }
 
-    public Toolbar setBackIconTintColor(int color) {
-        mBackLayout.setIconTintColor(color);
+    public Toolbar setBackIconTintColor(@ColorInt int color) {
+        mBackView.setIconTintColor(color);
         return this;
     }
 
     public Toolbar setBackIconTintList(ColorStateList tintList) {
-        mBackLayout.setIconTintList(tintList);
+        mBackView.setIconTintList(tintList);
         return this;
     }
 
     public Toolbar setBackIconVisible(boolean visible) {
-        if (visible != (mBackLayout.getIconView().getVisibility() == VISIBLE)) {
-            mBackLayout.getIconView().setVisibility(visible ? VISIBLE : GONE);
+        if (visible != (mBackView.getIconView().getVisibility() == VISIBLE)) {
+            mBackView.getIconView().setVisibility(visible ? VISIBLE : GONE);
             mPadding.setValue(mPadding.getValue());
         }
         return this;
     }
 
     public Toolbar setBackText(CharSequence text) {
-        mBackLayout.setText(text);
+        mBackView.setText(text);
         return this;
     }
 
     public Toolbar setBackText(@StringRes int id) {
-        mBackLayout.setText(id);
+        mBackView.setText(id);
         return this;
     }
 
-    public Toolbar setBackTextColor(int color) {
-        mBackLayout.setTextColor(color);
+    public Toolbar setBackTextColor(@ColorInt int color) {
+        mBackView.setTextColor(color);
         return this;
     }
 
     public Toolbar setBackTextSize(float size) {
-        mBackLayout.setTextSize(size);
+        mBackView.setTextSize(size);
+        return this;
+    }
+
+    public Toolbar setBackTextSize(float size, int unit) {
+        mBackView.setTextSize(size, unit);
         return this;
     }
 
     public Toolbar setBackTypeface(Typeface typeface) {
-        mBackLayout.setTypeface(typeface);
+        mBackView.setTypeface(typeface);
         return this;
     }
 
     public Toolbar setBackListener(OnClickListener listener) {
-        mBackLayout.setOnClickListener(listener);
+        mBackView.setOnClickListener(listener);
         return this;
     }
 
@@ -377,13 +392,13 @@ public class Toolbar extends RelativeLayout {
         return this;
     }
 
-    public Toolbar setTitleTextColor(int color) {
+    public Toolbar setTitleTextColor(@ColorInt int color) {
         mTitleView.setTextColor(color);
         return this;
     }
 
-    public Toolbar setTitleTextSize(float size) {
-        mTitleView.setTextSize(size);
+    public Toolbar setTitleTextSize(float size, int unit) {
+        mTitleView.setTextSize(unit, size);
         return this;
     }
 
@@ -398,8 +413,12 @@ public class Toolbar extends RelativeLayout {
     }
 
     public Toolbar setTitleSpace(float space) {
-        mTitleSpace = toPx(space);
-        mTitleCenterData.postValue(mTitleCenter);
+        return setTitleSpace(space, TypedValue.COMPLEX_UNIT_DIP);
+    }
+
+    public Toolbar setTitleSpace(float space, int unit) {
+        mTitleSpace = (int) SizeUtils.applyDimension(space, unit);
+        mTitleCenterData.setValue(mTitleCenter);
         return this;
     }
 
@@ -408,22 +427,28 @@ public class Toolbar extends RelativeLayout {
         return this;
     }
 
-    public Toolbar setActionText(int key, int id) {
-        return setActionText(key, mActionLayout.getContext().getString(id));
-    }
-
-    public Toolbar setActionTextColor(int color) {
-        mActionLayout.setActionTextColor(color);
+    public Toolbar setActionText(int key, @StringRes int resId) {
+        mActionLayout.setActionText(key, resId);
         return this;
     }
 
-    public Toolbar setActionTextColor(int key, int color) {
+    public Toolbar setDefaultActionTextColor(@ColorInt int color) {
+        mActionLayout.setDefaultActionTextColor(color);
+        return this;
+    }
+
+    public Toolbar setActionTextColor(int key, @ColorInt int color) {
         mActionLayout.setActionTextColor(key, color);
         return this;
     }
 
-    public Toolbar setActionTextSize(float size) {
-        mActionLayout.setActionTextSize(size);
+    public Toolbar setDefaultActionTextSize(float size) {
+        mActionLayout.setDefaultActionTextSize(size);
+        return this;
+    }
+
+    public Toolbar setDefaultActionTextSize(float size, int unit) {
+        mActionLayout.setDefaultActionTextSize(size, unit);
         return this;
     }
 
@@ -432,8 +457,13 @@ public class Toolbar extends RelativeLayout {
         return this;
     }
 
-    public Toolbar setActionTypeface(Typeface typeface) {
-        mActionLayout.setActionTypeface(typeface);
+    public Toolbar setActionTextSize(int key, float size, int unit) {
+        mActionLayout.setActionTextSize(key, size, unit);
+        return this;
+    }
+
+    public Toolbar setDefaultActionTypeface(Typeface typeface) {
+        mActionLayout.setDefaultActionTypeface(typeface);
         return this;
     }
 
@@ -447,8 +477,18 @@ public class Toolbar extends RelativeLayout {
         return this;
     }
 
+    public Toolbar setActionIcon(int key, @DrawableRes int resId, @ColorInt int tintColor) {
+        mActionLayout.setActionIcon(key, resId, tintColor);
+        return this;
+    }
+
     public Toolbar setActionIcon(int key, Drawable drawable) {
         mActionLayout.setActionIcon(key, drawable);
+        return this;
+    }
+
+    public Toolbar setActionIcon(int key, Drawable drawable,  @ColorInt int tintColor) {
+        mActionLayout.setActionIcon(key, drawable, tintColor);
         return this;
     }
 
@@ -468,9 +508,13 @@ public class Toolbar extends RelativeLayout {
     }
 
     public Toolbar setActionSpace(float space) {
-        mActionLayout.setActionSpace(space);
+        return setActionSpace(space, TypedValue.COMPLEX_UNIT_DIP);
+    }
+
+    public Toolbar setActionSpace(float space, int unit) {
+        mActionLayout.setActionSpace(space, unit);
         mPadding.setValue(mPadding.getValue());
-        mTitleCenterData.postValue(mTitleCenter);
+        mTitleCenterData.setValue(mTitleCenter);
         return this;
     }
 
@@ -479,19 +523,27 @@ public class Toolbar extends RelativeLayout {
         return this;
     }
 
-    public Toolbar setDividerColor(int color) {
+    public Toolbar setDividerColor(@ColorInt int color) {
         mDividerView.setBackgroundColor(color);
         return this;
     }
 
     public Toolbar setDividerHeight(float height) {
-        mDividerView.getLayoutParams().height = toPx(height);
+        return setDividerHeight(height, TypedValue.COMPLEX_UNIT_DIP);
+    }
+
+    public Toolbar setDividerHeight(float height, int unit) {
+        mDividerView.getLayoutParams().height = (int) SizeUtils.applyDimension(height, unit);
         mDividerView.requestLayout();
         return this;
     }
 
     public Toolbar setDividerMargin(float margin) {
-        int m = toPx(margin);
+        return setDividerMargin(margin, TypedValue.COMPLEX_UNIT_DIP);
+    }
+
+    public Toolbar setDividerMargin(float margin, int unit) {
+        int m = (int) SizeUtils.applyDimension(margin, unit);
         LayoutParams params = (LayoutParams) mDividerView.getLayoutParams();
         params.setMargins(m, 0, m, 0);
         mDividerView.requestLayout();
@@ -503,8 +555,8 @@ public class Toolbar extends RelativeLayout {
         return this;
     }
 
-    public IconTextLayout getBackLayout() {
-        return mBackLayout;
+    public IconTextView getBackView() {
+        return mBackView;
     }
 
     public ActionLayout getActionLayout() {
@@ -516,18 +568,15 @@ public class Toolbar extends RelativeLayout {
     }
 
     @NonNull
-    private MaterialShapeDrawable createMaterialShapeDrawableBackground(@NonNull Drawable background) {
-        MaterialShapeDrawable materialShapeDrawable = new MaterialShapeDrawable();
+    private Drawable createMaterialShapeDrawableBackground(@NonNull Drawable background) {
         if (background instanceof ColorDrawable) {
+            MaterialShapeDrawable materialShapeDrawable = new MaterialShapeDrawable();
             materialShapeDrawable.setFillColor(
                     ColorStateList.valueOf(((ColorDrawable) background).getColor()));
+            materialShapeDrawable.initializeElevationOverlay(getContext());
+            return materialShapeDrawable;
+        } else {
+            return background;
         }
-        materialShapeDrawable.initializeElevationOverlay(getContext());
-        return materialShapeDrawable;
-    }
-
-    private int toPx(float dip) {
-        float density = Resources.getSystem().getDisplayMetrics().density;
-        return (int) (dip * density +0.5f);
     }
 }

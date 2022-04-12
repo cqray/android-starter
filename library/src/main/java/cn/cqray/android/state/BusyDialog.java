@@ -31,7 +31,7 @@ public class BusyDialog extends DialogFragment {
         StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
         StateAdapter adapter = ObjectUtils.deepClone(strategy.getBusyAdapter());
         adapter.onAttach(null, root);
-        root.addView(adapter.getView());
+        root.addView(adapter.getContentView());
     }
 
     @Nullable

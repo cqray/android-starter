@@ -3,6 +3,7 @@ package cn.cqray.android.view;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import cn.cqray.android.exception.ExceptionType;
 import cn.cqray.android.state.BusyDialog;
 import cn.cqray.android.state.StateRefreshLayout;
 import cn.cqray.android.state.ViewState;
+import cn.cqray.android.strategy.ToolbarStrategy;
 import cn.cqray.android.util.ButterKnifeUtils;
 import cn.cqray.android.util.ObjectUtils;
 import cn.cqray.android.widget.Toolbar;
@@ -357,81 +359,33 @@ public final class ViewDelegate {
                 delegate.pop();
             });
         }
-        StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
+        ToolbarStrategy strategy = Starter.getInstance().getToolbarStrategy();
         if (mToolbar != null) {
-            //===========标题部分===========//
-            // 设置标题背景
-            if (strategy.getToolbarBackground() != null) {
-                mToolbar.setBackground(strategy.getToolbarBackground());
+            mToolbar.setUseRipple(strategy.isUserRipple()).setBackground(strategy.getBackground());
+            // 设置标题栏标题属性
+            mToolbar.setTitleCenter(strategy.isTitleCenter())
+                    .setTitleTextColor(strategy.getTitleTextColor())
+                    .setTitleTextSize(strategy.getTitleTextSize(), TypedValue.COMPLEX_UNIT_PX)
+                    .setTitleTypeface(strategy.getTitleTypeface())
+                    .setTitleSpace(strategy.getTitleSpace(), TypedValue.COMPLEX_UNIT_PX);
+            // 设置标题栏返回控件属性
+            mToolbar.setBackText(strategy.getBackText())
+                    .setBackIcon(strategy.getBackIcon())
+                    .setBackTextColor(strategy.getBackTextColor())
+                    .setBackTextSize(strategy.getBackTextSize())
+                    .setBackTypeface(strategy.getBackTypeface());
+            if (strategy.getBackIconTintColor() != null) {
+                mToolbar.setBackIconTintColor(strategy.getBackIconTintColor());
             }
-            // 设置标题文字颜色
-            if (strategy.getToolbarTitleTextColor() != Integer.MIN_VALUE) {
-                mToolbar.setTitleTextColor(strategy.getToolbarTitleTextColor());
-            }
-            // 设置标题文字大小
-            if (strategy.getToolbarTitleTextSize() != Integer.MIN_VALUE) {
-                mToolbar.setTitleTextSize(strategy.getToolbarTitleTextSize());
-            }
-            // 设置标题文字样式
-            if (strategy.getToolbarTitleTypeface() != null) {
-                mToolbar.setTitleTypeface(strategy.getToolbarTitleTypeface());
-            }
-            // 设置标题左右间隔
-            if (strategy.getToolbarTitleSpace() != Integer.MIN_VALUE) {
-                mToolbar.setTitleSpace(strategy.getToolbarTitleSpace());
-            }
-            //===========返回部分===========//
-            // 设置图标
-            if (strategy.getToolbarBackIcon() != null) {
-                mToolbar.setBackIcon(strategy.getToolbarBackIcon());
-            }
-            // 设置图标颜色
-            if (strategy.getToolbarBackIconTintColor() != Integer.MIN_VALUE) {
-                mToolbar.setBackIconTintColor(strategy.getToolbarBackIconTintColor());
-            }
-            // 设置标题返回文字颜色
-            if (strategy.getToolbarBackTextColor() != Integer.MIN_VALUE) {
-                mToolbar.setBackTextColor(strategy.getToolbarBackTextColor());
-            }
-            // 设置标题返回文字大小
-            if (strategy.getToolbarBackTextSize() != Integer.MIN_VALUE) {
-                mToolbar.setBackTextSize(strategy.getToolbarBackTextSize());
-            }
-            // 设置标题返回文字样式
-            if (strategy.getToolbarBackTypeface() != null) {
-                mToolbar.setBackTypeface(strategy.getToolbarBackTypeface());
-            }
-            //===========Action部分===========//
-            // 设置标题Action文字颜色
-            if (strategy.getToolbarActionTextColor() != Integer.MIN_VALUE) {
-                mToolbar.setActionTextColor(strategy.getToolbarActionTextColor());
-            }
-            // 设置标题Action文字大小
-            if (strategy.getToolbarActionTextSize() != Integer.MIN_VALUE) {
-                mToolbar.setActionTextSize(strategy.getToolbarActionTextSize());
-            }
-            // 设置标题Action文字样式
-            if (strategy.getToolbarActionTypeface() != null) {
-                mToolbar.setActionTypeface(strategy.getToolbarActionTypeface());
-            }
-            //===========分割线部分===========//
-            // 设置分割线颜色
-            if (strategy.getToolbarDividerColor() != Integer.MIN_VALUE) {
-                mToolbar.setDividerColor(strategy.getToolbarDividerColor());
-            }
-            // 设置分割线颜色
-            if (strategy.getToolbarDividerHeight() != Integer.MIN_VALUE) {
-                mToolbar.setDividerHeight(strategy.getToolbarDividerHeight());
-            }
-            // 设置分割线颜色
-            if (strategy.getToolbarDividerMargin() != Integer.MIN_VALUE) {
-                mToolbar.setDividerMargin(strategy.getToolbarDividerMargin());
-            }
-            // 其他属性
-            mToolbar.setTitleCenter(strategy.isToolbarTitleCenter())
-                    .setUseRipple(strategy.isToolbarUserRipple())
-                    .setBackText(strategy.getToolbarBackText())
-                    .setDividerVisible(strategy.isToolbarDividerVisible());
+            // 设置标题栏Action控件属性
+            mToolbar.setDefaultActionTextColor(strategy.getActionTextColor())
+                    .setDefaultActionTextSize(strategy.getActionTextSize(), TypedValue.COMPLEX_UNIT_PX)
+                    .setDefaultActionTypeface(strategy.getActionTypeface());
+            // 设置标题栏分割线属性
+            mToolbar.setDividerColor(strategy.getDividerColor())
+                    .setDividerHeight(strategy.getDividerHeight(), TypedValue.COMPLEX_UNIT_PX)
+                    .setDividerMargin(strategy.getDividerMargin(), TypedValue.COMPLEX_UNIT_PX)
+                    .setDividerVisible(strategy.isDividerVisible());
         }
     }
 

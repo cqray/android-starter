@@ -8,6 +8,7 @@ import cn.cqray.android.anim.DefaultHorizontalAnimator;
 import cn.cqray.android.state.BusyAdapter;
 import cn.cqray.android.state.EmptyAdapter;
 import cn.cqray.android.state.ErrorAdapter;
+import cn.cqray.android.strategy.ToolbarStrategy;
 
 /**
  * @author Admin
@@ -19,6 +20,7 @@ public class StarterApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        ToolbarStrategy.builder();
         StarterStrategy strategy = StarterStrategy.builder()
                 .fragmentAnimator(new DefaultHorizontalAnimator())
                 //.fragmentBackground(new ColorDrawable(Color.RED))

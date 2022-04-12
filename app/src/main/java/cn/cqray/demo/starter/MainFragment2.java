@@ -23,11 +23,14 @@ public class MainFragment2 extends SupportFragment {
     public void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        mToolbar.setActionText(0, "6666");
+        mToolbar.setTitle("77777");
 
         findViewById(R.id.tv).setOnClickListener(v -> {
             Log.e("数据", "点击");
             start(MainFragment.class);
         });
+        setBusy();
     }
 
     @Override
