@@ -17,7 +17,7 @@ import androidx.fragment.app.DialogFragment;
 
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
-import cn.cqray.android.util.ObjectUtils;
+import cn.cqray.android.util.ExtUtils;
 
 public class BusyDialog extends DialogFragment {
 
@@ -29,7 +29,7 @@ public class BusyDialog extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         FrameLayout root = (FrameLayout) view;
         StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
-        StateAdapter adapter = ObjectUtils.deepClone(strategy.getBusyAdapter());
+        StateAdapter adapter = ExtUtils.deepClone(strategy.getBusyAdapter());
         adapter.onAttach(null, root);
         root.addView(adapter.getContentView());
     }

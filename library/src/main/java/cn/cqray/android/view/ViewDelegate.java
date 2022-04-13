@@ -35,9 +35,8 @@ import cn.cqray.android.exception.ExceptionType;
 import cn.cqray.android.state.BusyDialog;
 import cn.cqray.android.state.StateRefreshLayout;
 import cn.cqray.android.state.ViewState;
-import cn.cqray.android.strategy.ToolbarStrategy;
 import cn.cqray.android.util.ButterKnifeUtils;
-import cn.cqray.android.util.ObjectUtils;
+import cn.cqray.android.util.ExtUtils;
 import cn.cqray.android.widget.Toolbar;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -342,9 +341,9 @@ public final class ViewDelegate {
         StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
         // 设置StateRefreshLayout相应状态的适配器
         if (mRefreshLayout != null) {
-            mRefreshLayout.setBusyAdapter(ObjectUtils.deepClone(strategy.getBusyAdapter()));
-            mRefreshLayout.setEmptyAdapter(ObjectUtils.deepClone(strategy.getEmptyAdapter()));
-            mRefreshLayout.setErrorAdapter(ObjectUtils.deepClone(strategy.getErrorAdapter()));
+            mRefreshLayout.setBusyAdapter(ExtUtils.deepClone(strategy.getBusyAdapter()));
+            mRefreshLayout.setEmptyAdapter(ExtUtils.deepClone(strategy.getEmptyAdapter()));
+            mRefreshLayout.setErrorAdapter(ExtUtils.deepClone(strategy.getErrorAdapter()));
         }
 
         initToolbar();
@@ -359,33 +358,34 @@ public final class ViewDelegate {
                 delegate.pop();
             });
         }
-        ToolbarStrategy strategy = Starter.getInstance().getToolbarStrategy();
+        StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
         if (mToolbar != null) {
-            mToolbar.setUseRipple(strategy.isUserRipple()).setBackground(strategy.getBackground());
+            mToolbar.setUseRipple(strategy.isToolbarUserRipple())
+                    .setBackground(strategy.getToolbarBackground());
             // 设置标题栏标题属性
-            mToolbar.setTitleCenter(strategy.isTitleCenter())
-                    .setTitleTextColor(strategy.getTitleTextColor())
-                    .setTitleTextSize(strategy.getTitleTextSize(), TypedValue.COMPLEX_UNIT_PX)
-                    .setTitleTypeface(strategy.getTitleTypeface())
-                    .setTitleSpace(strategy.getTitleSpace(), TypedValue.COMPLEX_UNIT_PX);
+            mToolbar.setTitleCenter(strategy.isToolbarTitleCenter())
+                    .setTitleTextColor(strategy.getToolbarTitleTextColor())
+                    .setTitleTextSize(strategy.getToolbarTitleTextSize())
+                    .setTitleTypeface(strategy.getToolbarTitleTypeface())
+                    .setTitleSpace(strategy.getToolbarTitleSpace());
             // 设置标题栏返回控件属性
-            mToolbar.setBackText(strategy.getBackText())
-                    .setBackIcon(strategy.getBackIcon())
-                    .setBackTextColor(strategy.getBackTextColor())
-                    .setBackTextSize(strategy.getBackTextSize())
-                    .setBackTypeface(strategy.getBackTypeface());
-            if (strategy.getBackIconTintColor() != null) {
-                mToolbar.setBackIconTintColor(strategy.getBackIconTintColor());
+            mToolbar.setBackText(strategy.getToolbarBackText())
+                    .setBackIcon(strategy.getToolbarBackIcon())
+                    .setBackTextColor(strategy.getToolbarBackTextColor())
+                    .setBackTextSize(strategy.getToolbarBackTextSize())
+                    .setBackTypeface(strategy.getToolbarBackTypeface());
+            if (strategy.getToolbarBackIconTintColor() != null) {
+                mToolbar.setBackIconTintColor(strategy.getToolbarBackIconTintColor());
             }
             // 设置标题栏Action控件属性
-            mToolbar.setDefaultActionTextColor(strategy.getActionTextColor())
-                    .setDefaultActionTextSize(strategy.getActionTextSize(), TypedValue.COMPLEX_UNIT_PX)
-                    .setDefaultActionTypeface(strategy.getActionTypeface());
+            mToolbar.setDefaultActionTextColor(strategy.getToolbarActionTextColor())
+                    .setDefaultActionTextSize(strategy.getToolbarActionTextSize())
+                    .setDefaultActionTypeface(strategy.getToolbarActionTypeface());
             // 设置标题栏分割线属性
-            mToolbar.setDividerColor(strategy.getDividerColor())
-                    .setDividerHeight(strategy.getDividerHeight(), TypedValue.COMPLEX_UNIT_PX)
-                    .setDividerMargin(strategy.getDividerMargin(), TypedValue.COMPLEX_UNIT_PX)
-                    .setDividerVisible(strategy.isDividerVisible());
+            mToolbar.setDividerColor(strategy.getToolbarDividerColor())
+                    .setDividerHeight(strategy.getToolbarDividerHeight())
+                    .setDividerMargin(strategy.getToolbarDividerMargin())
+                    .setDividerVisible(strategy.isToolbarDividerVisible());
         }
     }
 

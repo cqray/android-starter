@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
 
+import com.blankj.utilcode.util.ConvertUtils;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.google.gson.Gson;
 
@@ -17,7 +18,7 @@ import java.io.Serializable;
 
 import cn.cqray.android.R;
 import cn.cqray.android.Starter;
-import cn.cqray.android.util.DimenUtils;
+import cn.cqray.android.util.ExtUtils;
 
 /**
  * 行项数据基类
@@ -50,11 +51,11 @@ public abstract class LineItem<T extends LineItem<T>> implements MultiItemEntity
     private Object mTag;
 
     public LineItem() {
-        mHeight = DimenUtils.get(R.dimen.line);
+        mHeight = (int) ExtUtils.getSize(R.dimen.line, 1);
         mPadding = new int[4];
         mMargin = new int[4];
         // 分割线
-        mDividerHeight = DimenUtils.get(R.dimen.divider);
+        mDividerHeight = (int) ExtUtils.getSize(R.dimen.divider, 1);
         mDividerColor = ContextCompat.getColor(getContext(), R.color.divider);
         mDividerMargin = new int[4];
         // 背景
@@ -64,16 +65,16 @@ public abstract class LineItem<T extends LineItem<T>> implements MultiItemEntity
                 = mPadding[2]
                 = mDividerMargin[0]
                 = mDividerMargin[2]
-                = DimenUtils.get(R.dimen.content);
+                = (int) ExtUtils.getSize(R.dimen.content, 1);
     }
 
     public T height(float height) {
-        mHeight = DimenUtils.toPx(height);
+        mHeight = ConvertUtils.dp2px(height);
         return (T) this;
     }
 
     public T margin(float margin) {
-        int m = DimenUtils.toPx(margin);
+        int m = ConvertUtils.dp2px(margin);
         mMargin[0] = m;
         mMargin[1] = m;
         mMargin[2] = m;
@@ -82,31 +83,31 @@ public abstract class LineItem<T extends LineItem<T>> implements MultiItemEntity
     }
 
     public T margin(float l, float r) {
-        mMargin[0] = DimenUtils.toPx(l);
-        mMargin[2] = DimenUtils.toPx(r);
+        mMargin[0] = ConvertUtils.dp2px(l);
+        mMargin[2] = ConvertUtils.dp2px(r);
         return (T) this;
     }
 
     public T margin(float l, float t, float r, float b) {
-        mMargin[0] = DimenUtils.toPx(l);
-        mMargin[1] = DimenUtils.toPx(t);
-        mMargin[2] = DimenUtils.toPx(r);
-        mMargin[3] = DimenUtils.toPx(b);
+        mMargin[0] = ConvertUtils.dp2px(l);
+        mMargin[1] = ConvertUtils.dp2px(t);
+        mMargin[2] = ConvertUtils.dp2px(r);
+        mMargin[3] = ConvertUtils.dp2px(b);
         return (T) this;
     }
 
     public T marginTop(float t) {
-        mMargin[1] = DimenUtils.toPx(t);
+        mMargin[1] = ConvertUtils.dp2px(t);
         return (T) this;
     }
 
     public T marginBottom(float b) {
-        mMargin[3] = DimenUtils.toPx(b);
+        mMargin[3] = ConvertUtils.dp2px(b);
         return (T) this;
     }
 
     public T padding(float padding) {
-        int p = DimenUtils.toPx(padding);
+        int p = ConvertUtils.dp2px(padding);
         mPadding[0] = p;
         mPadding[1] = p;
         mPadding[2] = p;
@@ -115,21 +116,21 @@ public abstract class LineItem<T extends LineItem<T>> implements MultiItemEntity
     }
 
     public T padding(float l, float r) {
-        mPadding[0] = DimenUtils.toPx(l);
-        mPadding[2] = DimenUtils.toPx(r);
+        mPadding[0] = ConvertUtils.dp2px(l);
+        mPadding[2] = ConvertUtils.dp2px(r);
         return (T) this;
     }
 
     public T padding(float l, float t, float r, float b) {
-        mPadding[0] = DimenUtils.toPx(l);
-        mPadding[1] = DimenUtils.toPx(t);
-        mPadding[2] = DimenUtils.toPx(r);
-        mPadding[3] = DimenUtils.toPx(b);
+        mPadding[0] = ConvertUtils.dp2px(l);
+        mPadding[1] = ConvertUtils.dp2px(t);
+        mPadding[2] = ConvertUtils.dp2px(r);
+        mPadding[3] = ConvertUtils.dp2px(b);
         return (T) this;
     }
 
     public T dividerHeight(float height) {
-        mDividerHeight = DimenUtils.toPx(height);
+        mDividerHeight = ConvertUtils.dp2px(height);
         return (T) this;
     }
 
@@ -139,7 +140,7 @@ public abstract class LineItem<T extends LineItem<T>> implements MultiItemEntity
     }
 
     public T dividerMargin(float margin) {
-        int m = DimenUtils.toPx(margin);
+        int m = ConvertUtils.dp2px(margin);
         mDividerMargin[0] = m;
         mDividerMargin[1] = m;
         mDividerMargin[2] = m;
@@ -148,16 +149,16 @@ public abstract class LineItem<T extends LineItem<T>> implements MultiItemEntity
     }
 
     public T dividerMargin(float l, float r) {
-        mDividerMargin[0] = DimenUtils.toPx(l);
-        mDividerMargin[2] = DimenUtils.toPx(r);
+        mDividerMargin[0] = ConvertUtils.dp2px(l);
+        mDividerMargin[2] = ConvertUtils.dp2px(r);
         return (T) this;
     }
 
     public T dividerMargin(float l, float t, float r, float b) {
-        mDividerMargin[0] = DimenUtils.toPx(l);
-        mDividerMargin[1] = DimenUtils.toPx(t);
-        mDividerMargin[2] = DimenUtils.toPx(r);
-        mDividerMargin[3] = DimenUtils.toPx(b);
+        mDividerMargin[0] = ConvertUtils.dp2px(l);
+        mDividerMargin[1] = ConvertUtils.dp2px(t);
+        mDividerMargin[2] = ConvertUtils.dp2px(r);
+        mDividerMargin[3] = ConvertUtils.dp2px(b);
         return (T) this;
     }
 

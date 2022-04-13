@@ -1,16 +1,13 @@
 package cn.cqray.demo.starter;
 
+import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import cn.cqray.android.anim.DefaultHorizontalAnimator;
-import cn.cqray.android.anim.FragmentAnimator;
-import cn.cqray.android.app.NavIntent;
 import cn.cqray.android.app.SupportFragment;
 
 /**
@@ -24,7 +21,9 @@ public class MainFragment2 extends SupportFragment {
         super.onCreating(savedInstanceState);
         setContentView(R.layout.activity_main2);
         mToolbar.setActionText(0, "6666");
-        mToolbar.setTitle("77777");
+        mToolbar.setTitle("77777")
+                .setActionIcon(1, R.drawable.__android_ic_selected)
+                .setActionIconColor(1, Color.RED);
 
         findViewById(R.id.tv).setOnClickListener(v -> {
             Log.e("数据", "点击");

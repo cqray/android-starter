@@ -68,7 +68,7 @@ public class LineAdapter extends BaseMultiItemQuickAdapter<LineItem<?>, BaseView
         TextView btn = holder.getView(R.id._ui_item_btn);
         btn.setText(item.getText());
         btn.setTextColor(item.getTextColor());
-        btn.setTextSize(TypedValue.COMPLEX_UNIT_PX, item.getTextSize());
+        btn.setTextSize(item.getTextSize());
     }
 
     /**

@@ -9,7 +9,7 @@ import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
 import cn.cqray.android.R;
-import cn.cqray.android.util.DimenUtils;
+import cn.cqray.android.util.ExtUtils;
 
 /**
  * 文本行
@@ -20,13 +20,13 @@ public class TextLineItem extends IconLineItem<TextLineItem> {
     private CharSequence mRightText;
     private int mRightTextColor;
     private int mRightTextColorRes;
-    private int mRightTextSize;
+    private float mRightTextSize;
     private transient ColorStateList mRightTextColorStateList;
 
     public TextLineItem(CharSequence text) {
         super(text);
         mRightTextColor = ContextCompat.getColor(getContext(), R.color.tint);
-        mRightTextSize = DimenUtils.get(R.dimen.body);
+        mRightTextSize = ExtUtils.getSize(R.dimen.body, 0);
     }
 
     public TextLineItem rightText(@StringRes int resId) {
@@ -58,12 +58,12 @@ public class TextLineItem extends IconLineItem<TextLineItem> {
     }
 
     public TextLineItem rightTextSize(float size) {
-        mRightTextSize = DimenUtils.toPx(size);
+        mRightTextSize = size;
         return this;
     }
 
     public TextLineItem rightTextSizeRes(@DimenRes int resId) {
-        mRightTextSize = DimenUtils.get(resId);
+        mRightTextSize = ExtUtils.getSize(resId, 0);
         return this;
     }
 
@@ -82,7 +82,7 @@ public class TextLineItem extends IconLineItem<TextLineItem> {
         return mRightTextColorStateList;
     }
 
-    public int getRightTextSize() {
+    public float getRightTextSize() {
         return mRightTextSize;
     }
 

@@ -4,9 +4,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import cn.cqray.android.app.NavActivity;
-import cn.cqray.android.strategy.ToolbarStrategy;
-import cn.cqray.android.ui.multi.MultiItem;
-import cn.cqray.android.ui.multi.MultiTabActivity;
 
 public class MainActivity extends NavActivity {
 

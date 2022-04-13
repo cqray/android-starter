@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
+import android.util.SparseIntArray;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -28,7 +29,7 @@ import androidx.core.widget.ImageViewCompat;
 import com.blankj.utilcode.util.SizeUtils;
 
 import cn.cqray.android.R;
-import cn.cqray.android.util.ViewUtils;
+import cn.cqray.android.util.ExtUtils;
 
 /**
  * Action布局控件
@@ -48,12 +49,16 @@ public class ActionLayout extends LinearLayout {
     private int mActionTextColor;
     /** 文本样式 **/
     private int mActionTextStyle;
+    /** 图标颜色 **/
+    private Integer mActionIconColor;
     /** 是否显示水波纹 **/
     private boolean mUseRipple;
     /** 控件列表 **/
     private final SparseArray<View> mViewArray = new SparseArray<>();
     /** 控件是否显示列表 **/
     private final SparseBooleanArray mVisibleArray = new SparseBooleanArray();
+    /** 图片控件TintColor **/
+    private final SparseIntArray mTintColorArray = new SparseIntArray();
 
     public ActionLayout(Context context) {
         this(context, null);
@@ -106,7 +111,7 @@ public class ActionLayout extends LinearLayout {
         tv.setVisibility(mVisibleArray.get(key) ? VISIBLE : GONE);
         tv.setTypeface(Typeface.defaultFromStyle(mActionTextStyle));
         addView(tv, index);
-        ViewUtils.setRippleBackground(tv, mUseRipple);
+        ExtUtils.setRippleBackground(tv, mUseRipple);
         mViewArray.put(key, tv);
         return this;
     }
@@ -131,7 +136,7 @@ public class ActionLayout extends LinearLayout {
     }
 
     public ActionLayout setDefaultActionTextSize(float size) {
-        return setDefaultActionTextSize(size, TypedValue.COMPLEX_UNIT_DIP);
+        return setDefaultActionTextSize(size, TypedValue.COMPLEX_UNIT_SP);
     }
 
     public ActionLayout setDefaultActionTextSize(float size, int unit) {
@@ -146,7 +151,7 @@ public class ActionLayout extends LinearLayout {
     }
 
     public ActionLayout setActionTextSize(int key, float size) {
-        return setActionTextSize(key, size, TypedValue.COMPLEX_UNIT_DIP);
+        return setActionTextSize(key, size, TypedValue.COMPLEX_UNIT_SP);
     }
 
     public ActionLayout setActionTextSize(int key, float size, int unit) {
@@ -198,11 +203,35 @@ public class ActionLayout extends LinearLayout {
         iv.setPadding(mActionSpace, 0, mActionSpace, 0);
         iv.setVisibility(mVisibleArray.get(key) ? VISIBLE : GONE);
         addView(iv, index);
-        ViewUtils.setRippleBackground(iv, mUseRipple);
+        ExtUtils.setRippleBackground(iv, mUseRipple);
         if (tintColor != null) {
             ImageViewCompat.setImageTintList(iv, ColorStateList.valueOf(tintColor));
+        } else if (mTintColorArray.get(key) != 0) {
+            ImageViewCompat.setImageTintList(iv, ColorStateList.valueOf(mTintColorArray.get(key)));
+        } else if (mActionIconColor != null) {
+            ImageViewCompat.setImageTintList(iv, ColorStateList.valueOf(mActionIconColor));
         }
         mViewArray.put(key, iv);
+        return this;
+    }
+
+    public ActionLayout setActionIconColor(@ColorInt int color) {
+        mActionIconColor = color;
+        for (int i = 0; i < mViewArray.size(); i++) {
+            View view = mViewArray.valueAt(i);
+            if (view instanceof ImageView) {
+                ImageViewCompat.setImageTintList((ImageView) view, ColorStateList.valueOf(color));
+            }
+        }
+        return this;
+    }
+
+    public ActionLayout setActionIconColor(int key, @ColorInt int color) {
+        mTintColorArray.put(key, color);
+        View view = mViewArray.get(key);
+        if (view instanceof ImageView) {
+            ImageViewCompat.setImageTintList((ImageView) view, ColorStateList.valueOf(color));
+        }
         return this;
     }
 
@@ -229,7 +258,7 @@ public class ActionLayout extends LinearLayout {
         mUseRipple = useRipple;
         for (int i = 0; i < mViewArray.size(); i++) {
             View view = mViewArray.valueAt(i);
-            ViewUtils.setRippleBackground(view, mUseRipple);
+            ExtUtils.setRippleBackground(view, mUseRipple);
         }
         return this;
     }
@@ -238,7 +267,7 @@ public class ActionLayout extends LinearLayout {
         mUseRipple = useRipple;
         View view = mViewArray.get(key);
         if (view != null) {
-            ViewUtils.setRippleBackground(view, mUseRipple);
+            ExtUtils.setRippleBackground(view, mUseRipple);
         }
         return this;
     }

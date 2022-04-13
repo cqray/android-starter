@@ -9,7 +9,7 @@ import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
 import cn.cqray.android.R;
-import cn.cqray.android.util.DimenUtils;
+import cn.cqray.android.util.ExtUtils;
 
 /**
  * 按钮行
@@ -18,7 +18,7 @@ import cn.cqray.android.util.DimenUtils;
 public class ButtonLineItem extends LineItem<ButtonLineItem> {
 
     private CharSequence mText;
-    private int mTextSize;
+    private float mTextSize;
     private int mTextColor;
     private int mTextColorRes;
     private transient ColorStateList mTextColorStateList;
@@ -26,7 +26,7 @@ public class ButtonLineItem extends LineItem<ButtonLineItem> {
     public ButtonLineItem(CharSequence text) {
         mText = text;
         mTextColor = ContextCompat.getColor(getContext(), R.color.text);
-        mTextSize = DimenUtils.get(R.dimen.h3);
+        mTextSize = ExtUtils.getSize(R.dimen.h3, 0);
         dividerHeight(0);
     }
 
@@ -58,12 +58,12 @@ public class ButtonLineItem extends LineItem<ButtonLineItem> {
     }
 
     public ButtonLineItem textSize(float size) {
-        mTextSize = DimenUtils.toPx(size);
+        mTextSize = size;
         return this;
     }
 
     public ButtonLineItem textSizeRes(@DimenRes int resId) {
-        mTextSize = DimenUtils.get(resId);
+        mTextSize = ExtUtils.getSize(resId, 0);
         return this;
     }
 
@@ -81,7 +81,7 @@ public class ButtonLineItem extends LineItem<ButtonLineItem> {
         return mTextColorStateList;
     }
 
-    public int getTextSize() {
+    public float getTextSize() {
         return mTextSize;
     }
 

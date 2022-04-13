@@ -330,7 +330,7 @@ public final class SupportViewModel extends LifecycleViewModel {
         }
         // 全局默认的动画
         if (fa == null) {
-            fa = Starter.getInstance().getFragmentAnimator();
+            fa = Starter.getInstance().getStarterStrategy().getFragmentAnimator();
         }
         return fa;
     }

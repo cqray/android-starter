@@ -2,17 +2,25 @@ package cn.cqray.android;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 
 import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
 
+import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.Utils;
+
+import cn.cqray.android.anim.DefaultVerticalAnimator;
 import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.state.StateAdapter;
 import cn.cqray.android.tip.TipAdapter;
+
+import cn.cqray.android.util.ExtUtils;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 
 /**
  * 框架相关配置策略
@@ -23,7 +31,8 @@ import lombok.Getter;
 public class StarterStrategy {
 
     /** Fragment全局默认动画 **/
-    private FragmentAnimator fragmentAnimator;
+    @NonNull
+    private @Builder.Default FragmentAnimator fragmentAnimator = new DefaultVerticalAnimator();
     /** Activity背景资源 **/
     @Getter(value = AccessLevel.PRIVATE)
     private @DrawableRes int activityBackgroundRes;
@@ -51,14 +60,14 @@ public class StarterStrategy {
     private @Builder.Default boolean toolbarTitleCenter = false;
     /** 标题是否应用水波纹 **/
     private @Builder.Default boolean toolbarUserRipple = true;
-    /** 标题左右间距 **/
-    private @Builder.Default float toolbarPadding = Integer.MIN_VALUE;
+    /** 标题左右间距，单位DP **/
+    private @Builder.Default float toolbarPadding = ExtUtils.getSize(R.dimen.content, 0);
     /** 标题文字颜色 **/
-    private @Builder.Default int toolbarTitleTextColor = Integer.MIN_VALUE;
-    /** 标题文字大小 **/
-    private @Builder.Default float toolbarTitleTextSize = Integer.MIN_VALUE;
-    /** 标题文字左右间距 **/
-    private @Builder.Default float toolbarTitleSpace = Integer.MIN_VALUE;
+    private @Builder.Default int toolbarTitleTextColor = ColorUtils.getColor(R.color.foreground);
+    /** 标题文字大小，单位SP **/
+    private @Builder.Default float toolbarTitleTextSize = ExtUtils.getSize(R.dimen.h2, 0);
+    /** 标题文字左右间距，单位DP **/
+    private @Builder.Default float toolbarTitleSpace = ExtUtils.getSize(R.dimen.small, 0);
     /** 标题文字样式 **/
     private Typeface toolbarTitleTypeface;
     /** 标题返回图标资源 **/
@@ -66,30 +75,30 @@ public class StarterStrategy {
     private @DrawableRes int toolbarBackIconRes;
     /** 标题返回图标 **/
     private Drawable toolbarBackIcon;
-    /** 标题返回左右间距 **/
-    private @Builder.Default float toolbarBackSpace = Integer.MIN_VALUE;
+    /** 标题返回左右间距，单位DP **/
+    private @Builder.Default float toolbarBackSpace = ExtUtils.getSize(R.dimen.content, 0);
     /** 标题返回图标颜色 **/
-    private @Builder.Default int toolbarBackIconTintColor = Integer.MIN_VALUE;
+    private @Builder.Default Integer toolbarBackIconTintColor = null;
     /** 标题返回文字 **/
     private String toolbarBackText;
     /** 标题返回文字颜色 **/
-    private @Builder.Default int toolbarBackTextColor = Integer.MIN_VALUE;
-    /** 标题返回文字大小 **/
-    private @Builder.Default float toolbarBackTextSize = Integer.MIN_VALUE;
+    private @Builder.Default int toolbarBackTextColor = ColorUtils.getColor(R.color.foreground);
+    /** 标题返回文字大小，单位SP **/
+    private @Builder.Default float toolbarBackTextSize = ExtUtils.getSize(R.dimen.body, 0);
     /** 标题返回文字样式 **/
     private Typeface toolbarBackTypeface;
     /** 标题Action文字颜色 **/
-    private @Builder.Default int toolbarActionTextColor = Integer.MIN_VALUE;
-    /** 标题Action文字大小 **/
-    private @Builder.Default float toolbarActionTextSize = Integer.MIN_VALUE;
+    private @Builder.Default int toolbarActionTextColor = ColorUtils.getColor(R.color.foreground);
+    /** 标题Action文字大小，单位SP **/
+    private @Builder.Default float toolbarActionTextSize = ExtUtils.getSize(R.dimen.body, 0);
     /** 标题Action文字样式 **/
     private Typeface toolbarActionTypeface;
     /** 标题分割线颜色 **/
-    private @Builder.Default int toolbarDividerColor = Integer.MIN_VALUE;
-    /** 标题分割线高度 **/
-    private @Builder.Default float toolbarDividerHeight = Integer.MIN_VALUE;
+    private @Builder.Default int toolbarDividerColor = ColorUtils.getColor(R.color.divider);
+    /** 标题分割线高度，单位DP **/
+    private @Builder.Default float toolbarDividerHeight = ExtUtils.getSize(R.dimen.divider, 0);
     /** 标题分割线左右间隔 **/
-    private @Builder.Default float toolbarDividerMargin = Integer.MIN_VALUE;
+    private @Builder.Default float toolbarDividerMargin = 0;
     /** 标题分割线是否显示 **/
     private @Builder.Default boolean toolbarDividerVisible = false;
 
@@ -114,6 +123,10 @@ public class StarterStrategy {
             Context context = Starter.getInstance().getContext();
             toolbarBackground = ContextCompat.getDrawable(context, toolbarBackgroundRes);
         }
+
+        if (toolbarBackground == null) {
+            toolbarBackground = new ColorDrawable(ColorUtils.getColor(R.color.colorPrimary));
+        }
         return toolbarBackground;
     }
 
@@ -121,6 +134,9 @@ public class StarterStrategy {
         if (toolbarBackIcon == null && toolbarBackIconRes != 0) {
             Context context = Starter.getInstance().getContext();
             toolbarBackIcon = ContextCompat.getDrawable(context, toolbarBackIconRes);
+        }
+        if (toolbarBackIcon == null) {
+            toolbarBackIcon = ContextCompat.getDrawable(Utils.getApp(), R.drawable.def_back_material_light);
         }
         return toolbarBackIcon;
     }

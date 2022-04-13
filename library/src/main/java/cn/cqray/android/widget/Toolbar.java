@@ -397,6 +397,11 @@ public class Toolbar extends RelativeLayout {
         return this;
     }
 
+    public Toolbar setTitleTextSize(float size) {
+        mTitleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
+        return this;
+    }
+
     public Toolbar setTitleTextSize(float size, int unit) {
         mTitleView.setTextSize(unit, size);
         return this;
@@ -489,6 +494,16 @@ public class Toolbar extends RelativeLayout {
 
     public Toolbar setActionIcon(int key, Drawable drawable,  @ColorInt int tintColor) {
         mActionLayout.setActionIcon(key, drawable, tintColor);
+        return this;
+    }
+
+    public Toolbar setActionIconColor(@ColorInt int tintColor) {
+        mActionLayout.setActionIconColor(tintColor);
+        return this;
+    }
+
+    public Toolbar setActionIconColor(int key, @ColorInt int tintColor) {
+        mActionLayout.setActionIconColor(key, tintColor);
         return this;
     }
 

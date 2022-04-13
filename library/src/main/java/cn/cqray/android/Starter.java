@@ -8,10 +8,6 @@ import com.blankj.utilcode.util.Utils;
 import cn.cqray.android.anim.DefaultVerticalAnimator;
 import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.app.SupportDispatcher;
-import cn.cqray.android.strategy.StateStrategy;
-import cn.cqray.android.strategy.ToolbarStrategy;
-import lombok.Getter;
-import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 /**
@@ -27,16 +23,9 @@ public class Starter {
 
     /** 反射所得Application **/
     private Application mApplication;
-    /** Fragment切换动画 **/
-    private FragmentAnimator mFragmentAnimator;
     private StarterStrategy mStarterStrategy;
 
-    private @NonNull @Getter StateStrategy mStateStrategy = StateStrategy.builder().build();
-    private @NonNull @Getter ToolbarStrategy mToolbarStrategy = ToolbarStrategy.builder().build();
-
-    private Starter() {
-        mFragmentAnimator = new DefaultVerticalAnimator();
-    }
+    private Starter() {}
 
     public static Starter getInstance() {
         return Holder.INSTANCE;
@@ -83,12 +72,12 @@ public class Starter {
         throw new RuntimeException("You must initialize Starter in class which extends Application.");
     }
 
-    public Starter fragmentAnimator(FragmentAnimator animator) {
-        if (animator != null) {
-            mFragmentAnimator = animator;
-        }
-        return this;
-    }
+//    public Starter fragmentAnimator(FragmentAnimator animator) {
+//        if (animator != null) {
+//            mFragmentAnimator = animator;
+//        }
+//        return this;
+//    }
 
     public Application getApplication() {
         if (mApplication == null) {
@@ -99,10 +88,6 @@ public class Starter {
 
     public Context getContext() {
         return getApplication().getApplicationContext();
-    }
-
-    public FragmentAnimator getFragmentAnimator() {
-        return mFragmentAnimator;
     }
 
     public StarterStrategy getStarterStrategy() {
