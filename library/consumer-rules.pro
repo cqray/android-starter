@@ -7,6 +7,8 @@
 -keep public class * extends android.content.BroadcastReceiver
 -keep public class * extends android.content.ContentProvider
 -keep public class * extends android.preference.Preference
+-keep public class * extends android.view.View
+-keep public class * extends androidx.fragment.app.Fragment
 -keepnames public class * extends androidx.fragment.app.Fragment
 
 # 保证AndroidViewModel构造函数不被混淆
@@ -17,3 +19,25 @@
 -keepclassmembers class * extends cn.cqray.android.lifecycle.LifecycleViewModel {
     public <init>(androidx.lifecycle.LifecycleOwner);
 }
+
+#保持全部实现 Serializable 接口的类成员
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
+
+# ButterKnife混淆代码
+-keep class butterknife.* { *; }
+-keep class butterknife.internal.* { *; }
+-keep class **$$ViewBinder { *; }
+-keepclasseswithmembernames class * {
+    @butterknife.* <fields>;
+}
+-keepclasseswithmembernames class * {
+    @butterknife.* <methods>;
+}
+-dontwarn butterknife.internal.**
