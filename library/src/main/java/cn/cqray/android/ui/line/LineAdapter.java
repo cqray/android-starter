@@ -84,10 +84,10 @@ public class LineAdapter extends BaseMultiItemQuickAdapter<LineItem<?>, BaseView
         // 设置文本
         left.setText(item.getText());
         left.setTextColor(item.getTextColor());
-        left.setTextSize(TypedValue.COMPLEX_UNIT_PX, item.getTextSize());
+        left.setTextSize(item.getTextSize());
         right.setText(item.getRightText());
         right.setTextColor(item.getRightTextColor());
-        right.setTextSize(TypedValue.COMPLEX_UNIT_PX, item.getRightTextSize());
+        right.setTextSize(item.getRightTextSize());
 
         ViewGroup.MarginLayoutParams ivParams;
         ViewGroup.MarginLayoutParams tvParams;
