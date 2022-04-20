@@ -24,13 +24,16 @@ public class MainFragment2 extends SupportFragment {
         mToolbar.setTitle("77777")
                 //.setTitleCenter(true)
                 .setActionIcon(1, R.drawable.__android_ic_selected)
-                .setActionIconColor(1, Color.RED);
+                .setActionIconColor(1, Color.RED)
+                .setActionListener(1, v -> {
+                   showInfo("hello");
+                });
 
         findViewById(R.id.tv).setOnClickListener(v -> {
             Log.e("数据", "点击");
             start(MainFragment.class);
         });
-        setBusy();
+        //setBusy();
     }
 
     @Override

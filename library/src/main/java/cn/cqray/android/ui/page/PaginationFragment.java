@@ -13,6 +13,7 @@ import java.util.List;
 
 import cn.cqray.android.R;
 import cn.cqray.android.app.SupportFragment;
+import lombok.Getter;
 
 /**
  * 分页Activity
@@ -21,7 +22,9 @@ import cn.cqray.android.app.SupportFragment;
 public abstract class PaginationFragment<T> extends SupportFragment {
 
     protected RecyclerView mRecyclerView;
+    @Getter
     protected BaseQuickAdapter<T, ? extends BaseViewHolder> mAdapter;
+    @Getter
     protected final PaginationDelegate<T> mPaginationDelegate = new PaginationDelegate<>(this);
 
     @Override
@@ -40,10 +43,6 @@ public abstract class PaginationFragment<T> extends SupportFragment {
         mPaginationDelegate.setAdapter(mAdapter);
         mPaginationDelegate.setRefreshCallback((delegate, pageNum, pageSize) -> PaginationFragment.this.onRefresh(pageNum, pageSize));
         autoRefresh();
-    }
-
-    public PaginationDelegate<T> getPaginationDelegate() {
-        return mPaginationDelegate;
     }
 
     /**
@@ -65,7 +64,7 @@ public abstract class PaginationFragment<T> extends SupportFragment {
         mRefreshLayout.setEnableOverScrollDrag(enable);
     }
 
-    public void setDefauktEmptyText(String text) {
+    public void setDefaultEmptyText(String text) {
         mPaginationDelegate.setDefaultEmptyText(text);
     }
 

@@ -252,6 +252,8 @@ public class Toolbar extends RelativeLayout {
             } else {
                 ViewCompat.setBackground(mTitleView, null);
             }
+            mBackView.bringToFront();
+            mActionLayout.bringToFront();
         });
         // 是否使用水波纹
         mUseRipple.observe(mLifecycleOwner, aBoolean -> {
