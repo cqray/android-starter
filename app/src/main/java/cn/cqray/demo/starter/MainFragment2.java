@@ -22,6 +22,7 @@ public class MainFragment2 extends SupportFragment {
         setContentView(R.layout.activity_main2);
         mToolbar.setActionText(0, "6666");
         mToolbar.setTitle("77777")
+                //.setTitleCenter(true)
                 .setActionIcon(1, R.drawable.__android_ic_selected)
                 .setActionIconColor(1, Color.RED);
 

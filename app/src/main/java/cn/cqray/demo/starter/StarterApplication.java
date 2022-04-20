@@ -28,7 +28,7 @@ public class StarterApplication extends Application {
                 .toolbarDividerVisible(true)
                 .toolbarDividerHeight(2)
                 .toolbarBackIconRes(R.drawable.def_back_common_light)
-                .toolbarTitleCenter(false)
+                .toolbarTitleCenter(true)
                 .fragmentBackgroundRes(R.color.background)
                 .busyAdapter(new BusyAdapter())
                 .emptyAdapter(new EmptyAdapter())

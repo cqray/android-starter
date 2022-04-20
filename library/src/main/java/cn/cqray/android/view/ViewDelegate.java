@@ -3,6 +3,7 @@ package cn.cqray.android.view;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -363,6 +364,7 @@ public final class ViewDelegate {
             mToolbar.setUseRipple(strategy.isToolbarUserRipple())
                     .setBackground(strategy.getToolbarBackground());
             // 设置标题栏标题属性
+            Log.e("数据", "77777777|" + strategy.isToolbarTitleCenter());
             mToolbar.setTitleCenter(strategy.isToolbarTitleCenter())
                     .setTitleTextColor(strategy.getToolbarTitleTextColor())
                     .setTitleTextSize(strategy.getToolbarTitleTextSize())

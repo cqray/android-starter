@@ -121,7 +121,7 @@ public class Toolbar extends RelativeLayout {
         Drawable background = getBackground() == null ? new ColorDrawable(primaryColor) : getBackground();
         ViewCompat.setBackground(this, createMaterialShapeDrawableBackground(background));
         // 其他属性
-        mTitleCenterData.postValue(mTitleCenter);
+        mTitleCenterData.setValue(mTitleCenter);
         mTitleEditable.setValue(titleEditable);
         mUseRipple.setValue(useRipple);
         mPadding.setValue(padding);
@@ -305,6 +305,7 @@ public class Toolbar extends RelativeLayout {
     }
 
     public Toolbar setTitleCenter(boolean center) {
+        mTitleCenter = center;
         mTitleCenterData.setValue(center);
         return this;
     }
