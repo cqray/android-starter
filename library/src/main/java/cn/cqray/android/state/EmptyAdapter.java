@@ -24,7 +24,7 @@ public class EmptyAdapter extends StateAdapter {
         super.onViewCreated(view);
         ViewGroup parent = (ViewGroup) view;
         TextView btn = (TextView) parent.getChildAt(2);
-        btn.setOnClickListener(v -> getRefreshLayout().setBusy());
+        btn.setOnClickListener(v -> getDelegate().setBusy());
         setButtonVisible(false);
         setText(getText());
     }

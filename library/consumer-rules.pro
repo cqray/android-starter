@@ -30,6 +30,13 @@
     java.lang.Object readResolve();
 }
 
+-keepclassmembers class com.scwang.smart.refresh.layout.SmartRefreshLayout {
+    protected boolean mEnableLoadMore;
+    protected boolean mEnableRefresh;
+    protected boolean mEnableOverScrollDrag;
+    protected boolean mManualLoadMore;
+}
+
 # ButterKnife混淆代码
 -keep class butterknife.* { *; }
 -keep class butterknife.internal.* { *; }

@@ -1,9 +1,6 @@
 package cn.cqray.android.state;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +13,16 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshFooter;
 import com.scwang.smart.refresh.layout.api.RefreshHeader;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.cqray.android.R;
+import lombok.SneakyThrows;
 
-/**
- * 状态布局控件
- * @author Cqray
- */
-public class StateRefreshLayout extends SmartRefreshLayout {
+public class StateDelegate {
 
+    private FrameLayout mNormalLayout;
+    private SmartRefreshLayout mRefreshLayout;
     /** 状态根布局 **/
     private FrameLayout mRootLayout;
     /** 当前状态 **/
@@ -36,19 +32,23 @@ public class StateRefreshLayout extends SmartRefreshLayout {
     /** 适配器集合 **/
     private final SparseArray<StateAdapter> mAdapters = new SparseArray<>();
 
-    public StateRefreshLayout(Context context) {
-        this(context, null);
+    private final Field[] mEnableFields = new Field[4];
+
+    @SneakyThrows
+    public StateDelegate() {
+        Class<?> cls = SmartRefreshLayout.class;
+        mEnableFields[0] = cls.getDeclaredField("mEnableRefresh");
+        mEnableFields[1] = cls.getDeclaredField("mEnableLoadMore");
+        mEnableFields[2] = cls.getDeclaredField("mEnableOverScrollDrag");
+        mEnableFields[3] = cls.getDeclaredField("mManualLoadMore");
     }
 
-    public StateRefreshLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        @SuppressLint("CustomViewStyleable") TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SmartRefreshLayout);
-        mEnableLoadMore = ta.getBoolean(R.styleable.SmartRefreshLayout_srlEnableLoadMore, false);
-        mEnableOverScrollDrag = ta.getBoolean(R.styleable.SmartRefreshLayout_srlEnableOverScrollDrag, true);
-        ta.recycle();
-        if (getId() == NO_ID) {
-            setId(R.id.starter_refresh_layout);
-        }
+    public void attach(SmartRefreshLayout layout) {
+        mRefreshLayout = layout;
+    }
+
+    public void attach(FrameLayout layout) {
+        mNormalLayout = layout;
     }
 
     public void setIdle() {
@@ -83,7 +83,9 @@ public class StateRefreshLayout extends SmartRefreshLayout {
         saveEnableState();
         mCurState = state;
         // 初始化界面
-        initStateLayout();
+        initRefreshLayout();
+        initNormalLayout();
+        // 初始化状态
         if (mCurState != ViewState.BUSY) {
             for (int i = 0; i < mAdapters.size(); i++) {
                 StateAdapter adapter = mAdapters.valueAt(i);
@@ -113,23 +115,24 @@ public class StateRefreshLayout extends SmartRefreshLayout {
     }
 
     /**
-     * 初始化状态相关界面
+     * 初始化刷新界面
      */
-    private void initStateLayout() {
-        if (mRootLayout != null) {
+    private void initRefreshLayout() {
+        if (mRootLayout != null || mRefreshLayout == null) {
             return;
         }
+        Context context = mRefreshLayout.getContext();
         // 初始化界面
-        mRootLayout = new FrameLayout(getContext());
+        mRootLayout = new FrameLayout(context);
         mRootLayout.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
         mRootLayout.setClickable(true);
         mRootLayout.setFocusable(true);
         // 替换布局
         List<View> children = new ArrayList<>();
-        FrameLayout refreshContent = new FrameLayout(getContext());
+        FrameLayout refreshContent = new FrameLayout(context);
         refreshContent.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
-        for (int i = 0; i < getChildCount(); i++) {
-            View view = getChildAt(i);
+        for (int i = 0; i < mRefreshLayout.getChildCount(); i++) {
+            View view = mRefreshLayout.getChildAt(i);
             if (view instanceof RefreshHeader || view instanceof RefreshFooter) {
                 continue;
             }
@@ -137,37 +140,61 @@ public class StateRefreshLayout extends SmartRefreshLayout {
         }
         for (int i = 0; i < children.size(); i++) {
             View view = children.get(i);
-            removeView(view);
+            mRefreshLayout.removeView(view);
             refreshContent.addView(view, i);
         }
         refreshContent.addView(mRootLayout);
-        setRefreshContent(refreshContent);
+        mRefreshLayout.setRefreshContent(refreshContent);
+    }
+
+    /**
+     * 初始化常规界面
+     */
+    private void initNormalLayout() {
+        if (mRootLayout != null || mNormalLayout == null) {
+            return;
+        }
+        Context context = mNormalLayout.getContext();
+        // 初始化界面
+        mRootLayout = new FrameLayout(context);
+        mRootLayout.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
+        mRootLayout.setClickable(true);
+        mRootLayout.setFocusable(true);
+        // 常规类型初始化界面
+        ViewGroup parent = (ViewGroup) mNormalLayout.getParent();
+        parent.removeView(mNormalLayout);
+        mRootLayout.addView(mNormalLayout);
+        parent.addView(mRootLayout);
     }
 
     /**
      * 保存刷新控件状态
      */
+    @SneakyThrows
     private void saveEnableState() {
-        if (mCurState == ViewState.IDLE) {
-            mEnableStates[0] = mEnableRefresh;
-            mEnableStates[1] = mEnableLoadMore;
-            mEnableStates[2] = mEnableOverScrollDrag;
+        if (mRefreshLayout != null && mCurState == ViewState.IDLE) {
+            mEnableStates[0] = mEnableFields[0].getBoolean(mRefreshLayout);
+            mEnableStates[1] = mEnableFields[1].getBoolean(mRefreshLayout);
+            mEnableStates[2] = mEnableFields[2].getBoolean(mRefreshLayout);
         }
     }
 
     /**
      * 恢复启用状态
      */
+    @SneakyThrows
     private void restoreEnableState() {
-        if (mCurState == ViewState.IDLE) {
-            mEnableRefresh = mEnableStates[0];
-            mEnableLoadMore = mEnableStates[1];
-            mEnableOverScrollDrag = mEnableStates[2];
-        } else {
-            mEnableRefresh = mCurState != ViewState.BUSY && mEnableStates[0];
-            mManualLoadMore = true;
-            mEnableLoadMore = false;
-            mEnableOverScrollDrag = false;
+        if (mRefreshLayout != null) {
+            if (mCurState == ViewState.IDLE) {
+                mRefreshLayout.setEnableRefresh(mEnableStates[0]);
+                mRefreshLayout.setEnableLoadMore(mEnableStates[1]);
+                mRefreshLayout.setEnableOverScrollDrag(mEnableStates[2]);
+            } else {
+                mRefreshLayout.setEnableRefresh(mCurState != ViewState.BUSY && mEnableStates[0]);
+                mRefreshLayout.setEnableLoadMore(false);
+                mRefreshLayout.setEnableOverScrollDrag(false);
+                mEnableFields[3].set(mRefreshLayout, true);
+            }
         }
     }
 
@@ -202,7 +229,7 @@ public class StateRefreshLayout extends SmartRefreshLayout {
         }
         if (adapter != null) {
             mAdapters.put(state.ordinal(), adapter);
-            adapter.onAttach(null, mRootLayout);
+            adapter.onAttach(this, mRootLayout);
         }
         return adapter;
     }

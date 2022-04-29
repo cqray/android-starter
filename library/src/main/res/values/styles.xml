@@ -28,17 +28,17 @@
     </style>
 
     <!-- 主题 -->
-    <style name="AndroidTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="StarterTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowAnimationStyle">@style/DefaultVerticalAnim</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@null</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowBackground">@color/background</item>
         <item name="android:windowDisablePreview">true</item>
     </style>
 
-    <style name="AndroidTheme.Horizontal" parent="AndroidTheme">
+    <style name="StarterTheme.Horizontal" parent="StarterTheme">
         <item name="android:windowAnimationStyle">@style/DefaultHorizontalAnim</item>
     </style>
 

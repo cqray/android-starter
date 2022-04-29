@@ -4,7 +4,7 @@ import android.app.Application;
 
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
-import cn.cqray.android.anim.DefaultHorizontalAnimator;
+import cn.cqray.android.anim.DefaultVerticalAnimator;
 import cn.cqray.android.state.BusyAdapter;
 import cn.cqray.android.state.EmptyAdapter;
 import cn.cqray.android.state.ErrorAdapter;
@@ -20,7 +20,7 @@ public class StarterApplication extends Application {
         super.onCreate();
 
         StarterStrategy strategy = StarterStrategy.builder()
-                .fragmentAnimator(new DefaultHorizontalAnimator())
+                .fragmentAnimator(new DefaultVerticalAnimator())
                 //.fragmentBackground(new ColorDrawable(Color.RED))
                 //.toolbarTitleTextColor(Color.WHITE)
                 //.toolbarTitleTextSize(14)

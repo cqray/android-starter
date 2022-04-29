@@ -12,6 +12,8 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+
 import java.io.Serializable;
 import java.util.Vector;
 
@@ -34,7 +36,7 @@ public class StateAdapter implements Serializable {
     /** 根布局 **/
     private @Getter View mContentView;
     /** 刷新控件 **/
-    private @Getter StateRefreshLayout mRefreshLayout;
+    private @Getter StateDelegate mDelegate;
     /** 父容器 **/
     private FrameLayout mParentView;
     /** 事务 **/
@@ -80,12 +82,12 @@ public class StateAdapter implements Serializable {
         post(() -> ViewCompat.setBackground(mContentView, background));
     }
 
-    void onAttach(StateRefreshLayout refreshLayout, FrameLayout parent) {
+    void onAttach(StateDelegate delegate, FrameLayout parent) {
         if (mContentView == null) {
             Context context = parent.getContext();
             mAttached = true;
+            mDelegate = delegate;
             mParentView = parent;
-            mRefreshLayout = refreshLayout;
             mContentView = LayoutInflater.from(context).inflate(mLayoutResId, parent, false);
             for (Runnable action : mActions) {
                 action.run();

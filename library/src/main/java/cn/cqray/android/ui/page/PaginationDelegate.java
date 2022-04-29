@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
@@ -44,7 +45,7 @@ public class PaginationDelegate<T> {
     private boolean mFirstRefresh = true;
     private String mEmptyText;
     private Handler mHandler;
-    private StateRefreshLayout mRefreshLayout;
+    private SmartRefreshLayout mRefreshLayout;
     private RefreshCallback<T> mCallback;
     private BaseQuickAdapter<T, ? extends BaseViewHolder> mAdapter;
     /** 主要是为了不让数据在界面不可见时加载，造成APP卡顿 **/

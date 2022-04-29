@@ -4,11 +4,15 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+
 import cn.cqray.android.app.SupportFragment;
+import cn.cqray.android.state.StateDelegate;
 
 /**
  * @author Admin
@@ -34,6 +38,10 @@ public class MainFragment2 extends SupportFragment {
             start(MainFragment.class);
         });
         //setBusy();
+//        SmartRefreshLayout frameLayout = findViewById(R.id.content2);
+//        StateDelegate delegate = new StateDelegate();
+//        delegate.attach(frameLayout);
+//        delegate.setBusy();
     }
 
     @Override

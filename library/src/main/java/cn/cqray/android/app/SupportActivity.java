@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+
 import cn.cqray.android.state.StateRefreshLayout;
 import cn.cqray.android.state.ViewState;
 import cn.cqray.android.tip.TipDelegate;
@@ -31,7 +33,7 @@ public class SupportActivity extends AppCompatActivity implements ViewProvider, 
     /** 标题 **/
     public Toolbar mToolbar;
     /** 状态刷新控件 **/
-    public StateRefreshLayout mRefreshLayout;
+    public SmartRefreshLayout mRefreshLayout;
 
     private final ObservableDelegate mObservableDelegate = new ObservableDelegate(this);
 

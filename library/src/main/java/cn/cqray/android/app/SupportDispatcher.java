@@ -48,6 +48,7 @@ public class SupportDispatcher {
             @Override
             public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
                 if (activity instanceof SupportProvider) {
+                    activity.getIntent().putExtra("activity:isTranslucentOrFloating", isTranslucentOrFloating(activity));
                     SupportDelegate.get((SupportProvider) activity).onCreated();
                     new SupportFragmentCallbacks((AppCompatActivity) activity);
                 }
@@ -84,7 +85,7 @@ public class SupportDispatcher {
      * 在Activity中onCreate()中super之前调用
      */
     private static void hookOrientation(@NonNull Activity activity) {
-        //目标版本8.0及其以上
+        // 目标版本8.0及其以上
         if (activity.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.O) {
             if (isTranslucentOrFloating(activity)) {
                 fixOrientation(activity);
