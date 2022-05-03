@@ -45,7 +45,7 @@ public class PaginationDelegate<T> {
     private boolean mFirstRefresh = true;
     private String mEmptyText;
     private Handler mHandler;
-    private SmartRefreshLayout mRefreshLayout;
+    private StateRefreshLayout mRefreshLayout;
     private RefreshCallback<T> mCallback;
     private BaseQuickAdapter<T, ? extends BaseViewHolder> mAdapter;
     /** 主要是为了不让数据在界面不可见时加载，造成APP卡顿 **/

@@ -4,12 +4,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 
 import cn.cqray.android.app.SupportFragment;
 import cn.cqray.android.state.StateDelegate;
@@ -37,6 +34,9 @@ public class MainFragment2 extends SupportFragment {
             Log.e("数据", "点击");
             start(MainFragment.class);
         });
+
+        new StateDelegate().attachFramgent(this);
+        StateDelegate.get(this).setBusy();
         //setBusy();
 //        SmartRefreshLayout frameLayout = findViewById(R.id.content2);
 //        StateDelegate delegate = new StateDelegate();

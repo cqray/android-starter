@@ -12,8 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.scwang.smart.refresh.layout.SmartRefreshLayout;
-
 import cn.cqray.android.state.StateRefreshLayout;
 import cn.cqray.android.state.ViewState;
 import cn.cqray.android.tip.TipDelegate;
@@ -35,7 +33,7 @@ public class SupportFragment extends Fragment implements ViewProvider, SupportPr
     /** 标题 **/
     public Toolbar mToolbar;
     /** 状态刷新控件 **/
-    public SmartRefreshLayout mRefreshLayout;
+    public StateRefreshLayout mRefreshLayout;
 
     private final ObservableDelegate mObservableDelegate = new ObservableDelegate(this);
 
@@ -49,11 +47,9 @@ public class SupportFragment extends Fragment implements ViewProvider, SupportPr
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         onCreating(savedInstanceState);
-        View view = mViewDelegate.getContentView() == null
+        return mViewDelegate.getContentView() == null
                 ? super.onCreateView(inflater, container, savedInstanceState)
                 : mViewDelegate.getContentView();
-        return view;
-        //return mDelegate.getSwipeDelegate().onAttachFragment(view);
     }
 
     public void onCreating(@Nullable Bundle savedInstanceState) {}

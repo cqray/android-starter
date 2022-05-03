@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
@@ -299,6 +300,10 @@ public final class SupportViewModel extends LifecycleViewModel {
             // Fragment回退
             fm.popBackStack(mBackStack.pop(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
+    }
+
+    View getContainerView() {
+        return mActivity.findViewById(mContainerId);
     }
 
     /**

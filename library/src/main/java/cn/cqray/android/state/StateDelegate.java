@@ -8,6 +8,10 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleEventObserver;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshFooter;
@@ -16,13 +20,66 @@ import com.scwang.smart.refresh.layout.api.RefreshHeader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import cn.cqray.android.app.SupportActivity;
+import cn.cqray.android.app.SupportFragment;
 import lombok.SneakyThrows;
 
+/**
+ * 状态管理委托
+ * @author Cqray
+ */
 public class StateDelegate {
 
-    private FrameLayout mNormalLayout;
-    private SmartRefreshLayout mRefreshLayout;
+    /** 委托缓存Map **/
+    private static final Map<Object, StateDelegate> START_DELEGATE_MAP = new ConcurrentHashMap<>();
+    /** SmartLayout一些Enable属性 **/
+    private static final Field[] SMART_ENABLE_FIELDS = new Field[4];
+
+    private static final String NO_ATTACH_EXCEPTION = "Do you forget call attachParent() or attachChild().";
+
+    static {
+        // 静态反射初始化一些属性
+        Class<?> cls = SmartRefreshLayout.class;
+        try {
+            SMART_ENABLE_FIELDS[0] = cls.getDeclaredField("mEnableRefresh");
+            SMART_ENABLE_FIELDS[1] = cls.getDeclaredField("mEnableLoadMore");
+            SMART_ENABLE_FIELDS[2] = cls.getDeclaredField("mEnableOverScrollDrag");
+            SMART_ENABLE_FIELDS[3] = cls.getDeclaredField("mManualLoadMore");
+        } catch (NoSuchFieldException ignore) {}
+    }
+
+    @NonNull
+    public static StateDelegate get(View view) {
+        StateDelegate delegate = START_DELEGATE_MAP.get(view);
+        if (delegate == null) {
+            throw new IllegalStateException(NO_ATTACH_EXCEPTION);
+        }
+        return delegate;
+    }
+
+    @NonNull
+    public static StateDelegate get(FragmentActivity activity) {
+        StateDelegate delegate = START_DELEGATE_MAP.get(activity);
+        if (delegate == null) {
+            throw new IllegalStateException(NO_ATTACH_EXCEPTION);
+        }
+        return delegate;
+    }
+
+    @NonNull
+    public static StateDelegate get(Fragment fragment) {
+        StateDelegate delegate = START_DELEGATE_MAP.get(fragment);
+        if (delegate == null) {
+            throw new IllegalStateException(NO_ATTACH_EXCEPTION);
+        }
+        return delegate;
+    }
+
+    /** 父容器 **/
+    private SmartRefreshLayout mParentView;
     /** 状态根布局 **/
     private FrameLayout mRootLayout;
     /** 当前状态 **/
@@ -34,6 +91,13 @@ public class StateDelegate {
 
     private final Field[] mEnableFields = new Field[4];
 
+    private boolean mHasToolbar;
+    private FragmentActivity mActivity;
+
+    /** 忙碌对话框 **/
+    private BusyDialog mBusyDialog;
+
+
     @SneakyThrows
     public StateDelegate() {
         Class<?> cls = SmartRefreshLayout.class;
@@ -43,12 +107,50 @@ public class StateDelegate {
         mEnableFields[3] = cls.getDeclaredField("mManualLoadMore");
     }
 
-    public void attach(SmartRefreshLayout layout) {
-        mRefreshLayout = layout;
+    public void attachRefreshLayout(SmartRefreshLayout layout) {
+        if (START_DELEGATE_MAP.containsValue(this)) {
+            throw new RuntimeException(StateDelegate.class.getName() + " has attached.");
+        }
+        mParentView = layout;
+        mParentView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                START_DELEGATE_MAP.put(v, StateDelegate.this);
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                START_DELEGATE_MAP.remove(v);
+            }
+        });
+        START_DELEGATE_MAP.put(layout, this);
     }
 
-    public void attach(FrameLayout layout) {
-        mNormalLayout = layout;
+    public void attchActivity(FragmentActivity activity) {
+        mActivity = activity;
+        if (mActivity instanceof SupportActivity) {
+            mHasToolbar = ((SupportActivity) mActivity).mToolbar != null;
+        }
+        mActivity.getLifecycle().addObserver((LifecycleEventObserver) (owner, event) -> {
+            if (event == Lifecycle.Event.ON_DESTROY) {
+                START_DELEGATE_MAP.remove(activity);
+            }
+        });
+        START_DELEGATE_MAP.put(activity, this);
+    }
+
+    public void attachFramgent(@NonNull Fragment fragment) {
+        mActivity = fragment.requireActivity();
+        if (fragment instanceof SupportFragment) {
+            mHasToolbar = ((SupportFragment) fragment).mToolbar != null;
+        }
+        fragment.getLifecycle().addObserver((LifecycleEventObserver) (owner, event) -> {
+            if (event == Lifecycle.Event.ON_DESTROY) {
+                START_DELEGATE_MAP.remove(fragment);
+            }
+        });
+        START_DELEGATE_MAP.put(fragment, this);
     }
 
     public void setIdle() {
@@ -83,23 +185,32 @@ public class StateDelegate {
         saveEnableState();
         mCurState = state;
         // 初始化界面
-        initRefreshLayout();
-        initNormalLayout();
-        // 初始化状态
-        if (mCurState != ViewState.BUSY) {
-            for (int i = 0; i < mAdapters.size(); i++) {
-                StateAdapter adapter = mAdapters.valueAt(i);
-                if (adapter != null) {
-                    adapter.hide();
+        initStateLayouts();
+        if (mRootLayout != null) {
+            // 初始化状态
+            if (mCurState != ViewState.BUSY) {
+                for (int i = 0; i < mAdapters.size(); i++) {
+                    StateAdapter adapter = mAdapters.valueAt(i);
+                    if (adapter != null) {
+                        adapter.hide();
+                    }
                 }
             }
+            // 显示指定状态的界面
+            StateAdapter adapter = getAdapter(mCurState);
+            if (adapter != null) {
+                adapter.show(text);
+            }
+            restoreEnableState();
+        } else  {
+            if (state == ViewState.BUSY && mBusyDialog == null) {
+                mBusyDialog = new BusyDialog();
+                mBusyDialog.show(mActivity.getSupportFragmentManager(), null);
+            } else if (mBusyDialog != null) {
+                mBusyDialog.dismiss();
+                mBusyDialog = null;
+            }
         }
-        // 显示指定状态的界面
-        StateAdapter adapter = getAdapter(mCurState);
-        if (adapter != null) {
-            adapter.show(text);
-        }
-        restoreEnableState();
     }
 
     public void setBusyAdapter(StateAdapter adapter) {
@@ -114,57 +225,57 @@ public class StateDelegate {
         setStateAdapter(ViewState.ERROR, adapter);
     }
 
-    /**
-     * 初始化刷新界面
-     */
-    private void initRefreshLayout() {
-        if (mRootLayout != null || mRefreshLayout == null) {
+    private void initStateLayouts() {
+        if (mRootLayout != null || mParentView == null) {
             return;
         }
-        Context context = mRefreshLayout.getContext();
-        // 初始化界面
-        mRootLayout = new FrameLayout(context);
-        mRootLayout.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
-        mRootLayout.setClickable(true);
-        mRootLayout.setFocusable(true);
-        // 替换布局
-        List<View> children = new ArrayList<>();
-        FrameLayout refreshContent = new FrameLayout(context);
-        refreshContent.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
-        for (int i = 0; i < mRefreshLayout.getChildCount(); i++) {
-            View view = mRefreshLayout.getChildAt(i);
-            if (view instanceof RefreshHeader || view instanceof RefreshFooter) {
-                continue;
-            }
-            children.add(view);
+        if (!START_DELEGATE_MAP.containsValue(this)) {
+            throw new RuntimeException(NO_ATTACH_EXCEPTION);
         }
-        for (int i = 0; i < children.size(); i++) {
-            View view = children.get(i);
-            mRefreshLayout.removeView(view);
-            refreshContent.addView(view, i);
-        }
-        refreshContent.addView(mRootLayout);
-        mRefreshLayout.setRefreshContent(refreshContent);
-    }
 
-    /**
-     * 初始化常规界面
-     */
-    private void initNormalLayout() {
-        if (mRootLayout != null || mNormalLayout == null) {
-            return;
+        // attach SmartRefreshLayout
+        if (mParentView != null) {
+
+            Context context = mParentView.getContext();
+            mRootLayout = new FrameLayout(context);
+            mRootLayout.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
+            mRootLayout.setClickable(true);
+            mRootLayout.setFocusable(true);
+            // 替换布局
+            List<View> children = new ArrayList<>();
+            FrameLayout refreshContent = new FrameLayout(context);
+            refreshContent.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
+            for (int i = 0; i < mParentView.getChildCount(); i++) {
+                View view = mParentView.getChildAt(i);
+                if (view instanceof RefreshHeader || view instanceof RefreshFooter) {
+                    continue;
+                }
+                children.add(view);
+            }
+            for (int i = 0; i < children.size(); i++) {
+                View view = children.get(i);
+                mParentView.removeView(view);
+                refreshContent.addView(view, i);
+            }
+            refreshContent.addView(mRootLayout);
+            mParentView.setRefreshContent(refreshContent);
         }
-        Context context = mNormalLayout.getContext();
-        // 初始化界面
-        mRootLayout = new FrameLayout(context);
-        mRootLayout.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
-        mRootLayout.setClickable(true);
-        mRootLayout.setFocusable(true);
-        // 常规类型初始化界面
-        ViewGroup parent = (ViewGroup) mNormalLayout.getParent();
-        parent.removeView(mNormalLayout);
-        mRootLayout.addView(mNormalLayout);
-        parent.addView(mRootLayout);
+
+//        // attach RootView
+//        if (mChildView instanceof FrameLayout) {
+//            FrameLayout parent = (FrameLayout) mChildView;
+//            List<View> children = new ArrayList<>();
+//            for (int i = 0; i < parent.getChildCount(); i++) {
+//                View view = parent.getChildAt(i);
+//                children.add(view);
+//            }
+//            for (int i = 0; i < children.size(); i++) {
+//                View view = children.get(i);
+//                parent.removeView(view);
+//                mRootLayout.addView(view, i);
+//            }
+//            parent.addView(mRootLayout);
+//        }
     }
 
     /**
@@ -172,10 +283,10 @@ public class StateDelegate {
      */
     @SneakyThrows
     private void saveEnableState() {
-        if (mRefreshLayout != null && mCurState == ViewState.IDLE) {
-            mEnableStates[0] = mEnableFields[0].getBoolean(mRefreshLayout);
-            mEnableStates[1] = mEnableFields[1].getBoolean(mRefreshLayout);
-            mEnableStates[2] = mEnableFields[2].getBoolean(mRefreshLayout);
+        if (mParentView != null && mCurState == ViewState.IDLE) {
+            mEnableStates[0] = mEnableFields[0].getBoolean(mParentView);
+            mEnableStates[1] = mEnableFields[1].getBoolean(mParentView);
+            mEnableStates[2] = mEnableFields[2].getBoolean(mParentView);
         }
     }
 
@@ -184,16 +295,16 @@ public class StateDelegate {
      */
     @SneakyThrows
     private void restoreEnableState() {
-        if (mRefreshLayout != null) {
+        if (mParentView != null) {
             if (mCurState == ViewState.IDLE) {
-                mRefreshLayout.setEnableRefresh(mEnableStates[0]);
-                mRefreshLayout.setEnableLoadMore(mEnableStates[1]);
-                mRefreshLayout.setEnableOverScrollDrag(mEnableStates[2]);
+                mParentView.setEnableRefresh(mEnableStates[0]);
+                mParentView.setEnableLoadMore(mEnableStates[1]);
+                mParentView.setEnableOverScrollDrag(mEnableStates[2]);
             } else {
-                mRefreshLayout.setEnableRefresh(mCurState != ViewState.BUSY && mEnableStates[0]);
-                mRefreshLayout.setEnableLoadMore(false);
-                mRefreshLayout.setEnableOverScrollDrag(false);
-                mEnableFields[3].set(mRefreshLayout, true);
+                mParentView.setEnableRefresh(mCurState != ViewState.BUSY && mEnableStates[0]);
+                mParentView.setEnableLoadMore(false);
+                mParentView.setEnableOverScrollDrag(false);
+                mEnableFields[3].set(mParentView, true);
             }
         }
     }

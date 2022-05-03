@@ -23,8 +23,6 @@ import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
-import com.scwang.smart.refresh.layout.SmartRefreshLayout;
-
 import cn.cqray.android.R;
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
@@ -35,7 +33,7 @@ import cn.cqray.android.app.SupportFragment;
 import cn.cqray.android.exception.ExceptionDispatcher;
 import cn.cqray.android.exception.ExceptionType;
 import cn.cqray.android.state.BusyDialog;
-import cn.cqray.android.state.StateDelegate;
+import cn.cqray.android.state.StateRefreshLayout;
 import cn.cqray.android.state.ViewState;
 import cn.cqray.android.util.ButterKnifeUtils;
 import cn.cqray.android.util.ExtUtils;
@@ -55,7 +53,7 @@ public final class ViewDelegate {
     /** 标题 **/
     private @Getter Toolbar mToolbar;
     /** 刷新控件 **/
-    private @Getter SmartRefreshLayout mRefreshLayout;
+    private @Getter StateRefreshLayout mRefreshLayout;
     /** 头部容器 **/
     private FrameLayout mHeaderLayout;
     /** 底部容器 **/
@@ -68,8 +66,6 @@ public final class ViewDelegate {
     private BusyDialog mBusyDialog;
     /** Fragment、Activity背景 **/
     private MutableLiveData<Drawable> mBackground;
-    /** 状态管理委托 **/
-    private final StateDelegate mStateDelegate;
     /** 生命周期管理 **/
     private final LifecycleOwner mLifecycleOwner;
     /** 生命周期监听 **/
@@ -82,7 +78,6 @@ public final class ViewDelegate {
     public ViewDelegate(AppCompatActivity activity) {
         mLifecycleOwner = activity;
         mLifecycleOwner.getLifecycle().addObserver(mEventObserver);
-        mStateDelegate = new StateDelegate();
         StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
         setBackground(strategy.getActivityBackground());
     }
@@ -90,7 +85,6 @@ public final class ViewDelegate {
     public ViewDelegate(Fragment fragment) {
         mLifecycleOwner = fragment;
         mLifecycleOwner.getLifecycle().addObserver(mEventObserver);
-        mStateDelegate = new StateDelegate();
         StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
         setBackground(strategy.getFragmentBackground());
     }
@@ -271,22 +265,21 @@ public final class ViewDelegate {
     }
 
     public void setState(ViewState state, String text) {
-        mStateDelegate.setState(state, text);
-//        if (mRefreshLayout != null) {
-//            mRefreshLayout.setState(state, text);
-//        } else {
-//            if (state == ViewState.BUSY && mBusyDialog == null) {
-//                mBusyDialog = new BusyDialog();
-//                if (mLifecycleOwner instanceof FragmentActivity) {
-//                    mBusyDialog.show(((FragmentActivity) mLifecycleOwner).getSupportFragmentManager(), null);
-//                } else if (mLifecycleOwner instanceof Fragment) {
-//                    mBusyDialog.show(((Fragment) mLifecycleOwner).getChildFragmentManager(), null);
-//                }
-//            } else if (mBusyDialog != null) {
-//                mBusyDialog.dismiss();
-//                mBusyDialog = null;
-//            }
-//        }
+        if (mRefreshLayout != null) {
+            mRefreshLayout.setState(state, text);
+        } else {
+            if (state == ViewState.BUSY && mBusyDialog == null) {
+                mBusyDialog = new BusyDialog();
+                if (mLifecycleOwner instanceof FragmentActivity) {
+                    mBusyDialog.show(((FragmentActivity) mLifecycleOwner).getSupportFragmentManager(), null);
+                } else if (mLifecycleOwner instanceof Fragment) {
+                    mBusyDialog.show(((Fragment) mLifecycleOwner).getChildFragmentManager(), null);
+                }
+            } else if (mBusyDialog != null) {
+                mBusyDialog.dismiss();
+                mBusyDialog = null;
+            }
+        }
     }
 
     /**
@@ -355,15 +348,11 @@ public final class ViewDelegate {
 
         StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
         // 设置StateRefreshLayout相应状态的适配器
-//        if (mRefreshLayout != null) {
-//            mRefreshLayout.setBusyAdapter(ExtUtils.deepClone(strategy.getBusyAdapter()));
-//            mRefreshLayout.setEmptyAdapter(ExtUtils.deepClone(strategy.getEmptyAdapter()));
-//            mRefreshLayout.setErrorAdapter(ExtUtils.deepClone(strategy.getErrorAdapter()));
-//        }
-        mStateDelegate.setBusyAdapter(ExtUtils.deepClone(strategy.getBusyAdapter()));
-        mStateDelegate.setEmptyAdapter(ExtUtils.deepClone(strategy.getEmptyAdapter()));
-        mStateDelegate.setErrorAdapter(ExtUtils.deepClone(strategy.getErrorAdapter()));
-        mStateDelegate.attach(mRefreshLayout);
+        if (mRefreshLayout != null) {
+            mRefreshLayout.setBusyAdapter(ExtUtils.deepClone(strategy.getBusyAdapter()));
+            mRefreshLayout.setEmptyAdapter(ExtUtils.deepClone(strategy.getEmptyAdapter()));
+            mRefreshLayout.setErrorAdapter(ExtUtils.deepClone(strategy.getErrorAdapter()));
+        }
 
         initToolbar();
         initUnBinder();

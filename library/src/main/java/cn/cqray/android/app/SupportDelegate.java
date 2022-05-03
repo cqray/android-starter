@@ -1,11 +1,13 @@
 package cn.cqray.android.app;
 
 import android.app.Activity;
+import android.view.View;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -37,7 +39,6 @@ public final class SupportDelegate {
         }
         return delegate;
     }
-
     private SupportProvider mProvider;
     private SupportViewModel mMainViewModel;
 
@@ -120,6 +121,10 @@ public final class SupportDelegate {
         if (isViewModelReady()) {
             mMainViewModel.pop();
         }
+    }
+
+    public View getContainerView() {
+        return mMainViewModel.getContainerView();
     }
 
     /**

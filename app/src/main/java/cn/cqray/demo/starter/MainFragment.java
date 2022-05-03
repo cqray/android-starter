@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 
 import cn.cqray.android.app.SupportFragment;
+import cn.cqray.android.state.StateDelegate;
 
 /**
  * @author Admin
@@ -22,6 +23,10 @@ public class MainFragment extends SupportFragment {
         super.onCreating(savedInstanceState);
         setNativeContentView(R.layout.activity_main);
 
+
+//        new StateDelegate().attachProvider(this);
+//
+//        StateDelegate.get(this).setBusy();
 
 
         //mToolbar.setTitleText("车时标题777777");
