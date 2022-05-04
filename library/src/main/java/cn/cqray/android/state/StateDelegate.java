@@ -92,6 +92,8 @@ public class StateDelegate {
     private final Field[] mEnableFields = new Field[4];
 
     private boolean mHasToolbar;
+
+    private View mContentView;
     private FragmentActivity mActivity;
 
     /** 忙碌对话框 **/
@@ -144,6 +146,8 @@ public class StateDelegate {
         mActivity = fragment.requireActivity();
         if (fragment instanceof SupportFragment) {
             mHasToolbar = ((SupportFragment) fragment).mToolbar != null;
+
+            mContentView = ((SupportFragment) fragment).getViewDelegate().getContentView();
         }
         fragment.getLifecycle().addObserver((LifecycleEventObserver) (owner, event) -> {
             if (event == Lifecycle.Event.ON_DESTROY) {
@@ -204,7 +208,7 @@ public class StateDelegate {
             restoreEnableState();
         } else  {
             if (state == ViewState.BUSY && mBusyDialog == null) {
-                mBusyDialog = new BusyDialog();
+                mBusyDialog = new BusyDialog(mContentView);
                 mBusyDialog.show(mActivity.getSupportFragmentManager(), null);
             } else if (mBusyDialog != null) {
                 mBusyDialog.dismiss();

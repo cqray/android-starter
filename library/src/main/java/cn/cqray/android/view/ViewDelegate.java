@@ -268,17 +268,17 @@ public final class ViewDelegate {
         if (mRefreshLayout != null) {
             mRefreshLayout.setState(state, text);
         } else {
-            if (state == ViewState.BUSY && mBusyDialog == null) {
-                mBusyDialog = new BusyDialog();
-                if (mLifecycleOwner instanceof FragmentActivity) {
-                    mBusyDialog.show(((FragmentActivity) mLifecycleOwner).getSupportFragmentManager(), null);
-                } else if (mLifecycleOwner instanceof Fragment) {
-                    mBusyDialog.show(((Fragment) mLifecycleOwner).getChildFragmentManager(), null);
-                }
-            } else if (mBusyDialog != null) {
-                mBusyDialog.dismiss();
-                mBusyDialog = null;
-            }
+//            if (state == ViewState.BUSY && mBusyDialog == null) {
+//                mBusyDialog = new BusyDialog();
+//                if (mLifecycleOwner instanceof FragmentActivity) {
+//                    mBusyDialog.show(((FragmentActivity) mLifecycleOwner).getSupportFragmentManager(), null);
+//                } else if (mLifecycleOwner instanceof Fragment) {
+//                    mBusyDialog.show(((Fragment) mLifecycleOwner).getChildFragmentManager(), null);
+//                }
+//            } else if (mBusyDialog != null) {
+//                mBusyDialog.dismiss();
+//                mBusyDialog = null;
+//            }
         }
     }
 
