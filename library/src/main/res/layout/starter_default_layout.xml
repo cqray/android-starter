@@ -12,7 +12,7 @@
     </cn.cqray.android.widget.Toolbar>
 
     <!-- 刷新界面 -->
-    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+    <cn.cqray.android.state.StateRefreshLayout
         android:id="@id/starter_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,7 +28,7 @@
         app:srlFooterTranslationViewId="@id/translation_footer"
         app:srlHeaderTranslationViewId="@id/translation_header">
 
-    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+    </cn.cqray.android.state.StateRefreshLayout>
 
     <!-- 头部布局 -->
     <FrameLayout

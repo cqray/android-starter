@@ -35,6 +35,7 @@ import cn.cqray.android.app.SupportFragment;
 import cn.cqray.android.exception.ExceptionDispatcher;
 import cn.cqray.android.exception.ExceptionType;
 import cn.cqray.android.state.StateDelegate;
+import cn.cqray.android.state.StateRefreshLayout;
 import cn.cqray.android.state.ViewState;
 import cn.cqray.android.util.ButterKnifeUtils;
 import cn.cqray.android.widget.Toolbar;
@@ -53,7 +54,7 @@ public final class ViewDelegate {
     /** 标题 **/
     private @Getter Toolbar mToolbar;
     /** 刷新控件 **/
-    private @Getter SmartRefreshLayout mRefreshLayout;
+    private @Getter StateRefreshLayout mRefreshLayout;
     /** 头部容器 **/
     private FrameLayout mHeaderLayout;
     /** 底部容器 **/
