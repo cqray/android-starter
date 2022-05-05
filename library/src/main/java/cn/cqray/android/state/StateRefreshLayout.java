@@ -200,7 +200,7 @@ public class StateRefreshLayout extends SmartRefreshLayout {
                 adapter = new ErrorAdapter();
             }
         }
-        if (adapter != null) {
+        if (adapter != null && !adapter.isAttached()) {
             mAdapters.put(state.ordinal(), adapter);
             adapter.onAttach(null, mRootLayout);
         }

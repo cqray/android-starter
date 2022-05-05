@@ -35,7 +35,7 @@ public class SupportFragment extends Fragment implements ViewProvider, SupportPr
     /** 标题 **/
     public Toolbar mToolbar;
     /** 状态刷新控件 **/
-    public SmartRefreshLayout mRefreshLayout;
+    public StateRefreshLayout mRefreshLayout;
 
     private final ObservableDelegate mObservableDelegate = new ObservableDelegate(this);
 

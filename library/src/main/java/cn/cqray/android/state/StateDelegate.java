@@ -1,6 +1,7 @@
 package cn.cqray.android.state;
 
 import android.content.Context;
+
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,9 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 
-import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshFooter;
 import com.scwang.smart.refresh.layout.api.RefreshHeader;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -40,23 +39,6 @@ public class StateDelegate {
 
     /** 委托缓存Map **/
     private static final Map<LifecycleOwner, StateDelegate> START_DELEGATE_MAP = new ConcurrentHashMap<>();
-    /** SmartLayout一些Enable属性 **/
-    private static final Field[] SMART_ENABLE_FIELDS = new Field[4];
-
-    static {
-        // 静态反射初始化一些属性
-        Class<?> cls = SmartRefreshLayout.class;
-        try {
-            SMART_ENABLE_FIELDS[0] = cls.getDeclaredField("mEnableRefresh");
-            SMART_ENABLE_FIELDS[1] = cls.getDeclaredField("mEnableLoadMore");
-            SMART_ENABLE_FIELDS[2] = cls.getDeclaredField("mEnableOverScrollDrag");
-            SMART_ENABLE_FIELDS[3] = cls.getDeclaredField("mManualLoadMore");
-            SMART_ENABLE_FIELDS[0].setAccessible(true);
-            SMART_ENABLE_FIELDS[1].setAccessible(true);
-            SMART_ENABLE_FIELDS[2].setAccessible(true);
-            SMART_ENABLE_FIELDS[3].setAccessible(true);
-        } catch (NoSuchFieldException ignore) {}
-    }
 
     @NonNull
     public static StateDelegate get(FragmentActivity activity) {
@@ -80,15 +62,13 @@ public class StateDelegate {
     /** 忙碌状态是否可取消 **/
     private boolean mBusyCancelable;
     /** 父容器 **/
-    private SmartRefreshLayout mRefreshLayout;
+    private StateRefreshLayout mRefreshLayout;
     /** 常规界面 **/
     private FrameLayout mNormalLayout;
     /** 状态根布局 **/
     private FrameLayout mRootLayout;
     /** 当前状态 **/
     private ViewState mCurState = ViewState.IDLE;
-    /** 状态缓存 **/
-    private final Boolean[] mEnableStates = new Boolean[3];
     /** 适配器集合 **/
     private final SparseArray<StateAdapter> mAdapters = new SparseArray<>();
 
@@ -105,14 +85,21 @@ public class StateDelegate {
         });
         START_DELEGATE_MAP.put(lifecycleOwner, this);
         mBusyCancelable = Starter.getInstance().getStarterStrategy().isBusyCancelable();
+
     }
 
     public void attachLayout(FrameLayout layout) {
         mNormalLayout = layout;
     }
 
-    public void attachLayout(SmartRefreshLayout layout) {
+    public void attachLayout(StateRefreshLayout layout) {
         mRefreshLayout = layout;
+        if (mRefreshLayout != null) {
+            StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
+            mRefreshLayout.setBusyAdapter(strategy.getBusyAdapter());
+            mRefreshLayout.setEmptyAdapter(strategy.getEmptyAdapter());
+            mRefreshLayout.setErrorAdapter(strategy.getErrorAdapter());
+        }
     }
 
     public void setIdle() {
@@ -144,10 +131,9 @@ public class StateDelegate {
     }
 
     public void setState(ViewState state, String text) {
-        // 如果接入了指定容器
-        if (mNormalLayout != null || mRefreshLayout != null) {
-            // 保存刷新控件状态
-            saveRefreshEnableState();
+        if (mRefreshLayout != null) {
+            mRefreshLayout.setState(state, text);
+        } else if (mNormalLayout != null ) {
             // 初始化控件
             initStateLayouts();
             // 初始化状态
@@ -168,8 +154,6 @@ public class StateDelegate {
             if (adapter != null && !adapter.isAttached()) {
                 adapter.onAttach(this, mRootLayout);
             }
-            // 恢复刷新控件状态
-            restoreRefreshEnableState();
         } else if (state != mCurState) {
             // 如果是空闲状态或者和当前状态不一致
             if (state == ViewState.IDLE) {
@@ -264,39 +248,6 @@ public class StateDelegate {
         } else {
             // 走常规容器逻辑
             mNormalLayout.addView(mRootLayout);
-        }
-    }
-
-    /**
-     * 保存刷新控件启用状态
-     */
-    private void saveRefreshEnableState() {
-        if (mRefreshLayout != null && mCurState == ViewState.IDLE) {
-            try {
-                mEnableStates[0] = SMART_ENABLE_FIELDS[0].getBoolean(mRefreshLayout);
-                mEnableStates[1] = SMART_ENABLE_FIELDS[1].getBoolean(mRefreshLayout);
-                mEnableStates[2] = SMART_ENABLE_FIELDS[2].getBoolean(mRefreshLayout);
-            } catch (IllegalAccessException ignore) {}
-        }
-    }
-
-    /**
-     * 恢复刷新控件启用状态
-     */
-    private void restoreRefreshEnableState() {
-        if (mRefreshLayout != null) {
-            if (mCurState == ViewState.IDLE) {
-                mRefreshLayout.setEnableRefresh(mEnableStates[0]);
-                mRefreshLayout.setEnableLoadMore(mEnableStates[1]);
-                mRefreshLayout.setEnableOverScrollDrag(mEnableStates[2]);
-            } else {
-                mRefreshLayout.setEnableRefresh(mCurState != ViewState.BUSY && mEnableStates[0]);
-                mRefreshLayout.setEnableLoadMore(false);
-                mRefreshLayout.setEnableOverScrollDrag(false);
-                try {
-                    SMART_ENABLE_FIELDS[3].set(mRefreshLayout, true);
-                } catch (IllegalAccessException ignored) {}
-            }
         }
     }
 
