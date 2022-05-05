@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.IdRes;
@@ -29,6 +30,7 @@ import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.exception.ExceptionDispatcher;
 import cn.cqray.android.lifecycle.LifecycleViewModel;
 import cn.cqray.android.lifecycle.LifecycleViewModelProvider;
+import cn.cqray.android.state.StateDelegate;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
@@ -74,13 +76,29 @@ public final class SupportViewModel extends LifecycleViewModel {
         Fragment fragment = getTopFragment();
         // 栈顶元素为空，说明没有调用LoadRootFragment。
         if (fragment == null) {
+            // 当前Activity的忙碌状态处理
+            StateDelegate delegate = StateDelegate.get(mActivity);
+            if (delegate.isBusy() && delegate.isBusyCancelable()) {
+                Log.e("数据", "数据局2");
+                delegate.setIdle();
+                return;
+            }
             // 获取Activity拦截结果，决定是否回退
             SupportProvider provider = (SupportProvider) getLifecycleOwner();
             if (!provider.onBackPressedSupport()) {
                 pop();
             }
             return;
-        }  
+        }
+        Log.e("数据", "数据局12");
+        // 当前Fragment的忙碌状态处理
+        StateDelegate delegate = StateDelegate.get(fragment);
+        if (delegate.isBusy() && delegate.isBusyCancelable()) {
+            Log.e("数据", "数据局");
+            delegate.setIdle();
+            return;
+        }
+
         // 栈顶Fragment不为空，回退栈顶Fragment
         // 判断是否进行回退拦截
         if (mBackStack.size() > 1) {

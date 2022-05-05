@@ -28,24 +28,18 @@ import cn.cqray.android.util.ExtUtils;
  * @author LeiJue
  * @date 2022/5/5
  */
-public class StateDialog extends DialogFragment {
+public class BusyDialog extends DialogFragment {
 
     private View mLocationView;
-    private ViewState mViewState;
-
-    public StateDialog(ViewState viewState) {
-        mViewState = viewState;
-        setCancelable(false);
-    }
+    private StateAdapter mBusyAdapter;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         FrameLayout root = (FrameLayout) view;
-        StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
-        StateAdapter adapter = ExtUtils.deepClone(strategy.getEmptyAdapter());
+        // 添加忙碌界面
+        StateAdapter adapter = getBusyAdapter();
         adapter.onAttach(null, root);
         root.addView(adapter.getContentView());
-
         // 延时任务
         Runnable runnable = () -> {
             // 计算对话框显示的高度
@@ -109,7 +103,23 @@ public class StateDialog extends DialogFragment {
         return dlg;
     }
 
+    private StateAdapter getBusyAdapter() {
+        if (mBusyAdapter != null) {
+            return mBusyAdapter;
+        }
+        StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
+        StateAdapter adapter = strategy.getBusyAdapter();
+        if (adapter != null) {
+            return ExtUtils.deepClone(adapter);
+        }
+        return new BusyAdapter();
+    }
+
     public void setLocationAt(View view) {
         mLocationView = view;
+    }
+
+    public void setBusyAdapter(StateAdapter adapter) {
+        mBusyAdapter = adapter;
     }
 }

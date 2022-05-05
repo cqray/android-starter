@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
@@ -17,7 +19,7 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
 import java.util.List;
 
-import cn.cqray.android.state.StateRefreshLayout;
+import cn.cqray.android.state.StateDelegate;
 
 /**
  * 分页委托
@@ -45,11 +47,13 @@ public class PaginationDelegate<T> {
     private boolean mFirstRefresh = true;
     private String mEmptyText;
     private Handler mHandler;
-    private StateRefreshLayout mRefreshLayout;
+    private SmartRefreshLayout mRefreshLayout;
     private RefreshCallback<T> mCallback;
     private BaseQuickAdapter<T, ? extends BaseViewHolder> mAdapter;
     /** 主要是为了不让数据在界面不可见时加载，造成APP卡顿 **/
     private MutableLiveData<List<T>> mData = new MutableLiveData<>();
+
+    private StateDelegate mStateDelegate;
 
     public PaginationDelegate(@NonNull LifecycleOwner owner) {
         mHandler = new Handler(Looper.getMainLooper());
@@ -60,6 +64,11 @@ public class PaginationDelegate<T> {
             }
         });
         initDataObserver(owner);
+        if (owner instanceof FragmentActivity) {
+            mStateDelegate = StateDelegate.get((FragmentActivity) owner);
+        } else if (owner instanceof Fragment) {
+            mStateDelegate = StateDelegate.get((Fragment) owner);
+        }
     }
 
     private void initDataObserver(LifecycleOwner owner) {
@@ -73,7 +82,7 @@ public class PaginationDelegate<T> {
                 mRefreshLayout.finishLoadMore();
             }
             if (mFirstRefresh) {
-                mRefreshLayout.setIdle();
+                mStateDelegate.setIdle();
                 mFirstRefresh = false;
             }
             // 数据是否为空
@@ -81,10 +90,10 @@ public class PaginationDelegate<T> {
             if (mCurPageNum == mStartPageNum) {
                 if (empty) {
                     // 如果是起始页，数据为空则显示空界面
-                    mRefreshLayout.setEmpty(mEmptyText);
+                    mStateDelegate.setEmpty(mEmptyText);
                 } else {
                     // 显示界面
-                    mRefreshLayout.setIdle();
+                    mStateDelegate.setIdle();
                 }
             }
             // 不需要分页
@@ -134,7 +143,7 @@ public class PaginationDelegate<T> {
         mCallback = callback;
     }
 
-    public void setRefreshLayout(StateRefreshLayout refreshLayout) {
+    public void setRefreshLayout(SmartRefreshLayout refreshLayout) {
         mRefreshLayout = refreshLayout;
         mRefreshLayout.setEnablePureScrollMode(false);
         mRefreshLayout.setEnableRefresh(true);
@@ -210,7 +219,7 @@ public class PaginationDelegate<T> {
     public void autoRefresh() {
         check();
         if (mFirstRefresh) {
-            mRefreshLayout.setBusy();
+            mStateDelegate.setBusy();
             mHandler.postDelayed(this::refreshSilent, 0);
         } else {
             mRefreshLayout.autoRefresh();

@@ -20,7 +20,7 @@ import cn.cqray.android.app.SupportActivity;
  * 问题展示界面
  * @author Cqray
  */
-class ExceptionActivity extends SupportActivity {
+public class ExceptionActivity extends SupportActivity {
 
     String mIntroText;
     String mSourceText;

@@ -13,6 +13,9 @@ import com.blankj.utilcode.util.Utils;
 
 import cn.cqray.android.anim.DefaultVerticalAnimator;
 import cn.cqray.android.anim.FragmentAnimator;
+import cn.cqray.android.state.BusyAdapter;
+import cn.cqray.android.state.EmptyAdapter;
+import cn.cqray.android.state.ErrorAdapter;
 import cn.cqray.android.state.StateAdapter;
 import cn.cqray.android.tip.TipAdapter;
 
@@ -40,15 +43,18 @@ public class StarterStrategy {
     private Drawable activityBackground;
     /** Fragment背景资源 **/
     @Getter(value = AccessLevel.PRIVATE)
-    private @DrawableRes int fragmentBackgroundRes;
+    private @Builder.Default @DrawableRes int fragmentBackgroundRes = R.color.background;
     /** Fragment背景 **/
     private Drawable fragmentBackground;
     /** 忙布局适配器 **/
-    private StateAdapter busyAdapter;
+    @NonNull
+    private @Builder.Default StateAdapter busyAdapter = new BusyAdapter();
     /** 空布局适配器 **/
-    private StateAdapter emptyAdapter;
+    @NonNull
+    private @Builder.Default StateAdapter emptyAdapter = new EmptyAdapter();
     /** 错误布局适配器 **/
-    private StateAdapter errorAdapter;
+    @NonNull
+    private @Builder.Default StateAdapter errorAdapter = new ErrorAdapter();
     /** 提示适配器 **/
     private TipAdapter tipAdapter;
     /** 标题背景资源 **/
@@ -101,6 +107,8 @@ public class StarterStrategy {
     private @Builder.Default float toolbarDividerMargin = 0;
     /** 标题分割线是否显示 **/
     private @Builder.Default boolean toolbarDividerVisible = false;
+    /** 忙碌状态是否能取消 **/
+    private @Builder.Default boolean busyCancelable = true;
 
     public synchronized Drawable getActivityBackground() {
         if (activityBackground == null && activityBackgroundRes != 0) {
