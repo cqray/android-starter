@@ -96,4 +96,8 @@ public class StateAdapter implements Serializable {
             onViewCreated(mContentView);
         }
     }
+
+    boolean isAttached() {
+        return mAttached;
+    }
 }

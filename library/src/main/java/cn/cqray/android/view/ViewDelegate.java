@@ -32,7 +32,6 @@ import cn.cqray.android.app.SupportActivity;
 import cn.cqray.android.app.SupportFragment;
 import cn.cqray.android.exception.ExceptionDispatcher;
 import cn.cqray.android.exception.ExceptionType;
-import cn.cqray.android.state.BusyDialog;
 import cn.cqray.android.state.StateRefreshLayout;
 import cn.cqray.android.state.ViewState;
 import cn.cqray.android.util.ButterKnifeUtils;
@@ -62,8 +61,6 @@ public final class ViewDelegate {
     private ViewGroup mActivityContent;
     /** ButterKnife绑定 **/
     private Object mUnBinder;
-    /** 忙碌对话框 **/
-    private BusyDialog mBusyDialog;
     /** Fragment、Activity背景 **/
     private MutableLiveData<Drawable> mBackground;
     /** 生命周期管理 **/
@@ -269,7 +266,7 @@ public final class ViewDelegate {
             mRefreshLayout.setState(state, text);
         } else {
 //            if (state == ViewState.BUSY && mBusyDialog == null) {
-//                mBusyDialog = new BusyDialog();
+//                mBusyDialog = new StateDialog();
 //                if (mLifecycleOwner instanceof FragmentActivity) {
 //                    mBusyDialog.show(((FragmentActivity) mLifecycleOwner).getSupportFragmentManager(), null);
 //                } else if (mLifecycleOwner instanceof Fragment) {
