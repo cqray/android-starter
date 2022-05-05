@@ -1,6 +1,7 @@
 package cn.cqray.android.state;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,6 +114,9 @@ public class StateDelegate {
 
     public void attachLayout(SmartRefreshLayout layout) {
         mRefreshLayout = layout;
+
+        // 保存刷新控件状态
+        saveRefreshEnableState();
     }
 
     public void setIdle() {
@@ -146,8 +150,8 @@ public class StateDelegate {
     public void setState(ViewState state, String text) {
         // 如果接入了指定容器
         if (mNormalLayout != null || mRefreshLayout != null) {
-            // 保存刷新控件状态
             saveRefreshEnableState();
+            mCurState = state;
             // 初始化控件
             initStateLayouts();
             // 初始化状态
@@ -192,8 +196,9 @@ public class StateDelegate {
                         String.format(Locale.getDefault(), "需要调用attachLayout()后，才能支持%s和%s状态",
                                 ViewState.EMPTY.name(), ViewState.ERROR.name()));
             }
+
+            mCurState = state;
         }
-        mCurState = state;
     }
 
     public void setBusyAdapter(StateAdapter adapter) {
@@ -276,6 +281,7 @@ public class StateDelegate {
                 mEnableStates[0] = SMART_ENABLE_FIELDS[0].getBoolean(mRefreshLayout);
                 mEnableStates[1] = SMART_ENABLE_FIELDS[1].getBoolean(mRefreshLayout);
                 mEnableStates[2] = SMART_ENABLE_FIELDS[2].getBoolean(mRefreshLayout);
+                Log.e("数据", "|" + mEnableStates[0] + "|" + mEnableStates[1] + "|" + mEnableStates[02]);
             } catch (IllegalAccessException ignore) {}
         }
     }
@@ -285,22 +291,31 @@ public class StateDelegate {
      */
     private void restoreRefreshEnableState() {
         if (mRefreshLayout != null) {
+
+            Log.e("数据777", "777");
             if (mCurState == ViewState.IDLE) {
 //                mRefreshLayout.setEnableRefresh(mEnableStates[0]);
 //                mRefreshLayout.setEnableLoadMore(mEnableStates[1]);
 //                mRefreshLayout.setEnableOverScrollDrag(mEnableStates[2]);
                 try {
-                    SMART_ENABLE_FIELDS[0].set(mRefreshLayout, mEnableStates[0]);
-                    SMART_ENABLE_FIELDS[1].set(mRefreshLayout, mEnableStates[1]);
-                    SMART_ENABLE_FIELDS[2].set(mRefreshLayout, mEnableStates[2]);
+                    SMART_ENABLE_FIELDS[0].setBoolean(mRefreshLayout, mEnableStates[0]);
+                    SMART_ENABLE_FIELDS[1].setBoolean(mRefreshLayout, mEnableStates[1]);
+                    SMART_ENABLE_FIELDS[2].setBoolean(mRefreshLayout, mEnableStates[2]);
+                    Log.e("数据2", "|" + mEnableStates[0] + "|" + mEnableStates[1] + "|" + mEnableStates[02]);
 //                    SMART_ENABLE_FIELDS[3].set(mRefreshLayout, true);
-                } catch (IllegalAccessException ignored) {}
+                } catch (IllegalAccessException ignored) {
+                    ignored.fillInStackTrace();
+                }
             } else {
-                mRefreshLayout.setEnableRefresh(mCurState != ViewState.BUSY && mEnableStates[0]);
-                mRefreshLayout.setEnableLoadMore(false);
-                mRefreshLayout.setEnableOverScrollDrag(false);
+//                mRefreshLayout.setEnableRefresh(mCurState != ViewState.BUSY && mEnableStates[0]);
+//                mRefreshLayout.setEnableLoadMore(false);
+//                mRefreshLayout.setEnableOverScrollDrag(false);
                 try {
-                    SMART_ENABLE_FIELDS[3].set(mRefreshLayout, true);
+                    SMART_ENABLE_FIELDS[0].setBoolean(mRefreshLayout, mCurState != ViewState.BUSY && mEnableStates[0]);
+                    SMART_ENABLE_FIELDS[1].setBoolean(mRefreshLayout, false);
+                    SMART_ENABLE_FIELDS[2].setBoolean(mRefreshLayout, false);
+                    SMART_ENABLE_FIELDS[3].setBoolean(mRefreshLayout, true);
+
                 } catch (IllegalAccessException ignored) {}
             }
         }

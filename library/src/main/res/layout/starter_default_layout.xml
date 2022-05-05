@@ -20,6 +20,8 @@
         android:layout_below="@id/starter_header_layout"
         android:overScrollMode="never"
         app:srlEnablePureScrollMode="true"
+        app:srlEnableLoadMore="false"
+        app:srlEnableOverScrollDrag="true"
         app:srlEnableScrollContentWhenRefreshed="false"
         app:srlFixedFooterViewId="@id/fixed_footer"
         app:srlFixedHeaderViewId="@id/fixed_header"
