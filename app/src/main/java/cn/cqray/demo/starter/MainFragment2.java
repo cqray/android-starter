@@ -38,6 +38,11 @@ public class MainFragment2 extends SupportFragment {
 
         //StateDelegate.get(this).setEmpty();
         setBusy();
+
+        timer(aLong -> {
+            setIdle();
+        }, 1500);
+
 //        SmartRefreshLayout frameLayout = findViewById(R.id.content2);
 //        StateDelegate delegate = new StateDelegate();
 //        delegate.attach(frameLayout);

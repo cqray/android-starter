@@ -286,9 +286,15 @@ public class StateDelegate {
     private void restoreRefreshEnableState() {
         if (mRefreshLayout != null) {
             if (mCurState == ViewState.IDLE) {
-                mRefreshLayout.setEnableRefresh(mEnableStates[0]);
-                mRefreshLayout.setEnableLoadMore(mEnableStates[1]);
-                mRefreshLayout.setEnableOverScrollDrag(mEnableStates[2]);
+//                mRefreshLayout.setEnableRefresh(mEnableStates[0]);
+//                mRefreshLayout.setEnableLoadMore(mEnableStates[1]);
+//                mRefreshLayout.setEnableOverScrollDrag(mEnableStates[2]);
+                try {
+                    SMART_ENABLE_FIELDS[0].set(mRefreshLayout, mEnableStates[0]);
+                    SMART_ENABLE_FIELDS[1].set(mRefreshLayout, mEnableStates[1]);
+                    SMART_ENABLE_FIELDS[2].set(mRefreshLayout, mEnableStates[2]);
+//                    SMART_ENABLE_FIELDS[3].set(mRefreshLayout, true);
+                } catch (IllegalAccessException ignored) {}
             } else {
                 mRefreshLayout.setEnableRefresh(mCurState != ViewState.BUSY && mEnableStates[0]);
                 mRefreshLayout.setEnableLoadMore(false);
