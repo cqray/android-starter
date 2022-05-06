@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -12,9 +13,10 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 
-import com.scwang.smart.refresh.layout.SmartRefreshLayout;
-
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 
 import lombok.Getter;
@@ -40,7 +42,7 @@ public class StateAdapter implements Serializable {
     /** 父容器 **/
     private FrameLayout mParentView;
     /** 事务 **/
-    private Vector<Runnable> mActions = new Vector<>();
+    private List<Runnable> mActions = Collections.synchronizedList(new ArrayList<>());
 
     public StateAdapter(@LayoutRes int layoutResId) {
         mLayoutResId = layoutResId;
@@ -55,6 +57,7 @@ public class StateAdapter implements Serializable {
                 mParentView.addView(mContentView);
                 mParentView.setVisibility(View.VISIBLE);
                 mContentView.bringToFront();
+                Log.e("数据", getClass().getName()  + "显示");
             }
         });
     }
@@ -63,6 +66,7 @@ public class StateAdapter implements Serializable {
         post(() -> {
             mParentView.removeView(mContentView);
             mParentView.setVisibility(View.GONE);
+            Log.e("数据", getClass().getName()  + "隐藏显示");
         });
     }
 
@@ -95,6 +99,7 @@ public class StateAdapter implements Serializable {
             mActions.clear();
             onViewCreated(mContentView);
         }
+        Log.e("数据", "777-" + (mParentView == null));
     }
 
     boolean isAttached() {

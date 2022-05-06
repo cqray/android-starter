@@ -1,6 +1,7 @@
 package cn.cqray.android.state;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshFooter;
 import com.scwang.smart.refresh.layout.api.RefreshHeader;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
 import cn.cqray.android.exception.ExceptionDispatcher;
+import cn.cqray.android.util.ExtUtils;
 import cn.cqray.android.view.ViewDelegate;
 import cn.cqray.android.view.ViewProvider;
 
@@ -37,7 +40,7 @@ import cn.cqray.android.view.ViewProvider;
  * 状态管理委托
  * @author Cqray
  */
-public class StateDelegate {
+public class StateDelegate implements Serializable {
 
     /** 委托缓存Map **/
     private static final Map<LifecycleOwner, StateDelegate> START_DELEGATE_MAP = new ConcurrentHashMap<>();
@@ -116,7 +119,7 @@ public class StateDelegate {
         mRefreshLayout = layout;
 
         // 保存刷新控件状态
-        saveRefreshEnableState();
+        //saveRefreshEnableState();
     }
 
     public void setIdle() {
@@ -148,56 +151,17 @@ public class StateDelegate {
     }
 
     public void setState(ViewState state, String text) {
-        // 如果接入了指定容器
-        if (mNormalLayout != null || mRefreshLayout != null) {
-            saveRefreshEnableState();
-            mCurState = state;
-            // 初始化控件
-            initStateLayouts();
-            // 初始化状态
-            if (state != ViewState.BUSY) {
-                for (int i = 0; i < mAdapters.size(); i++) {
-                    StateAdapter adapter = mAdapters.valueAt(i);
-                    if (adapter != null) {
-                        adapter.hide();
-                    }
-                }
-            }
-            // 显示指定状态的界面
-            StateAdapter adapter = getAdapter(state);
-            if (adapter != null) {
-                adapter.show(text);
-            }
-            // 接入根容器
-            if (adapter != null && !adapter.isAttached()) {
-                adapter.onAttach(this, mRootLayout);
-            }
-            // 恢复刷新控件状态
-            restoreRefreshEnableState();
-        } else if (state != mCurState) {
-            // 如果是空闲状态或者和当前状态不一致
-            if (state == ViewState.IDLE) {
-                // 取消忙碌对话框
-                if (mBusyDialog != null) {
-                    mBusyDialog.dismiss();
-                    mBusyDialog = null;
-                }
-            }
-            // 如果是忙碌状态，则显示对应对话框
-            if (state == ViewState.BUSY) {
-                mBusyDialog = new BusyDialog();
-                mBusyDialog.setCancelable(mBusyCancelable);
-                mBusyDialog.setBusyAdapter(getAdapter(ViewState.BUSY));
-                mBusyDialog.setLocationAt(getLocationView());
-                mBusyDialog.show(getSupportFragmentManager(), null);
-            } else if (state != ViewState.IDLE) {
-                ExceptionDispatcher.dispatchStarterThrowable(this,
-                        String.format(Locale.getDefault(), "不支持%s状态", state.name()),
-                        String.format(Locale.getDefault(), "需要调用attachLayout()后，才能支持%s和%s状态",
-                                ViewState.EMPTY.name(), ViewState.ERROR.name()));
-            }
-
-            mCurState = state;
+        if (mCurState == state) {
+            // 状态没变化，不做处理
+            return;
+        }
+        // 设置状态
+        if (mNormalLayout == null && mRefreshLayout == null) {
+            // 没有接入布局控件，则使用对话框来显示状态
+            setStateByDialog(state, text);
+        } else {
+            // 接入了布局控件，使用布局控件显示状态
+            setStateByLayout(state, text);
         }
     }
 
@@ -246,6 +210,7 @@ public class StateDelegate {
         mRootLayout.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
         mRootLayout.setClickable(true);
         mRootLayout.setFocusable(true);
+        mRootLayout.setBackgroundColor(Color.parseColor("#22000000"));
         // 如果刷新容器不为空，走刷新控件逻辑
         if (mRefreshLayout != null) {
             // 替换布局
@@ -272,8 +237,69 @@ public class StateDelegate {
         }
     }
 
+    private void setStateByLayout(ViewState state, String text) {
+        // 保存刷新控件空闲状态时的相关属性
+        saveRefreshEnableState();
+        // 更新当前状态
+        mCurState = state;
+        // 初始化控件
+        initStateLayouts();
+        // 初始化状态
+//        if (mCurState != ViewState.BUSY) {
+
+        //Log.e("数据", "TT-" )
+            for (int i = 0; i < mAdapters.size(); i++) {
+                StateAdapter adapter = mAdapters.valueAt(i);
+                if (adapter != null) {
+                    adapter.hide();
+                }
+            }
+ //       }
+//        if (state == ViewState.IDLE) {
+//            mRootLayout.setVisibility(View.GONE);
+//        } else {
+            // 显示指定状态的界面
+            StateAdapter adapter = getAdapter(state);
+            if (adapter != null) {
+                adapter.show(text);
+                //if (!adapter.isAttached()) {
+                    Log.e("数据", "isAttached");
+                    adapter.onAttach(this, mRootLayout);
+                //}
+            }
+//        }
+        // 恢复刷新控件状态
+        restoreRefreshEnableState();
+    }
+
+    private void setStateByDialog(ViewState state, String text) {
+        // 如果是空闲状态或者和当前状态不一致
+        if (state == ViewState.IDLE) {
+            // 取消忙碌对话框
+            if (mBusyDialog != null) {
+                mBusyDialog.dismiss();
+                mBusyDialog = null;
+            }
+        }
+        // 如果是忙碌状态，则显示对应对话框
+        if (state == ViewState.BUSY) {
+            mBusyDialog = new BusyDialog();
+            mBusyDialog.setCancelable(mBusyCancelable);
+            mBusyDialog.setBusyAdapter(getAdapter(ViewState.BUSY));
+            mBusyDialog.setLocationAt(getLocationView());
+            mBusyDialog.setText(text);
+            mBusyDialog.show(getSupportFragmentManager(), null);
+        } else if (state != ViewState.IDLE) {
+            ExceptionDispatcher.dispatchStarterThrowable(this,
+                    String.format(Locale.getDefault(), "不支持%s状态", state.name()),
+                    String.format(Locale.getDefault(), "需要调用attachLayout()后，才能支持%s和%s状态",
+                            ViewState.EMPTY.name(), ViewState.ERROR.name()));
+        }
+        mCurState = state;
+    }
+
     /**
-     * 保存刷新控件启用状态
+     * 保存刷新控件空闲状态时的相关属性
      */
     private void saveRefreshEnableState() {
         if (mRefreshLayout != null && mCurState == ViewState.IDLE) {
@@ -281,7 +307,6 @@ public class StateDelegate {
                 mEnableStates[0] = SMART_ENABLE_FIELDS[0].getBoolean(mRefreshLayout);
                 mEnableStates[1] = SMART_ENABLE_FIELDS[1].getBoolean(mRefreshLayout);
                 mEnableStates[2] = SMART_ENABLE_FIELDS[2].getBoolean(mRefreshLayout);
-                Log.e("数据", "|" + mEnableStates[0] + "|" + mEnableStates[1] + "|" + mEnableStates[02]);
             } catch (IllegalAccessException ignore) {}
         }
     }
@@ -291,31 +316,18 @@ public class StateDelegate {
      */
     private void restoreRefreshEnableState() {
         if (mRefreshLayout != null) {
-
-            Log.e("数据777", "777");
             if (mCurState == ViewState.IDLE) {
-//                mRefreshLayout.setEnableRefresh(mEnableStates[0]);
-//                mRefreshLayout.setEnableLoadMore(mEnableStates[1]);
-//                mRefreshLayout.setEnableOverScrollDrag(mEnableStates[2]);
                 try {
                     SMART_ENABLE_FIELDS[0].setBoolean(mRefreshLayout, mEnableStates[0]);
                     SMART_ENABLE_FIELDS[1].setBoolean(mRefreshLayout, mEnableStates[1]);
                     SMART_ENABLE_FIELDS[2].setBoolean(mRefreshLayout, mEnableStates[2]);
-                    Log.e("数据2", "|" + mEnableStates[0] + "|" + mEnableStates[1] + "|" + mEnableStates[02]);
-//                    SMART_ENABLE_FIELDS[3].set(mRefreshLayout, true);
-                } catch (IllegalAccessException ignored) {
-                    ignored.fillInStackTrace();
-                }
+                } catch (IllegalAccessException ignored) {}
             } else {
-//                mRefreshLayout.setEnableRefresh(mCurState != ViewState.BUSY && mEnableStates[0]);
-//                mRefreshLayout.setEnableLoadMore(false);
-//                mRefreshLayout.setEnableOverScrollDrag(false);
                 try {
                     SMART_ENABLE_FIELDS[0].setBoolean(mRefreshLayout, mCurState != ViewState.BUSY && mEnableStates[0]);
                     SMART_ENABLE_FIELDS[1].setBoolean(mRefreshLayout, false);
                     SMART_ENABLE_FIELDS[2].setBoolean(mRefreshLayout, false);
                     SMART_ENABLE_FIELDS[3].setBoolean(mRefreshLayout, true);
-
                 } catch (IllegalAccessException ignored) {}
             }
         }
@@ -344,12 +356,18 @@ public class StateDelegate {
         if (adapter == null) {
             StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
             if (state == ViewState.BUSY) {
-                adapter = strategy.getBusyAdapter() == null ? new BusyAdapter() : strategy.getBusyAdapter();
+                adapter = strategy.getBusyAdapter();
+                Log.e("数据", adapter.getClass().getName());
             } else if (state == ViewState.EMPTY) {
-                adapter = strategy.getEmptyAdapter() == null ? new EmptyAdapter() : strategy.getEmptyAdapter();
+                adapter = strategy.getEmptyAdapter();
             } else if (state == ViewState.ERROR) {
-                adapter = strategy.getErrorAdapter() == null ? new ErrorAdapter() : strategy.getErrorAdapter();
+                adapter = strategy.getErrorAdapter();
             }
+            adapter = ExtUtils.deepClone(adapter);
+            if (adapter != null) {
+                adapter.hide();
+            }
+
             mAdapters.put(state.ordinal(), adapter);
         }
         return adapter;

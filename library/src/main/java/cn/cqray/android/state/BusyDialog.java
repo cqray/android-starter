@@ -30,6 +30,7 @@ import cn.cqray.android.util.ExtUtils;
  */
 public class BusyDialog extends DialogFragment {
 
+    private String mText;
     private View mLocationView;
     private StateAdapter mBusyAdapter;
 
@@ -39,6 +40,7 @@ public class BusyDialog extends DialogFragment {
         // 添加忙碌界面
         StateAdapter adapter = getBusyAdapter();
         adapter.onAttach(null, root);
+        adapter.show(mText);
         root.addView(adapter.getContentView());
         // 延时任务
         Runnable runnable = () -> {
@@ -121,5 +123,9 @@ public class BusyDialog extends DialogFragment {
 
     public void setBusyAdapter(StateAdapter adapter) {
         mBusyAdapter = adapter;
+    }
+
+    public void setText(String text) {
+        mText = text;
     }
 }
