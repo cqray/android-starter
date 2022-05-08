@@ -64,11 +64,12 @@ public class PaginationDelegate<T> {
             }
         });
         initDataObserver(owner);
-        if (owner instanceof FragmentActivity) {
-            mStateDelegate = StateDelegate.get((FragmentActivity) owner);
-        } else if (owner instanceof Fragment) {
-            mStateDelegate = StateDelegate.get((Fragment) owner);
-        }
+        mStateDelegate = StateDelegate.get(owner);
+//        if (owner instanceof FragmentActivity) {
+//            mStateDelegate = StateDelegate.get((FragmentActivity) owner);
+//        } else if (owner instanceof Fragment) {
+//            mStateDelegate = StateDelegate.get((Fragment) owner);
+//        }
     }
 
     private void initDataObserver(LifecycleOwner owner) {

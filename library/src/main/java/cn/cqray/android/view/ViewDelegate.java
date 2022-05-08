@@ -54,7 +54,7 @@ public final class ViewDelegate {
     /** 标题 **/
     private @Getter Toolbar mToolbar;
     /** 刷新控件 **/
-    private @Getter StateRefreshLayout mRefreshLayout;
+    private @Getter SmartRefreshLayout mRefreshLayout;
     /** 头部容器 **/
     private FrameLayout mHeaderLayout;
     /** 底部容器 **/

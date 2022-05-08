@@ -1,8 +1,6 @@
 package cn.cqray.android.state;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +15,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.blankj.utilcode.util.CloneUtils;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshFooter;
 import com.scwang.smart.refresh.layout.api.RefreshHeader;
@@ -32,9 +31,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
 import cn.cqray.android.exception.ExceptionDispatcher;
-import cn.cqray.android.util.ExtUtils;
 import cn.cqray.android.view.ViewDelegate;
 import cn.cqray.android.view.ViewProvider;
+import lombok.Getter;
 
 /**
  * 状态管理委托
@@ -73,12 +72,16 @@ public class StateDelegate implements Serializable {
     }
 
     @NonNull
-    private synchronized static StateDelegate get(@NonNull LifecycleOwner owner) {
-        StateDelegate delegate = START_DELEGATE_MAP.get(owner);
-        if (delegate == null) {
-            delegate = new StateDelegate(owner);
+    public synchronized static StateDelegate get(@NonNull LifecycleOwner owner) {
+        if (owner instanceof FragmentActivity || owner instanceof Fragment) {
+            StateDelegate delegate = START_DELEGATE_MAP.get(owner);
+            if (delegate == null) {
+                delegate = new StateDelegate(owner);
+            }
+            return delegate;
+        } else {
+            throw new IllegalArgumentException("LifecycleOwner must be an FragmentActivity or Fragment.");
         }
-        return delegate;
     }
 
     /** 忙碌状态是否可取消 **/
@@ -98,6 +101,7 @@ public class StateDelegate implements Serializable {
 
     /** 忙碌对话框 **/
     private BusyDialog mBusyDialog;
+    @Getter
     private LifecycleOwner mLifecycleOwner;
 
     private StateDelegate(@NonNull LifecycleOwner lifecycleOwner) {
@@ -117,9 +121,6 @@ public class StateDelegate implements Serializable {
 
     public void attachLayout(SmartRefreshLayout layout) {
         mRefreshLayout = layout;
-
-        // 保存刷新控件状态
-        //saveRefreshEnableState();
     }
 
     public void setIdle() {
@@ -151,17 +152,15 @@ public class StateDelegate implements Serializable {
     }
 
     public void setState(ViewState state, String text) {
-        if (mCurState == state) {
-            // 状态没变化，不做处理
-            return;
-        }
-        // 设置状态
-        if (mNormalLayout == null && mRefreshLayout == null) {
-            // 没有接入布局控件，则使用对话框来显示状态
-            setStateByDialog(state, text);
-        } else {
-            // 接入了布局控件，使用布局控件显示状态
-            setStateByLayout(state, text);
+        if (mCurState != state) {
+            // 设置状态
+            if (mNormalLayout == null && mRefreshLayout == null) {
+                // 没有接入布局控件，则使用对话框来显示状态
+                setStateByDialog(state, text);
+            } else {
+                // 接入了布局控件，使用布局控件显示状态
+                setStateByLayout(state, text);
+            }
         }
     }
 
@@ -210,7 +209,6 @@ public class StateDelegate implements Serializable {
         mRootLayout.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
         mRootLayout.setClickable(true);
         mRootLayout.setFocusable(true);
-        mRootLayout.setBackgroundColor(Color.parseColor("#22000000"));
         // 如果刷新容器不为空，走刷新控件逻辑
         if (mRefreshLayout != null) {
             // 替换布局
@@ -244,30 +242,21 @@ public class StateDelegate implements Serializable {
         mCurState = state;
         // 初始化控件
         initStateLayouts();
-        // 初始化状态
-//        if (mCurState != ViewState.BUSY) {
-
-        //Log.e("数据", "TT-" )
-            for (int i = 0; i < mAdapters.size(); i++) {
-                StateAdapter adapter = mAdapters.valueAt(i);
-                if (adapter != null) {
-                    adapter.hide();
-                }
-            }
- //       }
-//        if (state == ViewState.IDLE) {
-//            mRootLayout.setVisibility(View.GONE);
-//        } else {
-            // 显示指定状态的界面
-            StateAdapter adapter = getAdapter(state);
+        // 隐藏所有状态控件
+        for (int i = 0; i < mAdapters.size(); i++) {
+            StateAdapter adapter = mAdapters.valueAt(i);
             if (adapter != null) {
-                adapter.show(text);
-                //if (!adapter.isAttached()) {
-                    Log.e("数据", "isAttached");
-                    adapter.onAttach(this, mRootLayout);
-                //}
+                adapter.hide();
             }
-//        }
+        }
+        // 显示对应的状态控件
+        StateAdapter adapter = getAdapter(state);
+        if (adapter != null) {
+            adapter.show(text);
+            if (adapter.mContentView == null) {
+                adapter.onAttach(this, mRootLayout);
+            }
+        }
         // 恢复刷新控件状态
         restoreRefreshEnableState();
     }
@@ -354,20 +343,19 @@ public class StateDelegate implements Serializable {
     private StateAdapter getAdapter(@NonNull ViewState state) {
         StateAdapter adapter = mAdapters.get(state.ordinal());
         if (adapter == null) {
+            // 获取全局状态适配器
             StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
             if (state == ViewState.BUSY) {
                 adapter = strategy.getBusyAdapter();
-                Log.e("数据", adapter.getClass().getName());
             } else if (state == ViewState.EMPTY) {
                 adapter = strategy.getEmptyAdapter();
             } else if (state == ViewState.ERROR) {
                 adapter = strategy.getErrorAdapter();
             }
-            adapter = ExtUtils.deepClone(adapter);
             if (adapter != null) {
-                adapter.hide();
+                // 因为需要关联布局，所以需要克隆适配器
+                adapter = CloneUtils.deepClone(adapter, adapter.getClass());
             }
-
             mAdapters.put(state.ordinal(), adapter);
         }
         return adapter;

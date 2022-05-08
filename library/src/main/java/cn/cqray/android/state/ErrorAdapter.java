@@ -31,32 +31,23 @@ public class ErrorAdapter extends StateAdapter {
                 mRetryListener.onClick(v);
             }
         });
-        setText(getText());
+    }
+
+    @Override
+    protected void onTextChanged(String text) {
+        super.onTextChanged(text);
+        ViewGroup parent = (ViewGroup) getContentView();
+        TextView tv = (TextView) parent.getChildAt(1);
+        tv.setText(TextUtils.isEmpty(text) ? "页面异常" : text);
     }
 
     public void setButtonVisible(final boolean visible) {
-        post(() -> {
-            ViewGroup parent = (ViewGroup) getContentView();
-            TextView btn = (TextView) parent.getChildAt(2);
-            btn.setVisibility(visible ? View.VISIBLE : View.GONE);
-        });
+        ViewGroup parent = (ViewGroup) getContentView();
+        TextView btn = (TextView) parent.getChildAt(2);
+        btn.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     public void setRetryListener(View.OnClickListener listener) {
         mRetryListener = listener;
-    }
-
-    @Override
-    protected void show(String text) {
-        super.show(text);
-        setText(text);
-    }
-
-    protected void setText(final String text) {
-        post(() -> {
-            ViewGroup parent = (ViewGroup) getContentView();
-            TextView tv = (TextView) parent.getChildAt(1);
-            tv.setText(TextUtils.isEmpty(text) ? "页面异常" : text);
-        });
     }
 }

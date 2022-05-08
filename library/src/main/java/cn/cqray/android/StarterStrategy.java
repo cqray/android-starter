@@ -17,6 +17,7 @@ import cn.cqray.android.state.BusyAdapter;
 import cn.cqray.android.state.EmptyAdapter;
 import cn.cqray.android.state.ErrorAdapter;
 import cn.cqray.android.state.StateAdapter;
+import cn.cqray.android.state.ViewState;
 import cn.cqray.android.tip.TipAdapter;
 
 import cn.cqray.android.util.ExtUtils;
@@ -148,4 +149,5 @@ public class StarterStrategy {
         }
         return toolbarBackIcon;
     }
+
 }
