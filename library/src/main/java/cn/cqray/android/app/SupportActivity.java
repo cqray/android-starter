@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 
-import cn.cqray.android.state.StateRefreshLayout;
 import cn.cqray.android.state.ViewState;
 import cn.cqray.android.tip.TipDelegate;
 import cn.cqray.android.tip.TipProvider;

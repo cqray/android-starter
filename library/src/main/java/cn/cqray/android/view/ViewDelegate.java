@@ -35,7 +35,6 @@ import cn.cqray.android.app.SupportFragment;
 import cn.cqray.android.exception.ExceptionDispatcher;
 import cn.cqray.android.exception.ExceptionType;
 import cn.cqray.android.state.StateDelegate;
-import cn.cqray.android.state.StateRefreshLayout;
 import cn.cqray.android.state.ViewState;
 import cn.cqray.android.util.ButterKnifeUtils;
 import cn.cqray.android.widget.Toolbar;
