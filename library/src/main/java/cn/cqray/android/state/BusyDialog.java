@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +46,6 @@ public class BusyDialog extends DialogFragment {
             adapter.onAttach(StateDelegate.get(getParentFragment()), root);
         }
         adapter.show(mText);
-        root.addView(adapter.getContentView());
         // 延时任务
         Runnable runnable = () -> {
             // 计算对话框显示的高度
