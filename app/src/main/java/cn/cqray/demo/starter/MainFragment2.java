@@ -33,15 +33,16 @@ public class MainFragment2 extends SupportFragment {
 
         findViewById(R.id.tv).setOnClickListener(v -> {
             Log.e("数据", "点击");
-            start(MainFragment.class);
+            //start(MainFragment.class);
+            setBusy();
+
+            timer(aLong -> {
+                setIdle();
+            }, 1500);
         });
 
         //StateDelegate.get(this).setEmpty();
-        setBusy();
 
-        timer(aLong -> {
-            setIdle();
-        }, 1500);
 
 //        SmartRefreshLayout frameLayout = findViewById(R.id.content2);
 //        StateDelegate delegate = new StateDelegate();

@@ -10,8 +10,11 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
+
+import com.blankj.utilcode.util.CloneUtils;
 
 import java.io.Serializable;
 
@@ -23,22 +26,22 @@ import lombok.experimental.Accessors;
  * @author Cqray
  */
 @Accessors(prefix = "m")
-public class StateAdapter implements Serializable {
+public class StateAdapter implements Serializable, Cloneable {
 
     /** 资源ID **/
     private final int mLayoutResId;
     /** 根布局 **/
     protected  @Getter View mContentView;
     /** 刷新控件 **/
-    protected  @Getter StateDelegate mDelegate;
+    protected @Getter StateDelegate mDelegate;
     /** 文本内容 **/
-    protected final MutableLiveData<String> mText = new MutableLiveData<>();
+    protected MutableLiveData<String> mText = new MutableLiveData<>();
     /** 是否显示 **/
-    protected final MutableLiveData<Boolean> mShow = new MutableLiveData<>();
+    protected MutableLiveData<Boolean> mShow = new MutableLiveData<>();
     /** 背景 **/
-    protected final MutableLiveData<Drawable> mBackground = new MutableLiveData<>();
+    protected MutableLiveData<Drawable> mBackground = new MutableLiveData<>();
     /** 连接界面 **/
-    protected final MutableLiveData<FrameLayout> mAttachLayout = new MutableLiveData<>();
+    protected MutableLiveData<FrameLayout> mAttachLayout = new MutableLiveData<>();
 
     public StateAdapter(@LayoutRes int layoutResId) {
         mLayoutResId = layoutResId;
@@ -109,10 +112,37 @@ public class StateAdapter implements Serializable {
         });
     }
 
+    public void reset() {
+        mContentView = null;
+        mDelegate = null;
+        mAttachLayout = new MutableLiveData<>();
+        mBackground = new MutableLiveData<>();
+        mShow = new MutableLiveData<>();
+        mText = new MutableLiveData<>();
+    }
+
     /**
      * 是否已连接界面
      */
     synchronized boolean isAttached() {
         return mContentView != null;
+    }
+
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public <T extends StateAdapter> T deepClone() {
+        T t;
+        try {
+            t = (T) super.clone();
+            t.mContentView = null;
+            t.mDelegate = null;
+            t.mAttachLayout = new MutableLiveData<>();
+            t.mBackground = new MutableLiveData<>();
+            t.mShow = new MutableLiveData<>();
+            t.mText = new MutableLiveData<>();
+        } catch (CloneNotSupportedException ignored) {
+            return (T) CloneUtils.deepClone(this, getClass());
+        }
+        return t;
     }
 }

@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.blankj.utilcode.util.ScreenUtils;
-
 import cn.cqray.android.R;
-import cn.cqray.android.Starter;
-import cn.cqray.android.StarterStrategy;
-import cn.cqray.android.util.ExtUtils;
 
 /**
  * 状态对话框
@@ -39,13 +34,15 @@ public class BusyDialog extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         FrameLayout root = (FrameLayout) view;
         // 添加忙碌界面
-        StateAdapter adapter = getBusyAdapter();
-        if (getParentFragment() == null) {
-            adapter.onAttach(StateDelegate.get(this.requireActivity()), root);
-        } else {
-            adapter.onAttach(StateDelegate.get(getParentFragment()), root);
+        if (mBusyAdapter != null) {
+            mBusyAdapter.reset();
+            if (getParentFragment() == null) {
+                mBusyAdapter.onAttach(StateDelegate.get(this.requireActivity()), root);
+            } else {
+                mBusyAdapter.onAttach(StateDelegate.get(getParentFragment()), root);
+            }
+            mBusyAdapter.show(mText);
         }
-        adapter.show(mText);
         // 延时任务
         Runnable runnable = () -> {
             // 计算对话框显示的高度
@@ -68,11 +65,10 @@ public class BusyDialog extends DialogFragment {
             lp.height = height - offset;
             lp.gravity = Gravity.TOP;
             lp.y = offset;
-            window.setAttributes(lp);
+            // 不能调用window.setAttributes(lp)，否则会导致Window重绘
             // 显示布局界面
             requireView().setVisibility(View.VISIBLE);
         };
-
         // 运行任务
         if (mLocationView == null) {
             runnable.run();
@@ -101,24 +97,10 @@ public class BusyDialog extends DialogFragment {
         assert window != null;
         // 设置为可以点击区域外的控件
         window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
-        // 设置显示遮罩
-        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         // 遮罩透明度
         window.setDimAmount(0f);
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         return dlg;
-    }
-
-    private StateAdapter getBusyAdapter() {
-        if (mBusyAdapter != null) {
-            return mBusyAdapter;
-        }
-        StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
-        StateAdapter adapter = strategy.getBusyAdapter();
-        if (adapter != null) {
-            return ExtUtils.deepClone(adapter);
-        }
-        return new BusyAdapter();
     }
 
     public void setLocationAt(View view) {

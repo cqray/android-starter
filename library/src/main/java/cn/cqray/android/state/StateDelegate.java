@@ -1,6 +1,7 @@
 package cn.cqray.android.state;
 
 import android.content.Context;
+import android.service.autofill.Transformation;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +12,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 
-import com.blankj.utilcode.util.CloneUtils;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshFooter;
 import com.scwang.smart.refresh.layout.api.RefreshHeader;
@@ -28,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import cn.cqray.android.R;
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
 import cn.cqray.android.exception.ExceptionDispatcher;
@@ -277,7 +279,9 @@ public class StateDelegate implements Serializable {
             mBusyDialog.setBusyAdapter(getAdapter(ViewState.BUSY));
             mBusyDialog.setLocationAt(getLocationView());
             mBusyDialog.setText(text);
-            mBusyDialog.show(getSupportFragmentManager(), null);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.setCustomAnimations(R.anim._core_no_anim, R.anim._core_no_anim, R.anim._core_no_anim, R.anim._core_no_anim);
+            mBusyDialog.show(ft, null);
         } else if (state != ViewState.IDLE) {
             ExceptionDispatcher.dispatchStarterThrowable(this,
                     String.format(Locale.getDefault(), "不支持%s状态", state.name()),
@@ -354,7 +358,10 @@ public class StateDelegate implements Serializable {
             }
             if (adapter != null) {
                 // 因为需要关联布局，所以需要克隆适配器
-                adapter = CloneUtils.deepClone(adapter, adapter.getClass());
+                adapter = adapter.deepClone();
+                if (adapter != null) {
+                    adapter.hide();
+                }
             }
             mAdapters.put(state.ordinal(), adapter);
         }

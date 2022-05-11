@@ -42,6 +42,21 @@
         <item name="android:windowAnimationStyle">@style/DefaultHorizontalAnim</item>
     </style>
 
+    <!--自定义对话框样式-->
+    <style name="DialogNoAnimationTheme" parent="android:Theme.Dialog">
+        <!--进入时的动画-->
+        <item name="android:windowEnterAnimation">@anim/_core_no_anim</item>
+        <!--退出时的动画-->
+        <item name="android:windowExitAnimation">@anim/_core_no_anim</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTheme</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+    <style name="WindowAnimationTheme">
+        <item name="android:windowEnterAnimation">@anim/_core_no_anim</item>
+        <item name="android:windowExitAnimation">@anim/_core_no_anim</item>
+        <item name="android:windowShowAnimation">@anim/_core_no_anim</item>
+        <item name="android:windowHideAnimation">@anim/_core_no_anim</item>
+    </style>
 
     <style name="TextAppearance.Active" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/caption</item>
