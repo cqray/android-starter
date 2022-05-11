@@ -39,7 +39,11 @@ public class BusyDialog extends DialogFragment {
         FrameLayout root = (FrameLayout) view;
         // 添加忙碌界面
         StateAdapter adapter = getBusyAdapter();
-        adapter.onAttach(null, root);
+        if (getParentFragment() == null) {
+            adapter.onAttach(StateDelegate.get(this.requireActivity()), root);
+        } else {
+            adapter.onAttach(StateDelegate.get(getParentFragment()), root);
+        }
         adapter.show(mText);
         root.addView(adapter.getContentView());
         // 延时任务
