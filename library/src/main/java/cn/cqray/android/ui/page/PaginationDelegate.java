@@ -4,8 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
@@ -166,6 +164,7 @@ public class PaginationDelegate<T> {
                 }
             }
         });
+        mStateDelegate.attachLayout(refreshLayout);
     }
 
     public void setAdapter(BaseQuickAdapter<T, ? extends BaseViewHolder> adapter) {
@@ -215,6 +214,12 @@ public class PaginationDelegate<T> {
     public void finish(List<T> data) {
         check();
         mData.setValue(data);
+    }
+
+    public void finishWithException(Throwable throwable) {
+        check();
+        mData.setValue(null);
+        mStateDelegate.setError(throwable == null ? null : throwable.getMessage());
     }
 
     public void autoRefresh() {
