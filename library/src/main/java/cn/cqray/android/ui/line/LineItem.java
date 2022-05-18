@@ -19,6 +19,7 @@ import java.io.Serializable;
 import cn.cqray.android.R;
 import cn.cqray.android.Starter;
 import cn.cqray.android.util.ExtUtils;
+import cn.cqray.android.util.Sizes;
 
 /**
  * 行项数据基类
@@ -51,11 +52,11 @@ public abstract class LineItem<T extends LineItem<T>> implements MultiItemEntity
     private Object mTag;
 
     public LineItem() {
-        mHeight = (int) ExtUtils.getSize(R.dimen.line, 1);
+        mHeight = Sizes.line();
         mPadding = new int[4];
         mMargin = new int[4];
         // 分割线
-        mDividerHeight = (int) ExtUtils.getSize(R.dimen.divider, 1);
+        mDividerHeight = Sizes.divider();
         mDividerColor = ContextCompat.getColor(getContext(), R.color.divider);
         mDividerMargin = new int[4];
         // 背景
@@ -65,7 +66,7 @@ public abstract class LineItem<T extends LineItem<T>> implements MultiItemEntity
                 = mPadding[2]
                 = mDividerMargin[0]
                 = mDividerMargin[2]
-                = (int) ExtUtils.getSize(R.dimen.content, 1);
+                = Sizes.content();
     }
 
     public T height(float height) {

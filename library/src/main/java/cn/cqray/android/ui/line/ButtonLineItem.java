@@ -9,7 +9,7 @@ import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
 import cn.cqray.android.R;
-import cn.cqray.android.util.ExtUtils;
+import cn.cqray.android.util.Sizes;
 
 /**
  * 按钮行
@@ -26,7 +26,7 @@ public class ButtonLineItem extends LineItem<ButtonLineItem> {
     public ButtonLineItem(CharSequence text) {
         mText = text;
         mTextColor = ContextCompat.getColor(getContext(), R.color.text);
-        mTextSize = ExtUtils.getSize(R.dimen.h3, 0);
+        mTextSize = Sizes.h3Sp();
         dividerHeight(0);
     }
 
@@ -63,7 +63,7 @@ public class ButtonLineItem extends LineItem<ButtonLineItem> {
     }
 
     public ButtonLineItem textSizeRes(@DimenRes int resId) {
-        mTextSize = ExtUtils.getSize(resId, 0);
+        mTextSize = Sizes.sp(resId);
         return this;
     }
 

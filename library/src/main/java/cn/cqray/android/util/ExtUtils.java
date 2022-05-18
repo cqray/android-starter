@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -19,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.DimenRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,7 +28,6 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.blankj.utilcode.util.ActivityUtils;
-import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.SizeUtils;
 import com.blankj.utilcode.util.Utils;
 import com.google.android.material.shape.MaterialShapeDrawable;
@@ -417,23 +414,6 @@ public class ExtUtils {
         } else {
             return LayoutInflater.from(Utils.getApp()).inflate(resId, null, false);
         }
-    }
-    
-    ///////////////////////////////////////////////////////
-    ////////////////////   资源获取   //////////////////////
-    ///////////////////////////////////////////////////////
-
-    public static float getDipSize(@DimenRes int resId) {
-        return Utils.getApp().getResources().getDimension(resId) / ScreenUtils.getScreenDensity();
-    }
-
-    public static float getSpSize(@DimenRes int resId) {
-        return Utils.getApp().getResources().getDimension(resId) / Resources.getSystem().getDisplayMetrics().scaledDensity;
-    }
-
-    public static float getSize(@DimenRes int resId, int unit) {
-        float px = Utils.getApp().getResources().getDimension(resId) / ScreenUtils.getScreenDensity();
-        return SizeUtils.applyDimension(px, unit);
     }
 
     /**

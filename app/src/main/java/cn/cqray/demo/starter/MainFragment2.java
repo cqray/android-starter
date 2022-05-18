@@ -8,8 +8,11 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.hjq.toast.ToastUtils;
+
 import cn.cqray.android.app.SupportFragment;
 import cn.cqray.android.state.StateDelegate;
+import cn.cqray.android.util.Sizes;
 
 /**
  * @author Admin
@@ -20,7 +23,7 @@ public class MainFragment2 extends SupportFragment {
     @Override
     public void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
-        setNativeContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main2);
 //        mToolbar.setActionText(0, "6666");
 //        mToolbar.setTitle("77777")
 //                .setDividerVisible(false)
@@ -31,6 +34,8 @@ public class MainFragment2 extends SupportFragment {
 //                   showInfo("hello");
 //                });
 
+
+        Log.e("数据", "|" + Sizes.largerDp());
         findViewById(R.id.tv).setOnClickListener(v -> {
             Log.e("数据", "点击");
             //start(MainFragment.class);
@@ -40,6 +45,7 @@ public class MainFragment2 extends SupportFragment {
                 setIdle();
             }, 1500);
         });
+//        mRefreshLayout.setEnablePureScrollMode(false);
 
         //StateDelegate.get(this).setEmpty();
 
@@ -54,6 +60,8 @@ public class MainFragment2 extends SupportFragment {
     public void onResume() {
         super.onResume();
         Log.e("数据", "onResume");
+//        mRefreshLayout.setEnableRefresh(true);
+//        mRefreshLayout.setEnableLoadMore(true);
     }
 
     @Override

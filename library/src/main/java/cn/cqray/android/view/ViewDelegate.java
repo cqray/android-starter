@@ -350,7 +350,9 @@ public final class ViewDelegate {
             ((SupportFragment) mLifecycleOwner).mContentView = mContentView;
             ((SupportFragment) mLifecycleOwner).mRefreshLayout = mRefreshLayout;
         }
-
+        if (mRefreshLayout != null) {
+            mRefreshLayout.setEnableLoadMore(true);
+        }
         mStateDelegate.attachLayout(mRefreshLayout);
 //        StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
 //        // 设置StateRefreshLayout相应状态的适配器

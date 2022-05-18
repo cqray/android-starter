@@ -9,7 +9,7 @@ import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
 import cn.cqray.android.R;
-import cn.cqray.android.util.ExtUtils;
+import cn.cqray.android.util.Sizes;
 
 /**
  * 文本行
@@ -26,7 +26,7 @@ public class TextLineItem extends IconLineItem<TextLineItem> {
     public TextLineItem(CharSequence text) {
         super(text);
         mRightTextColor = ContextCompat.getColor(getContext(), R.color.tint);
-        mRightTextSize = ExtUtils.getSize(R.dimen.body, 0);
+        mRightTextSize = Sizes.bodySp();
     }
 
     public TextLineItem rightText(@StringRes int resId) {
@@ -63,7 +63,7 @@ public class TextLineItem extends IconLineItem<TextLineItem> {
     }
 
     public TextLineItem rightTextSizeRes(@DimenRes int resId) {
-        mRightTextSize = ExtUtils.getSize(resId, 0);
+        mRightTextSize = Sizes.sp(resId);
         return this;
     }
 

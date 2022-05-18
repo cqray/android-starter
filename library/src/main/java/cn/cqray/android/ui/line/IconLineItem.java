@@ -10,7 +10,7 @@ import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
 import cn.cqray.android.R;
-import cn.cqray.android.util.ExtUtils;
+import cn.cqray.android.util.Sizes;
 
 /**
  * 带图标行
@@ -31,7 +31,7 @@ abstract class IconLineItem<T extends IconLineItem<T>> extends LineItem<T> {
         super();
         mText = text;
         mTextColor = ContextCompat.getColor(getContext(), R.color.text);
-        mTextSize = ExtUtils.getSize(R.dimen.h3, 0);
+        mTextSize = Sizes.h3Sp();
         mNext = R.drawable.def_line_next;
     }
 
@@ -79,7 +79,7 @@ abstract class IconLineItem<T extends IconLineItem<T>> extends LineItem<T> {
     }
 
     public T textSizeRes(@DimenRes int resId) {
-        mTextSize = ExtUtils.getSize(resId, 0);
+        mTextSize = Sizes.sp(resId);
         return (T) this;
     }
 

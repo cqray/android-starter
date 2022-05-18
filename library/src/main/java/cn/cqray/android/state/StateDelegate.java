@@ -95,7 +95,7 @@ public class StateDelegate implements Serializable {
     /** 状态根布局 **/
     private FrameLayout mRootLayout;
     /** 当前状态 **/
-    private ViewState mCurState = ViewState.IDLE;
+    private ViewState mCurState;
     /** 状态缓存 **/
     private final Boolean[] mEnableStates = new Boolean[3];
     /** 适配器集合 **/
@@ -295,12 +295,14 @@ public class StateDelegate implements Serializable {
      * 保存刷新控件空闲状态时的相关属性
      */
     private void saveRefreshEnableState() {
-        if (mRefreshLayout != null && mCurState == ViewState.IDLE) {
-            try {
-                mEnableStates[0] = SMART_ENABLE_FIELDS[0].getBoolean(mRefreshLayout);
-                mEnableStates[1] = SMART_ENABLE_FIELDS[1].getBoolean(mRefreshLayout);
-                mEnableStates[2] = SMART_ENABLE_FIELDS[2].getBoolean(mRefreshLayout);
-            } catch (IllegalAccessException ignore) {}
+        if (mRefreshLayout != null) {
+            if (mCurState == null || mCurState == ViewState.IDLE) {
+                try {
+                    mEnableStates[0] = SMART_ENABLE_FIELDS[0].getBoolean(mRefreshLayout);
+                    mEnableStates[1] = SMART_ENABLE_FIELDS[1].getBoolean(mRefreshLayout);
+                    mEnableStates[2] = SMART_ENABLE_FIELDS[2].getBoolean(mRefreshLayout);
+                } catch (IllegalAccessException ignore) {}
+            }
         }
     }
 
