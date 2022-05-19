@@ -8,9 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
@@ -18,6 +20,7 @@ import com.blankj.utilcode.util.CloneUtils;
 
 import java.io.Serializable;
 
+import cn.cqray.android.util.ContextUtils;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
@@ -58,18 +61,22 @@ public class StateAdapter implements Serializable, Cloneable {
         mShow.setValue(false);
     }
 
+    public void setBackground(final Drawable background) {
+        mBackground.setValue(background);
+    }
+
     public void setBackgroundColor(int color) {
         setBackground(new ColorDrawable(color));
     }
 
-    public void setBackground(final Drawable background) {
-        mBackground.setValue(background);
+    public void setBackgroundResource(@DrawableRes int resId) {
+        setBackground(ContextCompat.getDrawable(ContextUtils.get(), resId));
     }
 
     protected void onTextChanged(String text) {}
 
     /**
-     * 连接界面
+     * 关联界面
      * @param delegate 状态委托
      * @param parent 父容器
      */
@@ -77,26 +84,33 @@ public class StateAdapter implements Serializable, Cloneable {
         if (delegate == null) {
             return;
         }
-        LifecycleOwner owner = delegate.getMLifecycleOwner();
+        LifecycleOwner owner = delegate.getLifecycleOwner();
         // 监听连接界面变化
         mAttachLayout.observe(owner, layout -> {
             Context context = layout.getContext();
+            // 初始化界面
             if (mContentView == null) {
                 mDelegate = delegate;
                 mContentView = LayoutInflater.from(context).inflate(mLayoutResId, layout, false);
                 onViewCreated(mContentView);
             }
         });
+        // 关联界面
         mAttachLayout.setValue(parent);
         // 检查显示或隐藏界面
         mShow.observe(owner, aBoolean -> {
             FrameLayout layout = mAttachLayout.getValue();
             if (layout != null) {
+                // 关联了界面才进行显示或隐藏操作
                 if (aBoolean) {
-                    layout.addView(mContentView);
-                    layout.setVisibility(View.VISIBLE);
-                    mContentView.bringToFront();
+                    // 显示并隐藏相应的界面
+                    if (mContentView.getParent() == null) {
+                        layout.addView(mContentView);
+                        layout.setVisibility(View.VISIBLE);
+                        mContentView.bringToFront();
+                    }
                 } else if (mContentView != null) {
+                    // 隐藏并移除相应的界面
                     layout.removeView(mContentView);
                     layout.setVisibility(View.GONE);
                 }
@@ -112,6 +126,9 @@ public class StateAdapter implements Serializable, Cloneable {
         });
     }
 
+    /**
+     * 重置状态适配器
+     */
     public void reset() {
         mContentView = null;
         mDelegate = null;
@@ -122,12 +139,10 @@ public class StateAdapter implements Serializable, Cloneable {
     }
 
     /**
-     * 是否已连接界面
+     * 深度拷贝状态适配器
+     * @param <T> 泛型
+     * @return 实例
      */
-    synchronized boolean isAttached() {
-        return mContentView != null;
-    }
-
     @Nullable
     @SuppressWarnings("unchecked")
     public <T extends StateAdapter> T deepClone() {
@@ -145,4 +160,5 @@ public class StateAdapter implements Serializable, Cloneable {
         }
         return t;
     }
+
 }

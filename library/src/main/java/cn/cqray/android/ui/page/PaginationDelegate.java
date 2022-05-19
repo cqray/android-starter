@@ -1,11 +1,6 @@
 package cn.cqray.android.ui.page;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
@@ -17,6 +12,8 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 
 import java.util.List;
 
+import cn.cqray.android.Starter;
+import cn.cqray.android.StarterStrategy;
 import cn.cqray.android.state.StateDelegate;
 
 /**
@@ -24,50 +21,46 @@ import cn.cqray.android.state.StateDelegate;
  * @author Cqray
  */
 public class PaginationDelegate<T> {
-
-    /** 全局默认起始页码 **/
-    private static int sDefaultStartPageNum = 1;
-    /** 全局默认分页大小 **/
-    private static int sDefaultPageSize = 20;
     /** 起始页码 **/
-    private int mStartPageNum = sDefaultStartPageNum;
+    private int mStartPageNum;
     /** 分页大小 **/
-    private int mPageSize = sDefaultPageSize;
+    private int mPageSize;
     /** 上次加载的数据对应页码 **/
-    private int mLastPageNum = mStartPageNum;
+    private int mLastPageNum;
     /** 当前加载的数据对应页码 **/
-    private int mCurPageNum = mStartPageNum;
+    private int mCurPageNum;
     /** 是否需要满页验证 **/
     private boolean mPaginationFull = true;
-    /** 是否可以分页 **/
-    private boolean mPaginationEnable = true;
     /** 是否是首次刷新数据 **/
     private boolean mFirstRefresh = true;
     private String mEmptyText;
-    private Handler mHandler;
     private SmartRefreshLayout mRefreshLayout;
     private RefreshCallback<T> mCallback;
+    /** 列表适配器 **/
     private BaseQuickAdapter<T, ? extends BaseViewHolder> mAdapter;
     /** 主要是为了不让数据在界面不可见时加载，造成APP卡顿 **/
-    private MutableLiveData<List<T>> mData = new MutableLiveData<>();
-
-    private StateDelegate mStateDelegate;
+    private final MutableLiveData<List<T>> mData = new MutableLiveData<>();
+    /** 是否可以分页 **/
+    private final MutableLiveData<Boolean> mPaginationEnable = new MutableLiveData<>();
+    /** 状态管理委托 **/
+    private final StateDelegate mStateDelegate;
 
     public PaginationDelegate(@NonNull LifecycleOwner owner) {
-        mHandler = new Handler(Looper.getMainLooper());
-        owner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
-            if (event == Lifecycle.Event.ON_DESTROY) {
-                mHandler.removeCallbacksAndMessages(null);
-                mHandler = null;
-            }
-        });
+        // 初始化相关配置参数
+        StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
+        mStartPageNum = strategy.getDefaultStartPageNum();
+        mPageSize = strategy.getDefaultPageSize();
+        mLastPageNum = mStartPageNum;
+        mCurPageNum = mStartPageNum;
+
         initDataObserver(owner);
         mStateDelegate = StateDelegate.get(owner);
-//        if (owner instanceof FragmentActivity) {
-//            mStateDelegate = StateDelegate.get((FragmentActivity) owner);
-//        } else if (owner instanceof Fragment) {
-//            mStateDelegate = StateDelegate.get((Fragment) owner);
-//        }
+
+        mPaginationEnable.observe(owner, aBoolean -> {
+            if (mRefreshLayout != null) {
+                mRefreshLayout.setEnableLoadMore(aBoolean);
+            }
+        });
     }
 
     private void initDataObserver(LifecycleOwner owner) {
@@ -96,9 +89,10 @@ public class PaginationDelegate<T> {
                 }
             }
             // 不需要分页
-            if (!mPaginationEnable) {
+            if (!isPaginationEnable()) {
                 // 结束刷新数据
                 mAdapter.setList(data);
+                // 重复设置上拉刷新状态，避免中途有修改
                 mRefreshLayout.setEnableLoadMore(false);
                 return;
             }
@@ -195,7 +189,7 @@ public class PaginationDelegate<T> {
      * @param enable 是否开启分页功能， 默认为true
      */
     public void setPaginationEnable(boolean enable) {
-        mPaginationEnable = enable;
+        mPaginationEnable.setValue(enable);
     }
 
     /**
@@ -227,7 +221,7 @@ public class PaginationDelegate<T> {
         check();
         if (mFirstRefresh) {
             mStateDelegate.setBusy();
-            mHandler.postDelayed(this::refreshSilent, 0);
+            mRefreshLayout.post(this::refreshSilent);
         } else {
             mRefreshLayout.autoRefresh();
         }
@@ -240,19 +234,7 @@ public class PaginationDelegate<T> {
         }
     }
 
-    /**
-     * 设置全局起始页码
-     * @param pageNum 起始页码，默认为1
-     */
-    public static void setDefaultStartPageNum(int pageNum) {
-        sDefaultStartPageNum = pageNum;
-    }
-
-    /**
-     * 设置全局分页大小
-     * @param pageSize 分页大小，默认为20
-     */
-    public static void setDefaultPageSize(int pageSize) {
-        sDefaultPageSize = pageSize;
+    public boolean isPaginationEnable() {
+        return mPaginationEnable.getValue() == null ? true : mPaginationEnable.getValue();
     }
 }

@@ -55,9 +55,9 @@ public final class ViewDelegate {
     /** 刷新控件 **/
     private @Getter SmartRefreshLayout mRefreshLayout;
     /** 头部容器 **/
-    private FrameLayout mHeaderLayout;
+    private @Getter FrameLayout mHeaderLayout;
     /** 底部容器 **/
-    private FrameLayout mFooterLayout;
+    private @Getter FrameLayout mFooterLayout;
     /** Activity内容布局（android.R.id.content） **/
     private ViewGroup mActivityContent;
     /** ButterKnife绑定 **/
@@ -253,37 +253,22 @@ public final class ViewDelegate {
     }
 
     public void setIdle() {
-        setState(ViewState.IDLE, null);
+        mStateDelegate.setIdle();
     }
 
-    public void setBusy(String text) {
-        setState(ViewState.BUSY, text);
+    public void setBusy(String... texts) {
+        mStateDelegate.setBusy(texts);
     }
 
-    public void setEmpty(String text) {
-        setState(ViewState.EMPTY, text);
+    public void setEmpty(String... texts) {
+        mStateDelegate.setEmpty(texts);
     }
 
-    public void setError(String text) {
-        setState(ViewState.ERROR, text);
+    public void setError(String... texts) {
+        mStateDelegate.setError(texts);
     }
 
     public void setState(ViewState state, String text) {
-//        if (mRefreshLayout != null) {
-//            mRefreshLayout.setState(state, text);
-//        } else {
-////            if (state == ViewState.BUSY && mBusyDialog == null) {
-////                mBusyDialog = new StateDialog();
-////                if (mLifecycleOwner instanceof FragmentActivity) {
-////                    mBusyDialog.show(((FragmentActivity) mLifecycleOwner).getSupportFragmentManager(), null);
-////                } else if (mLifecycleOwner instanceof Fragment) {
-////                    mBusyDialog.show(((Fragment) mLifecycleOwner).getChildFragmentManager(), null);
-////                }
-////            } else if (mBusyDialog != null) {
-////                mBusyDialog.dismiss();
-////                mBusyDialog = null;
-////            }
-//        }
         mStateDelegate.setState(state, text);
     }
 
@@ -354,17 +339,9 @@ public final class ViewDelegate {
             mRefreshLayout.setEnableLoadMore(true);
         }
         mStateDelegate.attachLayout(mRefreshLayout);
-//        StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
-//        // 设置StateRefreshLayout相应状态的适配器
-//        if (mRefreshLayout != null) {
-//            mStateDelegate.attachLayout(mRefreshLayout);
-//
-//            mRefreshLayout.setBusyAdapter(ExtUtils.deepClone(strategy.getBusyAdapter()));
-//            mRefreshLayout.setEmptyAdapter(ExtUtils.deepClone(strategy.getEmptyAdapter()));
-//            mRefreshLayout.setErrorAdapter(ExtUtils.deepClone(strategy.getErrorAdapter()));
-//        }
-
+        // 初始化标题
         initToolbar();
+        // 初始化ButterKnife
         initUnBinder();
     }
 

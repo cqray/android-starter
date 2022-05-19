@@ -99,10 +99,8 @@ public class StateDelegate implements Serializable {
     private final Boolean[] mEnableStates = new Boolean[3];
     /** 适配器集合 **/
     private final SparseArray<StateAdapter> mAdapters = new SparseArray<>();
-
     /** 忙碌对话框 **/
     private BusyDialog mBusyDialog;
-    @Getter
     private LifecycleOwner mLifecycleOwner;
 
     private StateDelegate(@NonNull LifecycleOwner lifecycleOwner) {
@@ -122,50 +120,33 @@ public class StateDelegate implements Serializable {
 
     public void attachLayout(SmartRefreshLayout layout) {
         mRefreshLayout = layout;
-//        if (mRefreshLayout != null) {
-//            mRefreshLayout.setEnableLoadMore(true);
-//            mRefreshLayout.setEnableOverScrollDrag(true);
-//        }
     }
 
     public void setIdle() {
-        setState(ViewState.IDLE, null);
+        setState(ViewState.IDLE);
     }
 
-    public void setBusy() {
-        setState(ViewState.BUSY, null);
+    public void setBusy(String... texts) {
+        setState(ViewState.BUSY, texts);
     }
 
-    public void setBusy(String text) {
-        setState(ViewState.BUSY, text);
+    public void setEmpty(String... texts) {
+        setState(ViewState.EMPTY, texts);
     }
 
-    public void setEmpty() {
-        setState(ViewState.EMPTY, null);
+    public void setError(String... texts) {
+        setState(ViewState.ERROR, texts);
     }
 
-    public void setEmpty(String text) {
-        setState(ViewState.EMPTY, text);
-    }
-
-    public void setError() {
-        setState(ViewState.ERROR, null);
-    }
-
-    public void setError(String text) {
-        setState(ViewState.ERROR, text);
-    }
-
-    public void setState(ViewState state, String text) {
-        if (mCurState != state) {
-            // 设置状态
-            if (mNormalLayout == null && mRefreshLayout == null) {
-                // 没有接入布局控件，则使用对话框来显示状态
-                setStateByDialog(state, text);
-            } else {
-                // 接入了布局控件，使用布局控件显示状态
-                setStateByLayout(state, text);
-            }
+    public synchronized void setState(ViewState state, String... texts) {
+        String text = convertTexts(texts);
+        // 设置状态
+        if (mNormalLayout == null && mRefreshLayout == null) {
+            // 没有接入布局控件，则使用对话框来显示状态
+            setStateByDialog(state, text);
+        } else {
+            // 接入了布局控件，使用布局控件显示状态
+            setStateByLayout(state, text);
         }
     }
 
@@ -191,6 +172,10 @@ public class StateDelegate implements Serializable {
 
     public boolean isBusyCancelable() {
         return mBusyCancelable;
+    }
+
+    public LifecycleOwner getLifecycleOwner() {
+        return mLifecycleOwner;
     }
 
     /**
@@ -277,14 +262,16 @@ public class StateDelegate implements Serializable {
         }
         // 如果是忙碌状态，则显示对应对话框
         if (state == ViewState.BUSY) {
-            mBusyDialog = new BusyDialog();
-            mBusyDialog.setCancelable(mBusyCancelable);
-            mBusyDialog.setBusyAdapter(getAdapter(ViewState.BUSY));
-            mBusyDialog.setLocationAt(getLocationView());
-            mBusyDialog.setText(text);
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.setCustomAnimations(R.anim._core_no_anim, R.anim._core_no_anim, R.anim._core_no_anim, R.anim._core_no_anim);
-            mBusyDialog.show(ft, null);
+            if (mBusyDialog != null) {
+                mBusyDialog = new BusyDialog();
+                mBusyDialog.setCancelable(mBusyCancelable);
+                mBusyDialog.setBusyAdapter(getAdapter(ViewState.BUSY));
+                mBusyDialog.setLocationAt(getLocationView());
+                mBusyDialog.setText(text);
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.setCustomAnimations(R.anim._core_no_anim, R.anim._core_no_anim, R.anim._core_no_anim, R.anim._core_no_anim);
+                mBusyDialog.show(ft, null);
+            }
         } else if (state != ViewState.IDLE) {
             ExceptionDispatcher.dispatchStarterThrowable(this,
                     String.format(Locale.getDefault(), "不支持%s状态", state.name()),
@@ -324,7 +311,7 @@ public class StateDelegate implements Serializable {
                 try {
                     SMART_ENABLE_FIELDS[0].setBoolean(mRefreshLayout, mCurState != ViewState.BUSY && mEnableStates[0]);
                     SMART_ENABLE_FIELDS[1].setBoolean(mRefreshLayout, false);
-                    SMART_ENABLE_FIELDS[2].setBoolean(mRefreshLayout, false);
+                    SMART_ENABLE_FIELDS[2].setBoolean(mRefreshLayout, true);
                     SMART_ENABLE_FIELDS[3].setBoolean(mRefreshLayout, true);
                 } catch (IllegalAccessException ignored) {}
             }
@@ -396,5 +383,19 @@ public class StateDelegate implements Serializable {
             return delegate.getContentView();
         }
         return null;
+    }
+
+    @Nullable
+    private String convertTexts(String... texts) {
+        String text = null;
+        if (texts != null && texts.length > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (String s : texts) {
+                sb.append(s).append("\n");
+            }
+            sb.setLength(sb.length() - 1);
+            text = sb.toString();
+        }
+        return text;
     }
 }

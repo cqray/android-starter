@@ -1,6 +1,5 @@
 package cn.cqray.android.ui.line;
 
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;

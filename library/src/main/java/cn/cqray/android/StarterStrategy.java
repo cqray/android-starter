@@ -109,6 +109,10 @@ public class StarterStrategy {
     private @Builder.Default boolean toolbarDividerVisible = false;
     /** 忙碌状态是否能取消 **/
     private @Builder.Default boolean busyCancelable = true;
+    /** 默认分页开始页码 **/
+    private @Builder.Default int defaultStartPageNum = 1;
+    /** 默认分页大小 **/
+    private @Builder.Default int defaultPageSize = 20;
 
     public synchronized Drawable getActivityBackground() {
         if (activityBackground == null && activityBackgroundRes != 0) {

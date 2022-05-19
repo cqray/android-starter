@@ -21,7 +21,7 @@ public class MainFragment extends SupportFragment {
     @Override
     public void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
-        setNativeContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
 
 //        new StateDelegate().attachProvider(this);
@@ -40,6 +40,9 @@ public class MainFragment extends SupportFragment {
 //                setIdle();
 //            }
 //        }, 1500);
+        setBusy("123", "456");
+        setIdle();
+        setEmpty("7777", "88888", "99999");
         findViewById(R.id.btn).setOnClickListener(v -> {
             start(MainFragment2.class);
         });

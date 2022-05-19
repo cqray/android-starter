@@ -25,6 +25,7 @@ import cn.cqray.android.R;
  * 状态布局控件
  * @author Cqray
  */
+@Deprecated
 public class StateRefreshLayout extends SmartRefreshLayout {
 
     /** 状态根布局 **/
@@ -201,7 +202,7 @@ public class StateRefreshLayout extends SmartRefreshLayout {
                 adapter = new ErrorAdapter();
             }
         }
-        if (adapter != null && !adapter.isAttached()) {
+        if (adapter != null && adapter.mContentView == null) {
             mAdapters.put(state.ordinal(), adapter);
             adapter.onAttach(null, mRootLayout);
         }

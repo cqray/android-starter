@@ -18,8 +18,8 @@ import java.io.Serializable;
 
 import cn.cqray.android.R;
 import cn.cqray.android.Starter;
-import cn.cqray.android.util.ExtUtils;
 import cn.cqray.android.util.Sizes;
+import lombok.Getter;
 
 /**
  * 行项数据基类
@@ -35,20 +35,28 @@ public abstract class LineItem<T extends LineItem<T>> implements MultiItemEntity
     /** 文本行 **/
     public static final int TEXT = -198;
     /** 行高 **/
+    @Getter
     private int mHeight;
     /** 外部间隔，左上右下 **/
+    @Getter
     private int[] mMargin;
     /** 内部间隔，左上右下 **/
+    @Getter
     private int[] mPadding;
     /** 分割线高度 **/
+    @Getter
     private int mDividerHeight;
     /** 分割线颜色 **/
+    @Getter
     private int mDividerColor;
     /** 分割线间隔，左上右下 **/
+    @Getter
     private int[] mDividerMargin;
     /** 背景资源 **/
+    @Getter
     private int mBackgroundRes;
     /** 标识 **/
+    @Getter
     private Object mTag;
 
     public LineItem() {

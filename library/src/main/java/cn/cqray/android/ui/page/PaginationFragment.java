@@ -24,8 +24,8 @@ public abstract class PaginationFragment<T> extends SupportFragment {
     protected RecyclerView mRecyclerView;
     @Getter
     protected BaseQuickAdapter<T, ? extends BaseViewHolder> mAdapter;
-    @Getter
-    protected final PaginationDelegate<T> mPaginationDelegate = new PaginationDelegate<>(this);
+    /** 分页管理委托 **/
+    public final PaginationDelegate<T> mPaginationDelegate = new PaginationDelegate<>(this);
 
     @Override
     public void onCreating(@Nullable Bundle savedInstanceState) {
