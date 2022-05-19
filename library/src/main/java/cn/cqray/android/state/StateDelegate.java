@@ -1,7 +1,6 @@
 package cn.cqray.android.state;
 
 import android.content.Context;
-import android.service.autofill.Transformation;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,6 +122,10 @@ public class StateDelegate implements Serializable {
 
     public void attachLayout(SmartRefreshLayout layout) {
         mRefreshLayout = layout;
+//        if (mRefreshLayout != null) {
+//            mRefreshLayout.setEnableLoadMore(true);
+//            mRefreshLayout.setEnableOverScrollDrag(true);
+//        }
     }
 
     public void setIdle() {

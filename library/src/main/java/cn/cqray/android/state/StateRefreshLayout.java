@@ -49,6 +49,7 @@ public class StateRefreshLayout extends SmartRefreshLayout {
         if (getId() == NO_ID) {
             setId(R.id.starter_refresh_layout);
         }
+
     }
 
     public void setIdle() {

@@ -146,6 +146,7 @@ public class PaginationDelegate<T> {
         mRefreshLayout = refreshLayout;
         mRefreshLayout.setEnablePureScrollMode(false);
         mRefreshLayout.setEnableRefresh(true);
+        mRefreshLayout.setEnableLoadMore(true);
         mRefreshLayout.setEnableOverScrollDrag(true);
         mRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
