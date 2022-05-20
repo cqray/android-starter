@@ -15,6 +15,7 @@ import com.blankj.utilcode.util.ColorUtils;
 
 import cn.cqray.android.R;
 import cn.cqray.android.app.SupportActivity;
+import cn.cqray.android.util.Sizes;
 
 /**
  * 问题展示界面
@@ -72,7 +73,7 @@ public class ExceptionActivity extends SupportActivity {
      */
     private void initDivider(@NonNull View view) {
         // 设置虚线背景
-        int size = getResources().getDimensionPixelSize(R.dimen.smaller);
+        int size = Sizes.smaller();
         view.setLayerType(View.LAYER_TYPE_SOFTWARE,null);
         GradientDrawable background = new GradientDrawable();
         background.setShape(GradientDrawable.LINE);

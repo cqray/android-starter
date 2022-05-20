@@ -57,9 +57,9 @@ public class MainFragment2 extends PaginationFragment<String> {
 //        }, 2000);
 
         finish(null);
-
-        Log.e("数据", "我设置7777");
-        setEmpty("7777", "88888");
+//
+//        Log.e("数据", "我设置7777");
+//        setEmpty();
 //        timer(aLong -> {
 //
 //            setEmpty();

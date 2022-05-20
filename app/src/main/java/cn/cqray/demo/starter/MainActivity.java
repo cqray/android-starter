@@ -18,8 +18,10 @@ public class MainActivity extends NavActivity {
 //        );
 
 //        setNativeContentView(R.layout.test);
-//        getStarterDelegate().loadRootFragment(R.id.content, new NavIntent(MainFragment.class));
-        loadRootFragment(MainFragment2.class);
+//        getSupportDelegate().loadRootFragment(R.id.content, new NavIntent(MainFragment.class));
+        loadRootFragment(MainFragment.class);
+
+
 //        findViewById(R.id.tv).setOnClickListener(v -> {
 //            showInfo("6666");
 //        });

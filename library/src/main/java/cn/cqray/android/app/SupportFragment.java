@@ -17,8 +17,6 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import cn.cqray.android.state.ViewState;
 import cn.cqray.android.tip.TipDelegate;
 import cn.cqray.android.tip.TipProvider;
-import cn.cqray.android.view.ViewDelegate;
-import cn.cqray.android.view.ViewProvider;
 import cn.cqray.android.widget.Toolbar;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -137,7 +135,7 @@ public class SupportFragment extends Fragment implements ViewProvider, SupportPr
     }
 
     @Override
-    public SupportDelegate getStarterDelegate() {
+    public SupportDelegate getSupportDelegate() {
         return mSupportDelegate;
     }
 

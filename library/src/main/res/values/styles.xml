@@ -5,26 +5,26 @@
     <!-- 从名为A的activity跳转到B，B也可以跳转到C，其中转场动画设置在B上。 -->
     <style name="DefaultHorizontalAnim">
         <!-- A跳转B时，B的动画 -->
-        <item name="android:activityOpenEnterAnimation">@anim/_core_horizontal_from_right</item>
+        <item name="android:activityOpenEnterAnimation">@anim/_starter_horizontal_from_right</item>
         <!-- A跳转B时，A的动画 -->
-        <item name="android:activityOpenExitAnimation">@anim/_core_horizontal_to_left</item>
+        <item name="android:activityOpenExitAnimation">@anim/_starter_horizontal_to_left</item>
         <!-- A跳转到B后，后退到A时，A的进入动画 -->
-        <item name="android:activityCloseEnterAnimation">@anim/_core_horizontal_from_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/_starter_horizontal_from_left</item>
         <!-- A跳转到B后，后退到A时，B的退出动画 -->
-        <item name="android:activityCloseExitAnimation">@anim/_core_horizontal_to_right</item>
+        <item name="android:activityCloseExitAnimation">@anim/_starter_horizontal_to_right</item>
     </style>
 
     <!-- 默认纵向动画 -->
     <!-- 从名为A的activity跳转到B，B也可以跳转到C，其中转场动画设置在B上。 -->
     <style name="DefaultVerticalAnim">
         <!-- A跳转B时，B的动画 -->
-        <item name="android:activityOpenEnterAnimation">@anim/_core_vertical_to_top</item>
+        <item name="android:activityOpenEnterAnimation">@anim/_starter_vertical_to_top</item>
         <!-- A跳转B时，A的动画 -->
-        <item name="android:activityOpenExitAnimation">@anim/_core_no_anim</item>
+        <item name="android:activityOpenExitAnimation">@anim/_starter_no_anim</item>
         <!-- A跳转到B后，后退到A时，A的进入动画 -->
-        <item name="android:activityCloseEnterAnimation">@anim/_core_no_anim</item>
+        <item name="android:activityCloseEnterAnimation">@anim/_starter_no_anim</item>
         <!-- A跳转到B后，后退到A时，B的退出动画 -->
-        <item name="android:activityCloseExitAnimation">@anim/_core_vertical_from_top</item>
+        <item name="android:activityCloseExitAnimation">@anim/_starter_vertical_from_top</item>
     </style>
 
     <!-- 主题 -->
@@ -45,17 +45,17 @@
     <!--自定义对话框样式-->
     <style name="DialogNoAnimationTheme" parent="android:Theme.Dialog">
         <!--进入时的动画-->
-        <item name="android:windowEnterAnimation">@anim/_core_no_anim</item>
+        <item name="android:windowEnterAnimation">@anim/_starter_no_anim</item>
         <!--退出时的动画-->
-        <item name="android:windowExitAnimation">@anim/_core_no_anim</item>
+        <item name="android:windowExitAnimation">@anim/_starter_no_anim</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationTheme</item>
         <item name="android:windowIsFloating">false</item>
     </style>
     <style name="WindowAnimationTheme">
-        <item name="android:windowEnterAnimation">@anim/_core_no_anim</item>
-        <item name="android:windowExitAnimation">@anim/_core_no_anim</item>
-        <item name="android:windowShowAnimation">@anim/_core_no_anim</item>
-        <item name="android:windowHideAnimation">@anim/_core_no_anim</item>
+        <item name="android:windowEnterAnimation">@anim/_starter_no_anim</item>
+        <item name="android:windowExitAnimation">@anim/_starter_no_anim</item>
+        <item name="android:windowShowAnimation">@anim/_starter_no_anim</item>
+        <item name="android:windowHideAnimation">@anim/_starter_no_anim</item>
     </style>
 
     <style name="TextAppearance.Active" parent="TextAppearance.AppCompat">

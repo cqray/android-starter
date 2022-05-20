@@ -32,9 +32,8 @@ import cn.cqray.android.R;
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
 import cn.cqray.android.exception.ExceptionDispatcher;
-import cn.cqray.android.view.ViewDelegate;
-import cn.cqray.android.view.ViewProvider;
-import lombok.Getter;
+import cn.cqray.android.app.ViewDelegate;
+import cn.cqray.android.app.ViewProvider;
 
 /**
  * 状态管理委托
@@ -98,7 +97,7 @@ public class StateDelegate implements Serializable {
     /** 状态缓存 **/
     private final Boolean[] mEnableStates = new Boolean[3];
     /** 适配器集合 **/
-    private final SparseArray<StateAdapter> mAdapters = new SparseArray<>();
+    private final SparseArray<StateAdapter<?>> mAdapters = new SparseArray<>();
     /** 忙碌对话框 **/
     private BusyDialog mBusyDialog;
     private LifecycleOwner mLifecycleOwner;
@@ -139,7 +138,7 @@ public class StateDelegate implements Serializable {
     }
 
     public synchronized void setState(ViewState state, String... texts) {
-        String text = convertTexts(texts);
+        String text = convert2Text(texts);
         // 设置状态
         if (mNormalLayout == null && mRefreshLayout == null) {
             // 没有接入布局控件，则使用对话框来显示状态
@@ -150,15 +149,15 @@ public class StateDelegate implements Serializable {
         }
     }
 
-    public void setBusyAdapter(StateAdapter adapter) {
+    public void setBusyAdapter(StateAdapter<?> adapter) {
         setStateAdapter(ViewState.BUSY, adapter);
     }
 
-    public void setEmptyAdapter(StateAdapter adapter) {
+    public void setEmptyAdapter(StateAdapter<?> adapter) {
         setStateAdapter(ViewState.EMPTY, adapter);
     }
 
-    public void setErrorAdapter(StateAdapter adapter) {
+    public void setErrorAdapter(StateAdapter<?> adapter) {
         setStateAdapter(ViewState.ERROR, adapter);
     }
 
@@ -176,6 +175,10 @@ public class StateDelegate implements Serializable {
 
     public LifecycleOwner getLifecycleOwner() {
         return mLifecycleOwner;
+    }
+
+    public ViewState getCurrentState() {
+        return mCurState;
     }
 
     /**
@@ -234,13 +237,13 @@ public class StateDelegate implements Serializable {
         initStateLayouts();
         // 隐藏所有状态控件
         for (int i = 0; i < mAdapters.size(); i++) {
-            StateAdapter adapter = mAdapters.valueAt(i);
+            StateAdapter<?> adapter = mAdapters.valueAt(i);
             if (adapter != null) {
                 adapter.hide();
             }
         }
         // 显示对应的状态控件
-        StateAdapter adapter = getAdapter(state);
+        StateAdapter<?> adapter = getAdapter(state);
         if (adapter != null) {
             adapter.show(text);
             if (adapter.mContentView == null) {
@@ -269,7 +272,7 @@ public class StateDelegate implements Serializable {
                 mBusyDialog.setLocationAt(getLocationView());
                 mBusyDialog.setText(text);
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.setCustomAnimations(R.anim._core_no_anim, R.anim._core_no_anim, R.anim._core_no_anim, R.anim._core_no_anim);
+                ft.setCustomAnimations(R.anim._starter_no_anim, R.anim._starter_no_anim, R.anim._starter_no_anim, R.anim._starter_no_anim);
                 mBusyDialog.show(ft, null);
             }
         } else if (state != ViewState.IDLE) {
@@ -311,7 +314,7 @@ public class StateDelegate implements Serializable {
                 try {
                     SMART_ENABLE_FIELDS[0].setBoolean(mRefreshLayout, mCurState != ViewState.BUSY && mEnableStates[0]);
                     SMART_ENABLE_FIELDS[1].setBoolean(mRefreshLayout, false);
-                    SMART_ENABLE_FIELDS[2].setBoolean(mRefreshLayout, true);
+                    SMART_ENABLE_FIELDS[2].setBoolean(mRefreshLayout, mCurState != ViewState.BUSY);
                     SMART_ENABLE_FIELDS[3].setBoolean(mRefreshLayout, true);
                 } catch (IllegalAccessException ignored) {}
             }
@@ -323,8 +326,8 @@ public class StateDelegate implements Serializable {
      * @param state 状态
      * @param adapter 适配器
      */
-    private void setStateAdapter(@NonNull ViewState state, StateAdapter adapter) {
-        StateAdapter sAdapter = mAdapters.get(state.ordinal());
+    private void setStateAdapter(@NonNull ViewState state, StateAdapter<?> adapter) {
+        StateAdapter<?> sAdapter = mAdapters.get(state.ordinal());
         if (sAdapter != null) {
             sAdapter.hide();
         }
@@ -336,8 +339,8 @@ public class StateDelegate implements Serializable {
      * @param state 指定状态
      */
     @Nullable
-    private StateAdapter getAdapter(@NonNull ViewState state) {
-        StateAdapter adapter = mAdapters.get(state.ordinal());
+    private StateAdapter<?> getAdapter(@NonNull ViewState state) {
+        StateAdapter<?> adapter = mAdapters.get(state.ordinal());
         if (adapter == null) {
             // 获取全局状态适配器
             StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
@@ -386,16 +389,21 @@ public class StateDelegate implements Serializable {
     }
 
     @Nullable
-    private String convertTexts(String... texts) {
-        String text = null;
-        if (texts != null && texts.length > 0) {
-            StringBuilder sb = new StringBuilder();
-            for (String s : texts) {
-                sb.append(s).append("\n");
-            }
-            sb.setLength(sb.length() - 1);
-            text = sb.toString();
+    private String convert2Text(String... texts) {
+        // 无数据
+        if (texts == null || texts.length == 0) {
+            return null;
         }
-        return text;
+        // 单个数据
+        if (texts.length == 1) {
+            return texts[0];
+        }
+        // 多个数据
+        StringBuilder builder = new StringBuilder();
+        for (String text : texts) {
+            builder.append(text).append("\n");
+        }
+        builder.setLength(builder.length() - 1);
+        return builder.toString();
     }
 }

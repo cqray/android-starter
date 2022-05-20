@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -153,6 +154,14 @@ public class SupportDispatcher {
             super.onFragmentCreated(fm, f, savedInstanceState);
             if (f instanceof SupportProvider) {
                 SupportDelegate.get((SupportProvider) f).onCreated();
+            }
+        }
+
+        @Override
+        public void onFragmentViewCreated(@NonNull FragmentManager fm, @NonNull Fragment f, @NonNull View v, @Nullable Bundle savedInstanceState) {
+            super.onFragmentViewCreated(fm, f, v, savedInstanceState);
+            if (f instanceof SupportProvider) {
+                SupportDelegate.get((SupportProvider) f).onViewCreated();
             }
         }
 

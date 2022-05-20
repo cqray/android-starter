@@ -9,9 +9,9 @@ import cn.cqray.android.R;
 public class DefaultNoAnimator extends FragmentAnimator {
 
     public DefaultNoAnimator() {
-        super(R.anim._core_no_anim,
-                R.anim._core_no_anim,
-                R.anim._core_no_anim,
-                R.anim._core_no_anim);
+        super(R.anim._starter_no_anim,
+                R.anim._starter_no_anim,
+                R.anim._starter_no_anim,
+                R.anim._starter_no_anim);
     }
 }

@@ -1,4 +1,4 @@
-package cn.cqray.android.view;
+package cn.cqray.android.app;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
@@ -309,6 +309,9 @@ public final class ViewDelegate {
     void setActivityContentView() {
         if (mLifecycleOwner instanceof AppCompatActivity) {
             ((AppCompatActivity) mLifecycleOwner).getDelegate().setContentView(mContentView);
+            if (mLifecycleOwner instanceof SupportProvider) {
+                ((SupportProvider) mLifecycleOwner).getSupportDelegate().onViewCreated();
+            }
         }
     }
 
@@ -349,7 +352,7 @@ public final class ViewDelegate {
         // 初始化标题栏监听事件
         if (mToolbar != null && mLifecycleOwner instanceof SupportProvider) {
             mToolbar.setBackListener(v -> {
-                SupportDelegate delegate = ((SupportProvider) mLifecycleOwner).getStarterDelegate();
+                SupportDelegate delegate = ((SupportProvider) mLifecycleOwner).getSupportDelegate();
                 delegate.pop();
             });
         }

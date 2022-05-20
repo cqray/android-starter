@@ -1,11 +1,15 @@
 package cn.cqray.android.app;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
@@ -79,7 +83,6 @@ public final class SupportViewModel extends LifecycleViewModel {
             // 当前Activity的忙碌状态处理
             StateDelegate delegate = StateDelegate.get(mActivity);
             if (delegate.isBusy() && delegate.isBusyCancelable()) {
-                Log.e("数据", "数据局2");
                 delegate.setIdle();
                 return;
             }
@@ -90,11 +93,9 @@ public final class SupportViewModel extends LifecycleViewModel {
             }
             return;
         }
-        Log.e("数据", "数据局12");
         // 当前Fragment的忙碌状态处理
         StateDelegate delegate = StateDelegate.get(fragment);
         if (delegate.isBusy() && delegate.isBusyCancelable()) {
-            Log.e("数据", "数据局");
             delegate.setIdle();
             return;
         }
@@ -239,6 +240,7 @@ public final class SupportViewModel extends LifecycleViewModel {
             // 获取并设置动画
             FragmentAnimator fa = getFragmentAnimator(fragment, intent);
             ft.setCustomAnimations(fa.mEnter, fa.mExit, fa.mPopEnter, fa.mPopExit);
+            loadAnim(fa.mEnter);
         }
         // 隐藏当前正在显示的Fragment
         Fragment current = fm.getPrimaryNavigationFragment();
@@ -356,5 +358,43 @@ public final class SupportViewModel extends LifecycleViewModel {
             fa = Starter.getInstance().getStarterStrategy().getFragmentAnimator();
         }
         return fa;
+    }
+
+    private void loadAnim(int anim) {
+        String dir = mActivity.getResources().getResourceTypeName(anim);
+        boolean isAnim = "anim".equals(dir);
+        boolean successfulLoad = false;
+        if (isAnim) {
+            try {
+                Animation animation = AnimationUtils.loadAnimation(mActivity, anim);
+                animation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        Log.e("数据", "冬瓜结束开始");
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+
+                        Log.e("数据", "冬瓜结束");
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                Log.e("数据", "7777冬瓜结束");
+                animation.start();
+                successfulLoad = true;
+            } catch (Exception ignore) {}
+        }
+        if (!successfulLoad) {
+            // try Animator
+            try {
+                Animator animator = AnimatorInflater.loadAnimator(mActivity, anim);
+
+            } catch (Exception ignore) {}
+        }
     }
 }

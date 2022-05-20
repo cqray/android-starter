@@ -9,9 +9,9 @@ import cn.cqray.android.R;
 public class DefaultVerticalAnimator extends FragmentAnimator {
 
     public DefaultVerticalAnimator() {
-        super(R.anim._core_vertical_to_top,
-                R.anim._core_vertical_from_top,
-                R.anim._core_vertical_to_top,
-                R.anim._core_vertical_from_top);
+        super(R.anim._starter_vertical_to_top,
+                R.anim._starter_vertical_from_top,
+                R.anim._starter_vertical_to_top,
+                R.anim._starter_vertical_from_top);
     }
 }

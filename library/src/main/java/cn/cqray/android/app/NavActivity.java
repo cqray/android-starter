@@ -20,10 +20,10 @@ public class NavActivity extends SupportActivity {
 
     public void loadRootFragment(Class<? extends SupportProvider> fragmentClass) {
         NavIntent intent = new NavIntent(fragmentClass);
-        getStarterDelegate().loadRootFragment(R.id.starter_content_layout, intent);
+        getSupportDelegate().loadRootFragment(R.id.starter_content_layout, intent);
     }
 
     public void loadRootFragment(NavIntent intent) {
-        getStarterDelegate().loadRootFragment(R.id.starter_content_layout, intent);
+        getSupportDelegate().loadRootFragment(R.id.starter_content_layout, intent);
     }
 }

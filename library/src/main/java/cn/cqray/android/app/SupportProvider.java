@@ -8,7 +8,7 @@ import cn.cqray.android.anim.FragmentAnimator;
  */
 public interface SupportProvider {
 
-    SupportDelegate getStarterDelegate();
+    SupportDelegate getSupportDelegate();
 
     /**
      * 创建Fragment动画

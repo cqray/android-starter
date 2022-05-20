@@ -1,5 +1,6 @@
 package cn.cqray.android.state;
 
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,16 @@ import cn.cqray.android.R;
  * 错误界面适配器
  * @author Cqray
  */
-public class ErrorAdapter extends StateAdapter {
+public class ErrorAdapter extends StateAdapter<ErrorAdapter> {
 
     private View.OnClickListener mRetryListener;
 
     public ErrorAdapter() {
         super(R.layout.starter_state_error_layout);
+        if (getClass().getSuperclass() == StateAdapter.class) {
+            makeSureOverridden();
+        }
+        setDefaultText("暂无数据");
     }
 
     @Override
@@ -35,10 +40,14 @@ public class ErrorAdapter extends StateAdapter {
 
     @Override
     protected void onTextChanged(String text) {
-        super.onTextChanged(text);
         ViewGroup parent = (ViewGroup) getContentView();
         TextView tv = (TextView) parent.getChildAt(1);
         tv.setText(TextUtils.isEmpty(text) ? "页面异常" : text);
+    }
+
+    @Override
+    protected void onBackgroundChanged(Drawable background) {
+
     }
 
     public void setButtonVisible(final boolean visible) {

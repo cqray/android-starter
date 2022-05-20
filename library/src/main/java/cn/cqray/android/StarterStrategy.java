@@ -33,6 +33,8 @@ import lombok.NonNull;
 @Getter
 public class StarterStrategy {
 
+    /** 内部中文异常提示 **/
+    private @Builder.Default boolean innerZhException = true;
     /** Fragment全局默认动画 **/
     @NonNull
     private @Builder.Default FragmentAnimator fragmentAnimator = new DefaultVerticalAnimator();
@@ -48,13 +50,13 @@ public class StarterStrategy {
     private Drawable fragmentBackground;
     /** 忙布局适配器 **/
     @NonNull
-    private @Builder.Default StateAdapter busyAdapter = new BusyAdapter();
+    private @Builder.Default StateAdapter<?> busyAdapter = new BusyAdapter();
     /** 空布局适配器 **/
     @NonNull
-    private @Builder.Default StateAdapter emptyAdapter = new EmptyAdapter();
+    private @Builder.Default StateAdapter<?> emptyAdapter = new EmptyAdapter();
     /** 错误布局适配器 **/
     @NonNull
-    private @Builder.Default StateAdapter errorAdapter = new ErrorAdapter();
+    private @Builder.Default StateAdapter<?> errorAdapter = new ErrorAdapter();
     /** 提示适配器 **/
     private TipAdapter tipAdapter;
     /** 标题背景资源 **/

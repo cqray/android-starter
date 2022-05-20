@@ -2,6 +2,7 @@ package cn.cqray.demo.starter;
 
 import android.app.Application;
 
+import com.github.ybq.android.spinkit.Style;
 import com.hjq.toast.ToastUtils;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
@@ -10,7 +11,6 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
 import cn.cqray.android.anim.DefaultVerticalAnimator;
-import cn.cqray.android.state.BusyAdapter;
 import cn.cqray.android.state.EmptyAdapter;
 import cn.cqray.android.state.ErrorAdapter;
 
@@ -40,8 +40,8 @@ public class StarterApplication extends Application {
                 .toolbarBackIconRes(R.drawable.def_back_common_light)
                 .toolbarTitleCenter(true)
                 .fragmentBackgroundRes(R.color.background)
-                .busyAdapter(new BusyAdapter())
-                .emptyAdapter(new EmptyAdapter())
+                .busyAdapter(new MyBusyAdapter().setSpinStyle(Style.DOUBLE_BOUNCE))
+                .emptyAdapter(new EmptyAdapter().setImageResource(R.drawable.ic_no_data_search))
                 .errorAdapter(new ErrorAdapter())
                 .build();
 

@@ -42,7 +42,7 @@ public class MainFragment extends SupportFragment {
 //        }, 1500);
         setBusy("123", "456");
         setIdle();
-        setEmpty("7777", "88888", "99999");
+//        setEmpty("7777", "88888", "99999");
         findViewById(R.id.btn).setOnClickListener(v -> {
             start(MainFragment2.class);
         });

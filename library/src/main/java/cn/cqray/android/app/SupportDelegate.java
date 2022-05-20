@@ -71,6 +71,10 @@ public final class SupportDelegate {
         }
     }
 
+    void onViewCreated() {
+
+    }
+
     void onDestroyed() {
         // 移除缓存
         DELEGATE_CACHE.remove(mProvider);

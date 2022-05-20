@@ -28,7 +28,7 @@ public class BusyDialog extends DialogFragment {
 
     private String mText;
     private View mLocationView;
-    private StateAdapter mBusyAdapter;
+    private StateAdapter<?> mBusyAdapter;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -107,7 +107,7 @@ public class BusyDialog extends DialogFragment {
         mLocationView = view;
     }
 
-    public void setBusyAdapter(StateAdapter adapter) {
+    public void setBusyAdapter(StateAdapter<?> adapter) {
         mBusyAdapter = adapter;
     }
 

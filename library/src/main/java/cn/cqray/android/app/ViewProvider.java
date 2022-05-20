@@ -1,4 +1,4 @@
-package cn.cqray.android.view;
+package cn.cqray.android.app;
 
 /**
  * 布局提供者

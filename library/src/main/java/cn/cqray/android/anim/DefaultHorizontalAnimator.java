@@ -9,9 +9,9 @@ import cn.cqray.android.R;
 public class DefaultHorizontalAnimator extends FragmentAnimator {
 
     public DefaultHorizontalAnimator() {
-        super(R.anim._core_horizontal_from_right,
-                R.anim._core_horizontal_to_left,
-                R.anim._core_horizontal_from_left,
-                R.anim._core_horizontal_to_right);
+        super(R.anim._starter_horizontal_from_right,
+                R.anim._starter_horizontal_to_left,
+                R.anim._starter_horizontal_from_left,
+                R.anim._starter_horizontal_to_right);
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -28,13 +29,18 @@ import lombok.experimental.Accessors;
  * 状态适配器
  * @author Cqray
  */
+@SuppressWarnings("unchecked")
 @Accessors(prefix = "m")
-public class StateAdapter implements Serializable, Cloneable {
+public abstract class StateAdapter<T extends StateAdapter<T>> implements Serializable, Cloneable {
 
     /** 资源ID **/
     private final int mLayoutResId;
+    /** 继承检查，用于检查继承后是否重写reset及deepClone方法 **/
+    private boolean mExtendsCheck;
+    /** 默认文本内容 **/
+    protected String mDefaultText;
     /** 根布局 **/
-    protected  @Getter View mContentView;
+    protected @Getter View mContentView;
     /** 刷新控件 **/
     protected @Getter StateDelegate mDelegate;
     /** 文本内容 **/
@@ -50,30 +56,70 @@ public class StateAdapter implements Serializable, Cloneable {
         mLayoutResId = layoutResId;
     }
 
-    protected void onViewCreated(@NonNull View view) {}
+    protected void makeSureOverridden() {
+        mExtendsCheck = true;
+    }
+
+    protected final void checkExtends() {
+        if (!mExtendsCheck) {
+            String superClassName = getClass().getSuperclass() == null
+                    ? StateAdapter.class.getSimpleName()
+                    : getClass().getSuperclass().getSimpleName();
+            throw new RuntimeException(String.format("\nWhen %s extends the %s class,\n", getClass().getSimpleName(), superClassName) +
+                    "reset() and deepClone() should be overridden to ensure that \n" +
+                    "the newly defined additional fields work properly after the adapter is reset or cloned, \n" +
+                    "and then makeSureOverridden() should be called in the constructor.");
+        }
+    }
 
     protected void show(String text) {
+        checkExtends();
         mText.setValue(text);
         mShow.setValue(true);
     }
 
     protected void hide() {
+        checkExtends();
         mShow.setValue(false);
     }
 
-    public void setBackground(final Drawable background) {
+    public T setBackground(final Drawable background) {
         mBackground.setValue(background);
+        return (T) this;
     }
 
-    public void setBackgroundColor(int color) {
+    public T setBackgroundColor(int color) {
         setBackground(new ColorDrawable(color));
+        return (T) this;
     }
 
-    public void setBackgroundResource(@DrawableRes int resId) {
+    public T setBackgroundResource(@DrawableRes int resId) {
         setBackground(ContextCompat.getDrawable(ContextUtils.get(), resId));
+        return (T) this;
     }
 
-    protected void onTextChanged(String text) {}
+    public T setDefaultText(String text) {
+        mDefaultText = text;
+        return (T) this;
+    }
+
+    /**
+     * 控件创建完毕
+     * @param view 根控件
+     */
+    protected void onViewCreated(@NonNull View view) {}
+
+    /**
+     * 文本内容发生了变化
+     * @param text 文本内容
+     */
+    protected abstract void onTextChanged(String text);
+
+    /**
+     * 背景发生了变化
+     * @param background 背景
+     */
+    protected abstract void onBackgroundChanged(Drawable background);
 
     /**
      * 关联界面
@@ -117,13 +163,12 @@ public class StateAdapter implements Serializable, Cloneable {
             }
         });
         // 监听文本变化
-        mText.observe(owner, this::onTextChanged);
-        // 监听背景
-        mBackground.observe(owner, drawable -> {
-            if (mContentView != null) {
-                mContentView.setBackground(drawable);
-            }
+        mText.observe(owner, s -> {
+            String text = TextUtils.isEmpty(s) ? mDefaultText : s;
+            onTextChanged(text);
         });
+        // 监听背景
+        mBackground.observe(owner, this::onBackgroundChanged);
     }
 
     /**
@@ -140,25 +185,25 @@ public class StateAdapter implements Serializable, Cloneable {
 
     /**
      * 深度拷贝状态适配器
-     * @param <T> 泛型
+     * @param <S> 泛型
      * @return 实例
      */
     @Nullable
     @SuppressWarnings("unchecked")
-    public <T extends StateAdapter> T deepClone() {
-        T t;
+    public <S extends StateAdapter<S>> S deepClone() {
+        S s;
         try {
-            t = (T) super.clone();
-            t.mContentView = null;
-            t.mDelegate = null;
-            t.mAttachLayout = new MutableLiveData<>();
-            t.mBackground = new MutableLiveData<>();
-            t.mShow = new MutableLiveData<>();
-            t.mText = new MutableLiveData<>();
+            s = (S) super.clone();
+            s.mContentView = null;
+            s.mDelegate = null;
+            s.mAttachLayout = new MutableLiveData<>();
+            s.mBackground = new MutableLiveData<>();
+            s.mShow = new MutableLiveData<>();
+            s.mText = new MutableLiveData<>();
         } catch (CloneNotSupportedException ignored) {
-            return (T) CloneUtils.deepClone(this, getClass());
+            return (S) CloneUtils.deepClone(this, getClass());
         }
-        return t;
+        return s;
     }
 
 }

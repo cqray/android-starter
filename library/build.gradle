@@ -41,6 +41,8 @@ dependencies {
     api 'com.google.android.material:material:1.2.1'
     // 常用工具类
     api 'com.blankj:utilcodex:1.30.6'
+
+    api 'com.github.ybq:Android-SpinKit:1.4.0'
     // 刷新框架
     api 'com.scwang.smart:refresh-layout-kernel:2.0.3'
     // JetPack Lifecycle、LiveData、ViewModel扩展

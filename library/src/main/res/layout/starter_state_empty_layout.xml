@@ -9,6 +9,7 @@
     tools:ignore="ContentDescription, HardcodedText">
 
     <ImageView
+        android:id="@+id/starter_image"
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:layout_gravity="center"
@@ -16,6 +17,7 @@
         android:scaleType="fitXY"/>
 
     <TextView
+        android:id="@+id/starter_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="暂无数据"
@@ -24,6 +26,7 @@
         android:textSize="@dimen/caption" />
 
     <TextView
+        android:id="@+id/starter_retry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/content"
