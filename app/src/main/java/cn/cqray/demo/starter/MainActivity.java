@@ -23,6 +23,25 @@ public class MainActivity extends NavActivity {
         loadRootFragment(MainFragment.class);
 
 
+        Log.e("数据", "7777");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e("数据", "8888");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.e("数据", "11111");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("数据", "9999");
     }
 
     @Override
@@ -32,6 +51,8 @@ public class MainActivity extends NavActivity {
     }
 
 
-
-
+    @Override
+    public void onEnterAnimEnd() {
+        Log.e("数据", "动画加载结束");
+    }
 }

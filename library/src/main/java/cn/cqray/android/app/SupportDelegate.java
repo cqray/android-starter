@@ -1,9 +1,10 @@
 package cn.cqray.android.app;
 
 import android.app.Activity;
+import android.app.Application;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 
 import androidx.activity.OnBackPressedCallback;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.KeyboardUtils;
@@ -41,9 +43,12 @@ public final class SupportDelegate {
         }
         return delegate;
     }
-    private boolean mViewCreated;
+
+    /** 界面提供器 **/
     private SupportProvider mProvider;
+    /** 相关ViewModel **/
     private SupportViewModel mMainViewModel;
+    /** Handler对象 **/
     private final Handler mHandler = new Handler(Looper.getMainLooper());
 
     private SupportDelegate(@NonNull SupportProvider provider) {
@@ -52,6 +57,10 @@ public final class SupportDelegate {
         DELEGATE_CACHE.put(provider, this);
     }
 
+    /**
+     * 在{@link Application.ActivityLifecycleCallbacks#onActivityCreated(Activity, Bundle)}中被调用
+     * 在{@link FragmentManager.FragmentLifecycleCallbacks#onFragmentCreated(FragmentManager, Fragment, Bundle)}中被调用
+     */
     void onCreated() {
         // Fragment还需做回退处理
         if (mProvider instanceof Fragment) {
@@ -68,7 +77,24 @@ public final class SupportDelegate {
         } else {
             mMainViewModel = new LifecycleViewModelProvider((AppCompatActivity) mProvider).get(SupportViewModel.class);
         }
+    }
 
+    /**
+     * 在{@link Application.ActivityLifecycleCallbacks#onActivityPostCreated(Activity, Bundle)}中被调用
+     * 在{@link FragmentManager.FragmentLifecycleCallbacks#onFragmentViewCreated(FragmentManager, Fragment, View, Bundle)}中被调用
+     */
+    void onViewCreated() {
+        int enterAnimDuration;
+        if (mProvider instanceof Fragment) {
+            // 获取Fragment进入时的动画时长
+            enterAnimDuration = mMainViewModel.getAnimDuration();
+        } else {
+            // 获取Activity进入时的动画时长
+            int animResId = SupportUtils.getActivityOpenEnterAnimationResId((Activity) mProvider);
+            enterAnimDuration = SupportUtils.getAnimDurationFromResource(animResId);
+        }
+        // 进入动画结束回调
+        mHandler.postDelayed(()-> mProvider.onEnterAnimEnd(), enterAnimDuration);
         // 是否自动隐藏键盘
         if (mProvider.onKeyboardAutoHide()) {
             Activity act = ActivityUtils.getTopActivity();
@@ -76,20 +102,10 @@ public final class SupportDelegate {
         }
     }
 
-    void onViewCreated() {
-        if (!mViewCreated) {
-            mViewCreated = true;
-            int animDuration;
-            if (mProvider instanceof Fragment) {
-                animDuration = mMainViewModel.getAnimDuration();
-            } else {
-                int animResId = SupportUtils.getActivityOpenEnterAnimationResId((Activity) mProvider);
-                animDuration = SupportUtils.getAnimDurationFromResource(animResId);
-            }
-            mHandler.postDelayed(()-> mProvider.onEnterAnimEnd(), animDuration);
-        }
-    }
-
+    /**
+     * 在{@link Application.ActivityLifecycleCallbacks#onActivityDestroyed(Activity)}中被调用
+     * 在{@link FragmentManager.FragmentLifecycleCallbacks#onFragmentDestroyed(FragmentManager, Fragment)}中被调用
+     */
     void onDestroyed() {
         // 移除所有事件
         mHandler.removeCallbacksAndMessages(null);

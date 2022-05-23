@@ -28,10 +28,6 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import cn.cqray.android.R;
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
-import cn.cqray.android.app.SupportDelegate;
-import cn.cqray.android.app.SupportProvider;
-import cn.cqray.android.app.SupportActivity;
-import cn.cqray.android.app.SupportFragment;
 import cn.cqray.android.exception.ExceptionDispatcher;
 import cn.cqray.android.exception.ExceptionType;
 import cn.cqray.android.state.StateDelegate;
@@ -309,9 +305,6 @@ public final class ViewDelegate {
     void setActivityContentView() {
         if (mLifecycleOwner instanceof AppCompatActivity) {
             ((AppCompatActivity) mLifecycleOwner).getDelegate().setContentView(mContentView);
-            if (mLifecycleOwner instanceof SupportProvider) {
-                ((SupportProvider) mLifecycleOwner).getSupportDelegate().onViewCreated();
-            }
         }
     }
 

@@ -57,6 +57,13 @@ public class SupportDispatcher {
             }
 
             @Override
+            public void onActivityPostCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+                if (activity instanceof SupportProvider) {
+                    SupportDelegate.get((SupportProvider) activity).onViewCreated();
+                }
+            }
+
+            @Override
             public void onActivityStarted(@NonNull Activity activity) {}
 
             @Override
