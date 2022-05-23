@@ -3,6 +3,7 @@ package cn.cqray.demo.starter;
 import android.os.Bundle;
 import android.util.Log;
 
+
 import cn.cqray.android.app.NavActivity;
 
 public class MainActivity extends NavActivity {
@@ -22,16 +23,6 @@ public class MainActivity extends NavActivity {
         loadRootFragment(MainFragment.class);
 
 
-//        findViewById(R.id.tv).setOnClickListener(v -> {
-//            showInfo("6666");
-//        });
-
-//        new ViewModelProvider(this);
-//        new LifecycleViewModelProvider(this);
-
-//        ToolbarStrategy strategy = ToolbarStrategy.builder()
-//                .titleCenter(true)
-//                .background()
     }
 
     @Override
@@ -40,9 +31,7 @@ public class MainActivity extends NavActivity {
         return super.onBackPressedSupport();
     }
 
-    //    @Override
-//    public void onBackPressed() {
-//        Log.e("数据", "Activity onBackPressed");
-//        super.onBackPressed();
-//    }
+
+
+
 }

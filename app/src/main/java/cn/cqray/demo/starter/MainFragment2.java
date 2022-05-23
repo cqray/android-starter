@@ -39,6 +39,7 @@ public class MainFragment2 extends PaginationFragment<String> {
         };
     }
 
+
     @Override
     protected void onRefresh(int pageNum, int pageSize) {
 //        int size = mAdapter.getItemCount();
@@ -56,7 +57,7 @@ public class MainFragment2 extends PaginationFragment<String> {
 //            }
 //        }, 2000);
 
-        finish(null);
+//        finish(null);
 //
 //        Log.e("数据", "我设置7777");
 //        setEmpty();
@@ -64,5 +65,10 @@ public class MainFragment2 extends PaginationFragment<String> {
 //
 //            setEmpty();
 //        }, 100);
+    }
+
+    @Override
+    public void onEnterAnimEnd() {
+        finish(null);
     }
 }

@@ -1,15 +1,10 @@
 package cn.cqray.android.app;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
@@ -50,6 +45,8 @@ public final class SupportViewModel extends LifecycleViewModel {
     private static final String FRAGMENT_ID_KEY = "starter:fragment_id";
     /** 容器Id **/
     private @Getter int mContainerId;
+    /** 动画时长 **/
+    private @Getter int mAnimDuration;
     /** 回退栈 **/
     private final Stack<String> mBackStack = new Stack<>();
     /** 持有当前ViewModel的Activity **/
@@ -240,7 +237,7 @@ public final class SupportViewModel extends LifecycleViewModel {
             // 获取并设置动画
             FragmentAnimator fa = getFragmentAnimator(fragment, intent);
             ft.setCustomAnimations(fa.mEnter, fa.mExit, fa.mPopEnter, fa.mPopExit);
-            loadAnim(fa.mEnter);
+            mAnimDuration = SupportUtils.getAnimDurationFromResource(fa.mEnter);
         }
         // 隐藏当前正在显示的Fragment
         Fragment current = fm.getPrimaryNavigationFragment();
@@ -358,43 +355,5 @@ public final class SupportViewModel extends LifecycleViewModel {
             fa = Starter.getInstance().getStarterStrategy().getFragmentAnimator();
         }
         return fa;
-    }
-
-    private void loadAnim(int anim) {
-        String dir = mActivity.getResources().getResourceTypeName(anim);
-        boolean isAnim = "anim".equals(dir);
-        boolean successfulLoad = false;
-        if (isAnim) {
-            try {
-                Animation animation = AnimationUtils.loadAnimation(mActivity, anim);
-                animation.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                        Log.e("数据", "冬瓜结束开始");
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-
-                        Log.e("数据", "冬瓜结束");
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-                Log.e("数据", "7777冬瓜结束");
-                animation.start();
-                successfulLoad = true;
-            } catch (Exception ignore) {}
-        }
-        if (!successfulLoad) {
-            // try Animator
-            try {
-                Animator animator = AnimatorInflater.loadAnimator(mActivity, anim);
-
-            } catch (Exception ignore) {}
-        }
     }
 }

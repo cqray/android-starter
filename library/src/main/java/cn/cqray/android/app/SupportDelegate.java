@@ -1,6 +1,9 @@
 package cn.cqray.android.app;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 
 import androidx.activity.OnBackPressedCallback;
@@ -38,8 +41,10 @@ public final class SupportDelegate {
         }
         return delegate;
     }
+    private boolean mViewCreated;
     private SupportProvider mProvider;
     private SupportViewModel mMainViewModel;
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
 
     private SupportDelegate(@NonNull SupportProvider provider) {
         mProvider = provider;
@@ -72,10 +77,22 @@ public final class SupportDelegate {
     }
 
     void onViewCreated() {
-
+        if (!mViewCreated) {
+            mViewCreated = true;
+            int animDuration;
+            if (mProvider instanceof Fragment) {
+                animDuration = mMainViewModel.getAnimDuration();
+            } else {
+                int animResId = SupportUtils.getActivityOpenEnterAnimationResId((Activity) mProvider);
+                animDuration = SupportUtils.getAnimDurationFromResource(animResId);
+            }
+            mHandler.postDelayed(()-> mProvider.onEnterAnimEnd(), animDuration);
+        }
     }
 
     void onDestroyed() {
+        // 移除所有事件
+        mHandler.removeCallbacksAndMessages(null);
         // 移除缓存
         DELEGATE_CACHE.remove(mProvider);
     }

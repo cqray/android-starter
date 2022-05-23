@@ -31,4 +31,9 @@ public interface SupportProvider {
     default boolean onKeyboardAutoHide() {
         return true;
     }
+
+    /**
+     * 进入动画结束
+     */
+    default void onEnterAnimEnd() {}
 }

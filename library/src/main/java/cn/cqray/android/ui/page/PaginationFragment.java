@@ -21,9 +21,12 @@ import lombok.Getter;
  */
 public abstract class PaginationFragment<T> extends SupportFragment {
 
+//    /** 动画结束后再刷新 **/
+//    protected boolean mRefreshAfterEnterAnim;
+    /** 列表控件 **/
     protected RecyclerView mRecyclerView;
-    @Getter
-    protected BaseQuickAdapter<T, ? extends BaseViewHolder> mAdapter;
+    /** 数据适配器 **/
+    protected @Getter BaseQuickAdapter<T, ? extends BaseViewHolder> mAdapter;
     /** 分页管理委托 **/
     public final PaginationDelegate<T> mPaginationDelegate = new PaginationDelegate<>(this);
 
@@ -42,6 +45,10 @@ public abstract class PaginationFragment<T> extends SupportFragment {
         mPaginationDelegate.setRefreshLayout(mRefreshLayout);
         mPaginationDelegate.setAdapter(mAdapter);
         mPaginationDelegate.setRefreshCallback((delegate, pageNum, pageSize) -> PaginationFragment.this.onRefresh(pageNum, pageSize));
+    }
+
+    @Override
+    public void onEnterAnimEnd() {
         autoRefresh();
     }
 
