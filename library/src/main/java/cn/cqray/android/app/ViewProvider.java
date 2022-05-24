@@ -20,8 +20,4 @@ public interface ViewProvider {
     default boolean onKeyboardAutoHide() {
         return true;
     }
-
-    default boolean onSupportSwipeBack() {
-        return false;
-    }
 }

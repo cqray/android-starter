@@ -15,24 +15,6 @@ import cn.cqray.android.util.ContextUtils;
 
 class SupportUtils {
 
-    public static void checkActivity(AppCompatActivity activity) {
-        if (!(activity instanceof SupportProvider)) {
-            throw new RuntimeException(String.format(
-                    "%s must implements %s.",
-                    activity.getClass().getName(),
-                    SupportProvider.class.getSimpleName()));
-        }
-    }
-
-    public static void checkFragment(Fragment fragment) {
-        if (!(fragment instanceof SupportProvider)) {
-            throw new RuntimeException(String.format(
-                    "%s must implements %s.",
-                    Fragment.class.getName(),
-                    SupportProvider.class.getName()));
-        }
-    }
-
     static void checkProvider(SupportProvider provider) {
         if ((provider instanceof AppCompatActivity) || (provider instanceof Fragment)) {
             return;

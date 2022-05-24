@@ -270,8 +270,8 @@ public final class ViewDelegate {
         mStateDelegate.setError(texts);
     }
 
-    public void setState(ViewState state, String text) {
-        mStateDelegate.setState(state, text);
+    public void setState(ViewState state, String... texts) {
+        mStateDelegate.setState(state, texts);
     }
 
     /**

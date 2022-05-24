@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 
+import cn.cqray.android.state.StateDelegate;
 import cn.cqray.android.state.ViewState;
 import cn.cqray.android.tip.TipDelegate;
 import cn.cqray.android.tip.TipProvider;
@@ -36,9 +37,11 @@ public class SupportActivity extends AppCompatActivity implements ViewProvider, 
 
     private final TipDelegate mTipDelegate = new TipDelegate(this);
     /** 布局代理 **/
-    private final ViewDelegate mViewDelegate = new ViewDelegate(this);
+    protected final ViewDelegate mViewDelegate = new ViewDelegate(this);
+    /** 状态代理 **/
+    protected final StateDelegate mStateDelegate = mViewDelegate.getStateDelegate();
     /** 启动代理 **/
-    private final SupportDelegate mSupportDelegate = SupportDelegate.get(this);
+    protected final SupportDelegate mSupportDelegate = SupportDelegate.get(this);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +60,10 @@ public class SupportActivity extends AppCompatActivity implements ViewProvider, 
     @Override
     public ViewDelegate getViewDelegate() {
         return mViewDelegate;
+    }
+
+    public StateDelegate getStateDelegate() {
+        return mStateDelegate;
     }
 
     @Override
@@ -134,8 +141,8 @@ public class SupportActivity extends AppCompatActivity implements ViewProvider, 
         mViewDelegate.setError(texts);
     }
 
-    public void setState(ViewState state, String text) {
-        mViewDelegate.setState(state, text);
+    public void setState(ViewState state, String... texts) {
+        mViewDelegate.setState(state, texts);
     }
 
     @Override
