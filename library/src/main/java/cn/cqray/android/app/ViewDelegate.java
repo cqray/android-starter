@@ -280,7 +280,7 @@ public final class ViewDelegate {
      * @param <T> 控件类型
      */
     public <T extends View> T findViewById(@IdRes int resId) {
-        return isContentViewExist() ? mRootView.findViewById(resId) : null;
+        return isRootViewExist() ? mRootView.findViewById(resId) : null;
     }
 
     public Context getContext() {
@@ -319,7 +319,7 @@ public final class ViewDelegate {
      * 通过ButterKnife绑定界面
      */
     void initUnBinder() {
-        if (isContentViewExist()) {
+        if (isRootViewExist()) {
             ButterKnifeUtils.unbind(mUnBinder);
             mUnBinder = ButterKnifeUtils.bind(mLifecycleOwner, mRootView);
         }
@@ -404,9 +404,9 @@ public final class ViewDelegate {
     }
 
     /**
-     * ContentView是否存在
+     * RootView是否存在
      */
-    boolean isContentViewExist() {
+    boolean isRootViewExist() {
         if (mRootView == null) {
             ExceptionDispatcher.dispatchThrowable(mLifecycleOwner, ExceptionType.CONTENT_VIEW_NULL);
             return false;
