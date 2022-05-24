@@ -5,10 +5,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.DrawableRes;
@@ -23,7 +21,6 @@ import com.blankj.utilcode.util.CloneUtils;
 
 import java.io.Serializable;
 
-import cn.cqray.android.R;
 import cn.cqray.android.util.ContextUtils;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -63,7 +60,7 @@ public abstract class StateAdapter<T extends StateAdapter<T>> implements Seriali
         mExtendsCheck = true;
     }
 
-    protected final void checkExtends() {
+    protected final void checkOverridden() {
         if (!mExtendsCheck) {
             String superClassName = getClass().getSuperclass() == null
                     ? StateAdapter.class.getSimpleName()
@@ -76,13 +73,13 @@ public abstract class StateAdapter<T extends StateAdapter<T>> implements Seriali
     }
 
     protected void show(String text) {
-        checkExtends();
+        checkOverridden();
         mText.setValue(text);
         mShow.setValue(true);
     }
 
     protected void hide() {
-        checkExtends();
+        checkOverridden();
         mShow.setValue(false);
     }
 
