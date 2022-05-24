@@ -45,6 +45,8 @@ import lombok.experimental.Accessors;
 @Accessors(prefix = "m")
 public final class ViewDelegate {
 
+    /** 根控件 **/
+    private @Getter View mRootView;
     /** 内容控件 **/
     private @Getter View mContentView;
     /** 标题 **/
@@ -103,7 +105,8 @@ public final class ViewDelegate {
      * @param view 布局
      */
     public void setContentView(View view) {
-        mContentView = inflate(R.layout.starter_layout_default);
+        mContentView = view;
+        mRootView = inflate(R.layout.starter_layout_default);
         mToolbar = findViewById(R.id.starter_toolbar);
         mHeaderLayout = findViewById(R.id.starter_header_layout);
         mFooterLayout = findViewById(R.id.starter_footer_layout);
@@ -127,12 +130,13 @@ public final class ViewDelegate {
      * @param view 布局
      */
     public void setNativeContentView(@NonNull View view) {
-        mContentView = inflate(R.layout.starter_layout_native);
+        mContentView = view;
+        mRootView = inflate(R.layout.starter_layout_native);
         mToolbar = view.findViewById(R.id.starter_toolbar);
         mHeaderLayout = view.findViewById(R.id.starter_header_layout);
         mFooterLayout = view.findViewById(R.id.starter_footer_layout);
         mRefreshLayout = view.findViewById(R.id.starter_refresh_layout);
-        ((FrameLayout) mContentView).addView(view);
+        ((FrameLayout) mRootView).addView(view);
         setActivityContentView();
         initSupportView();
     }
@@ -276,7 +280,7 @@ public final class ViewDelegate {
      * @param <T> 控件类型
      */
     public <T extends View> T findViewById(@IdRes int resId) {
-        return isContentViewExist() ? mContentView.findViewById(resId) : null;
+        return isContentViewExist() ? mRootView.findViewById(resId) : null;
     }
 
     public Context getContext() {
@@ -298,6 +302,7 @@ public final class ViewDelegate {
         mFooterLayout = null;
         mToolbar = null;
         mContentView = null;
+        mRootView = null;
         System.gc();
     }
 
@@ -306,7 +311,7 @@ public final class ViewDelegate {
      */
     void setActivityContentView() {
         if (mLifecycleOwner instanceof AppCompatActivity) {
-            ((AppCompatActivity) mLifecycleOwner).getDelegate().setContentView(mContentView);
+            ((AppCompatActivity) mLifecycleOwner).getDelegate().setContentView(mRootView);
         }
     }
 
@@ -316,7 +321,7 @@ public final class ViewDelegate {
     void initUnBinder() {
         if (isContentViewExist()) {
             ButterKnifeUtils.unbind(mUnBinder);
-            mUnBinder = ButterKnifeUtils.bind(mLifecycleOwner, mContentView);
+            mUnBinder = ButterKnifeUtils.bind(mLifecycleOwner, mRootView);
         }
     }
 
@@ -335,8 +340,8 @@ public final class ViewDelegate {
         }
         if (mRefreshLayout != null) {
             mStateDelegate.attachLayout(mRefreshLayout);
-        } else if (mContentView instanceof FrameLayout) {
-            mStateDelegate.attachLayout((FrameLayout) mContentView);
+        } else if (mRootView instanceof FrameLayout) {
+            mStateDelegate.attachLayout((FrameLayout) mRootView);
         }
 
         // 初始化标题
@@ -402,7 +407,7 @@ public final class ViewDelegate {
      * ContentView是否存在
      */
     boolean isContentViewExist() {
-        if (mContentView == null) {
+        if (mRootView == null) {
             ExceptionDispatcher.dispatchThrowable(mLifecycleOwner, ExceptionType.CONTENT_VIEW_NULL);
             return false;
         }

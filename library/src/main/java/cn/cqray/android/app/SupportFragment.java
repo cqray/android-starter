@@ -46,9 +46,9 @@ public class SupportFragment extends Fragment implements ViewProvider, SupportPr
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         onCreating(savedInstanceState);
-        return mViewDelegate.getContentView() == null
+        return mViewDelegate.getRootView() == null
                 ? super.onCreateView(inflater, container, savedInstanceState)
-                : mViewDelegate.getContentView();
+                : mViewDelegate.getRootView();
     }
 
     public void onCreating(@Nullable Bundle savedInstanceState) {}
