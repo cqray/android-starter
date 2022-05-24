@@ -241,13 +241,13 @@ public final class ViewDelegate {
                 if (mLifecycleOwner instanceof AppCompatActivity) {
                     AppCompatActivity act = (AppCompatActivity) mLifecycleOwner;
                     boolean isTranslucentOrFloating = act.getIntent().getBooleanExtra("activity:isTranslucentOrFloating", false);
-                    if (isTranslucentOrFloating && mContentView != null) {
-                        mContentView.setBackground(drawable);
+                    if (isTranslucentOrFloating && mRootView != null) {
+                        mRootView.setBackground(drawable);
                     } else if (!isTranslucentOrFloating) {
                         act.getWindow().setBackgroundDrawable(drawable);
                     }
-                } else if (mContentView != null) {
-                    mContentView.setBackground(drawable);
+                } else if (mRootView != null) {
+                    mRootView.setBackground(drawable);
                 }
             });
         }
