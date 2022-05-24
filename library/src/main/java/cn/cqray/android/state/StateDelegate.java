@@ -9,10 +9,9 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
@@ -25,8 +24,6 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import cn.cqray.android.R;
 import cn.cqray.android.Starter;
@@ -39,8 +36,6 @@ import cn.cqray.android.util.ContextUtils;
  */
 public class StateDelegate implements Serializable {
 
-    /** 委托缓存Map **/
-    private static final Map<LifecycleOwner, StateDelegate> START_DELEGATE_MAP = new ConcurrentHashMap<>();
     /** SmartLayout一些Enable属性 **/
     private static final Field[] SMART_ENABLE_FIELDS = new Field[4];
 
@@ -59,29 +54,6 @@ public class StateDelegate implements Serializable {
         } catch (NoSuchFieldException ignore) {}
     }
 
-    @NonNull
-    public static StateDelegate get(FragmentActivity activity) {
-        return get((LifecycleOwner) activity);
-    }
-
-    @NonNull
-    public static StateDelegate get(Fragment fragment) {
-        return get((LifecycleOwner) fragment);
-    }
-
-    @NonNull
-    public synchronized static StateDelegate get(@NonNull LifecycleOwner owner) {
-        if (owner instanceof FragmentActivity || owner instanceof Fragment) {
-            StateDelegate delegate = START_DELEGATE_MAP.get(owner);
-            if (delegate == null) {
-                delegate = new StateDelegate(owner);
-            }
-            return delegate;
-        } else {
-            throw new IllegalArgumentException("LifecycleOwner must be an FragmentActivity or Fragment.");
-        }
-    }
-
     /** 忙碌状态是否可取消 **/
     private boolean mBusyCancelable;
     /** 父容器 **/
@@ -98,20 +70,23 @@ public class StateDelegate implements Serializable {
     private final Boolean[] mEnableStates = new Boolean[3];
     /** 适配器集合 **/
     private final SparseArray<StateAdapter<?>> mAdapters = new SparseArray<>();
-//
-    private LifecycleOwner mLifecycleOwner;
+    /** LifecycleOwner对象 **/
+    private final LifecycleOwner mLifecycleOwner;
 
-    private StateDelegate(@NonNull LifecycleOwner lifecycleOwner) {
-        mLifecycleOwner = lifecycleOwner;
-        lifecycleOwner.getLifecycle().addObserver((LifecycleEventObserver) (owner, event) -> {
-            if (event == Lifecycle.Event.ON_DESTROY) {
-                START_DELEGATE_MAP.remove(lifecycleOwner);
-            }
-        });
-        START_DELEGATE_MAP.put(lifecycleOwner, this);
+    public StateDelegate(FragmentActivity activity) {
+        mLifecycleOwner = activity;
+        // 忙碌状态是否可取消
         mBusyCancelable = Starter.getInstance().getStarterStrategy().isBusyCancelable();
         // 设置容器偏移
-        mOffsets.observe(lifecycleOwner, this::setRootLayoutOffsets);
+        mOffsets.observe(activity, this::setRootLayoutOffsets);
+    }
+
+    public StateDelegate(Fragment fragment) {
+        mLifecycleOwner = fragment;
+        // 忙碌状态是否可取消
+        mBusyCancelable = Starter.getInstance().getStarterStrategy().isBusyCancelable();
+        // 设置容器偏移
+        mOffsets.observe(fragment, this::setRootLayoutOffsets);
     }
 
     public void attachLayout(FrameLayout layout) {
@@ -132,6 +107,7 @@ public class StateDelegate implements Serializable {
 
     void detachLayout(ViewGroup layout) {
         if (mRootLayout != null) {
+            setIdle();
             if (layout instanceof SmartRefreshLayout) {
                 SmartRefreshLayout refreshLayout = (SmartRefreshLayout) layout;
                 FrameLayout content = (FrameLayout) mRootLayout.getParent();
@@ -258,6 +234,53 @@ public class StateDelegate implements Serializable {
     }
 
     /**
+     * 设置关联容器的偏移数据
+     */
+    void setRootLayoutOffsets() {
+        ViewGroup parent = (ViewGroup) mRootLayout.getParent();
+        mRootLayout.setVisibility(View.GONE);
+        mRootLayout.post(() -> {
+            // 如果标记了内容控件，则有标题栏存在
+            View toolbar = parent.findViewById(R.id.starter_toolbar);
+            float[] offsets = mOffsets.getValue() == null ? new float[4] : mOffsets.getValue();
+            int top = (int) offsets[1];
+            if (top == 0 && toolbar != null) {
+                // 获取标题栏底部位置为偏移量
+                top = toolbar.getBottom();
+            }
+            mRootLayout.setVisibility(mCurState == ViewState.IDLE ? View.GONE : View.VISIBLE);
+            // 设置四周的间距
+            setRootLayoutOffsets(new float[] {offsets[0], top, offsets[2], offsets[3]});
+        });
+    }
+
+    void setRootLayoutOffsets(@NonNull float[] offsets) {
+        // 设置四周的间距
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mRootLayout.getLayoutParams();
+        params.setMargins((int) offsets[0], (int) offsets[1], (int) offsets[2], (int) offsets[3]);
+        mRootLayout.requestLayout();
+    }
+
+    @Nullable
+    private String convert2Text(String... texts) {
+        // 无数据
+        if (texts == null || texts.length == 0) {
+            return null;
+        }
+        // 单个数据
+        if (texts.length == 1) {
+            return texts[0];
+        }
+        // 多个数据
+        StringBuilder builder = new StringBuilder();
+        for (String text : texts) {
+            builder.append(text).append("\n");
+        }
+        builder.setLength(builder.length() - 1);
+        return builder.toString();
+    }
+
+    /**
      * 初始化状态控件
      */
     private void initStateLayouts() {
@@ -306,34 +329,6 @@ public class StateDelegate implements Serializable {
     }
 
     /**
-     * 设置关联容器的偏移数据
-     */
-    void setRootLayoutOffsets() {
-        ViewGroup parent = (ViewGroup) mRootLayout.getParent();
-        mRootLayout.setVisibility(View.GONE);
-        mRootLayout.post(() -> {
-            // 如果标记了内容控件，则有标题栏存在
-            View toolbar = parent.findViewById(R.id.starter_toolbar);
-            float[] offsets = mOffsets.getValue() == null ? new float[4] : mOffsets.getValue();
-            int top = (int) offsets[1];
-            if (top == 0 && toolbar != null) {
-                // 获取标题栏底部位置为偏移量
-                top = toolbar.getBottom();
-            }
-            mRootLayout.setVisibility(mCurState == ViewState.IDLE ? View.GONE : View.VISIBLE);
-            // 设置四周的间距
-            setRootLayoutOffsets(new float[] {offsets[0], top, offsets[2], offsets[3]});
-        });
-    }
-
-    void setRootLayoutOffsets(@NonNull float[] offsets) {
-        // 设置四周的间距
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mRootLayout.getLayoutParams();
-        params.setMargins((int) offsets[0], (int) offsets[1], (int) offsets[2], (int) offsets[3]);
-        mRootLayout.requestLayout();
-    }
-
-    /**
      * 保存刷新控件空闲状态时的相关属性
      */
     private void saveRefreshEnableState() {
@@ -358,14 +353,14 @@ public class StateDelegate implements Serializable {
                     SMART_ENABLE_FIELDS[0].setBoolean(mRefreshLayout, mEnableStates[0]);
                     SMART_ENABLE_FIELDS[1].setBoolean(mRefreshLayout, mEnableStates[1]);
                     SMART_ENABLE_FIELDS[2].setBoolean(mRefreshLayout, mEnableStates[2]);
-                } catch (IllegalAccessException ignored) {}
+                } catch (IllegalAccessException ignore) {}
             } else {
                 try {
                     SMART_ENABLE_FIELDS[0].setBoolean(mRefreshLayout, mCurState != ViewState.BUSY && mEnableStates[0]);
                     SMART_ENABLE_FIELDS[1].setBoolean(mRefreshLayout, false);
                     SMART_ENABLE_FIELDS[2].setBoolean(mRefreshLayout, mCurState != ViewState.BUSY);
                     SMART_ENABLE_FIELDS[3].setBoolean(mRefreshLayout, true);
-                } catch (IllegalAccessException ignored) {}
+                } catch (IllegalAccessException ignore) {}
             }
         }
     }
@@ -412,22 +407,4 @@ public class StateDelegate implements Serializable {
         return adapter;
     }
 
-    @Nullable
-    private String convert2Text(String... texts) {
-        // 无数据
-        if (texts == null || texts.length == 0) {
-            return null;
-        }
-        // 单个数据
-        if (texts.length == 1) {
-            return texts[0];
-        }
-        // 多个数据
-        StringBuilder builder = new StringBuilder();
-        for (String text : texts) {
-            builder.append(text).append("\n");
-        }
-        builder.setLength(builder.length() - 1);
-        return builder.toString();
-    }
 }

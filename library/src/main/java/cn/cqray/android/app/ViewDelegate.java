@@ -75,7 +75,7 @@ public final class ViewDelegate {
     public ViewDelegate(AppCompatActivity activity) {
         mLifecycleOwner = activity;
         mLifecycleOwner.getLifecycle().addObserver(mEventObserver);
-        mStateDelegate = StateDelegate.get(activity);
+        mStateDelegate = new StateDelegate(activity);
         StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
         if (strategy.getActivityBackground() != null) {
             setBackground(strategy.getActivityBackground());
@@ -85,7 +85,7 @@ public final class ViewDelegate {
     public ViewDelegate(Fragment fragment) {
         mLifecycleOwner = fragment;
         mLifecycleOwner.getLifecycle().addObserver(mEventObserver);
-        mStateDelegate = StateDelegate.get(fragment);
+        mStateDelegate = new StateDelegate(fragment);
         StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
         setBackground(strategy.getFragmentBackground());
     }

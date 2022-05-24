@@ -33,5 +33,9 @@
         android:background="@drawable/bg_btn_primary_small"
         android:enabled="true"/>
 
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

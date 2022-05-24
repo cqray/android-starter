@@ -18,6 +18,8 @@ public class MainActivity extends MultiTabActivity {
                 new MultiItem(MainFragment.class, "666"),
                 new MultiItem(MainFragment2.class, "777")
         );
+
+        setDragEnable(false);
         ///SupportViewModel viewModel = new ViewModelProvider(this).get(SupportViewModel.class);
         /// Log.e("数据", "" + (viewModel == null));
 //        loadMultiFragments(

@@ -6,6 +6,8 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+
 import cn.cqray.android.app.SupportFragment;
 
 /**
@@ -36,12 +38,29 @@ public class MainFragment extends SupportFragment {
 //                setIdle();
 //            }
 //        }, 1500);
-        setBusy("123", "456");
 //        setIdle();
 //        setEmpty("7777", "88888", "99999");
         findViewById(R.id.btn).setOnClickListener(v -> {
             startWithPop(MainFragment2.class, MainFragment.class);
         });
+
+
+        setBusy("123", "456");
+
+        SmartRefreshLayout refreshLayout = findViewById(R.id.refresh_layout);
+
+        getViewDelegate().getStateDelegate().attachLayout(refreshLayout);
+        timer(aLong -> {
+            setBusy();
+        }, 1500);
+
+        timer(aLong -> {
+            setIdle();
+        }, 3000);
+
+        timer(aLong -> {
+            setBusy();
+        }, 4500);
 //        setHeaderFloating(false);
     }
 //

@@ -78,10 +78,12 @@ public final class SupportViewModel extends LifecycleViewModel {
         // 栈顶元素为空，说明没有调用LoadRootFragment。
         if (fragment == null) {
             // 当前Activity的忙碌状态处理
-            StateDelegate delegate = StateDelegate.get(mActivity);
-            if (delegate.isBusy() && delegate.isBusyCancelable()) {
-                delegate.setIdle();
-                return;
+            if (mActivity instanceof ViewProvider) {
+                StateDelegate delegate = ((ViewProvider) mActivity).getViewDelegate().getStateDelegate();
+                if (delegate.isBusy() && delegate.isBusyCancelable()) {
+                    delegate.setIdle();
+                    return;
+                }
             }
             // 获取Activity拦截结果，决定是否回退
             SupportProvider provider = (SupportProvider) getLifecycleOwner();
@@ -91,12 +93,13 @@ public final class SupportViewModel extends LifecycleViewModel {
             return;
         }
         // 当前Fragment的忙碌状态处理
-        StateDelegate delegate = StateDelegate.get(fragment);
-        if (delegate.isBusy() && delegate.isBusyCancelable()) {
-            delegate.setIdle();
-            return;
+        if (fragment instanceof ViewProvider) {
+            StateDelegate delegate = ((ViewProvider) fragment).getViewDelegate().getStateDelegate();
+            if (delegate.isBusy() && delegate.isBusyCancelable()) {
+                delegate.setIdle();
+                return;
+            }
         }
-
         // 栈顶Fragment不为空，回退栈顶Fragment
         // 判断是否进行回退拦截
         if (mBackStack.size() > 1) {

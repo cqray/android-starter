@@ -1,6 +1,8 @@
 package cn.cqray.android.ui.page;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
@@ -14,6 +16,7 @@ import java.util.List;
 
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
+import cn.cqray.android.app.ViewProvider;
 import cn.cqray.android.state.StateDelegate;
 
 /**
@@ -45,17 +48,34 @@ public class PaginationDelegate<T> {
     /** 状态管理委托 **/
     private final StateDelegate mStateDelegate;
 
-    public PaginationDelegate(@NonNull LifecycleOwner owner) {
+    public PaginationDelegate(FragmentActivity activity) {
+        initPageInfo(activity);
+        initDataObserver(activity);
+        if (activity instanceof ViewProvider) {
+            mStateDelegate = ((ViewProvider) activity).getViewDelegate().getStateDelegate();
+        } else {
+            mStateDelegate = new StateDelegate(activity);
+        }
+    }
+
+    public PaginationDelegate(Fragment fragment) {
+        initPageInfo(fragment);
+        initDataObserver(fragment);
+        if (fragment instanceof ViewProvider) {
+            mStateDelegate = ((ViewProvider) fragment).getViewDelegate().getStateDelegate();
+        } else {
+            mStateDelegate = new StateDelegate(fragment);
+        }
+    }
+
+    private void initPageInfo(LifecycleOwner owner) {
         // 初始化相关配置参数
         StarterStrategy strategy = Starter.getInstance().getStarterStrategy();
         mStartPageNum = strategy.getDefaultStartPageNum();
         mPageSize = strategy.getDefaultPageSize();
         mLastPageNum = mStartPageNum;
         mCurPageNum = mStartPageNum;
-
-        initDataObserver(owner);
-        mStateDelegate = StateDelegate.get(owner);
-
+        // 分页设置
         mPaginationEnable.observe(owner, aBoolean -> {
             if (mRefreshLayout != null) {
                 mRefreshLayout.setEnableLoadMore(aBoolean);
