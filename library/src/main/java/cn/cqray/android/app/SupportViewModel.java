@@ -107,7 +107,7 @@ public final class SupportViewModel extends LifecycleViewModel {
         } else {
             // 如果回退栈的数量为1，则还需判断父级回退拦截
             if (!((SupportProvider) fragment).onBackPressedSupport()) {
-                // 如果Fragment回退未被拦截，则传递给父级
+                // 如果Fragment回退未被拦截，则传递给父级(Activity)
                 SupportProvider provider = (SupportProvider) getLifecycleOwner();
                 if (!provider.onBackPressedSupport()) {
                     pop();
@@ -207,9 +207,11 @@ public final class SupportViewModel extends LifecycleViewModel {
         }
         // 是否需要回退
         boolean needPop = intent.getPopToClass() != null;
-        // 回退到指定的Fragment
+        // 是否从未加载过
+        boolean neverLoad = mBackStack.isEmpty();
+        // 回退到指定的Fragment或Activity
         if (needPop) {
-            popTo(intent.getPopToClass(), intent.isPopToInclusive());
+            popTo(intent.getPopToClass(), intent.getToClass(), intent.isPopToInclusive());
         }
         // 跳转到指定Activity
         if (Activity.class.isAssignableFrom(intent.getToClass())) {
@@ -233,10 +235,11 @@ public final class SupportViewModel extends LifecycleViewModel {
         // 生成Fragment
         Fragment fragment = generateFragment(intent);
         // 如果回退栈不为空，则需要显示动画
-        if (!mBackStack.isEmpty()) {
+        if (!neverLoad) {
             // 获取并设置动画
             FragmentAnimator fa = getFragmentAnimator(fragment, intent);
             ft.setCustomAnimations(fa.mEnter, fa.mExit, fa.mPopEnter, fa.mPopExit);
+            // 计算动画时长
             mAnimDuration = SupportUtils.getAnimDurationFromResource(fa.mEnter);
         }
         // 隐藏当前正在显示的Fragment
@@ -266,19 +269,20 @@ public final class SupportViewModel extends LifecycleViewModel {
 
     /**
      * 回退到指定的Fragment或Activity
-     * @param popTo 指定的Fragment或Activity
+     * @param popTo 指定回退的Fragment或Activity
+     * @param to 需要启动的Fragment或Activity
      * @param inclusive 是否包含指定的Fragment或Activity
      */
     @SuppressWarnings("unchecked")
-    public void popTo(Class<?> popTo, boolean inclusive) {
+    public void popTo(@NonNull Class<?> popTo, @Nullable Class<?> to, boolean inclusive) {
         FragmentManager fm = mActivity.getSupportFragmentManager();
         // 回退到指定的Activity
         if (Activity.class.isAssignableFrom(popTo)) {
             ActivityUtils.finishToActivity((Class<? extends Activity>) popTo, inclusive);
             return;
         }
-        // 如果是第一个入栈的Fragment并且需要销毁，则父级pop。
-        if (isRootFragment(popTo) && inclusive) {
+        // 如果是第一个入栈的Fragment并且启动目标为NULL，同时需要销毁，则父级pop。
+        if (isRootFragment(popTo) && inclusive && to == null) {
             mActivity.finish();
             return;
         }

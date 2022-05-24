@@ -8,6 +8,10 @@ import cn.cqray.android.anim.FragmentAnimator;
  */
 public interface SupportProvider {
 
+    /**
+     * 获取委托实例
+     * @return 委托实例
+     */
     SupportDelegate getSupportDelegate();
 
     /**
@@ -23,14 +27,6 @@ public interface SupportProvider {
      * @return true 拦截 false 不拦截
      */
     default boolean onBackPressedSupport() { return false; }
-
-    /**
-     * 键盘自动隐藏
-     * @return true 自动隐藏 false 不处理
-     */
-    default boolean onKeyboardAutoHide() {
-        return true;
-    }
 
     /**
      * 进入动画结束

@@ -1,16 +1,12 @@
 package cn.cqray.demo.starter;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 
 import cn.cqray.android.app.SupportFragment;
-import cn.cqray.android.state.StateDelegate;
 
 /**
  * @author Admin
@@ -21,7 +17,7 @@ public class MainFragment extends SupportFragment {
     @Override
     public void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setNativeContentView(R.layout.activity_main);
 
 
 //        new StateDelegate().attachProvider(this);
@@ -41,10 +37,10 @@ public class MainFragment extends SupportFragment {
 //            }
 //        }, 1500);
         setBusy("123", "456");
-        setIdle();
+//        setIdle();
 //        setEmpty("7777", "88888", "99999");
         findViewById(R.id.btn).setOnClickListener(v -> {
-            start(MainFragment2.class);
+            startWithPop(MainFragment2.class, MainFragment.class);
         });
 //        setHeaderFloating(false);
     }
@@ -61,6 +57,13 @@ public class MainFragment extends SupportFragment {
 
         Log.e("数据", "MainFragment onBackPressedSupport");
         return super.onBackPressedSupport();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("数据", "7777" );
+
     }
 
     @Override

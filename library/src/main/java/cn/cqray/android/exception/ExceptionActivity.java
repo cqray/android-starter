@@ -30,7 +30,7 @@ public class ExceptionActivity extends SupportActivity {
     @Override
     public void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
-        setContentView(R.layout._starter_excption_layout);
+        setContentView(R.layout.starter_excption_layout);
         mIntroText = getIntent().getStringExtra("intro");
         mSourceText = getIntent().getStringExtra("source");
         mThrowable = (Throwable) getIntent().getSerializableExtra("throwable");

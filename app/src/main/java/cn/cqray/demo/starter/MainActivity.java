@@ -5,12 +5,19 @@ import android.util.Log;
 
 
 import cn.cqray.android.app.NavActivity;
+import cn.cqray.android.ui.multi.MultiItem;
+import cn.cqray.android.ui.multi.MultiTabActivity;
 
-public class MainActivity extends NavActivity {
+public class MainActivity extends MultiTabActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        loadMultiFragments(
+                new MultiItem(MainFragment.class, "666"),
+                new MultiItem(MainFragment2.class, "777")
+        );
         ///SupportViewModel viewModel = new ViewModelProvider(this).get(SupportViewModel.class);
         /// Log.e("数据", "" + (viewModel == null));
 //        loadMultiFragments(
@@ -20,39 +27,10 @@ public class MainActivity extends NavActivity {
 
 //        setNativeContentView(R.layout.test);
 //        getSupportDelegate().loadRootFragment(R.id.content, new NavIntent(MainFragment.class));
-        loadRootFragment(MainFragment.class);
-
-
-        Log.e("数据", "7777");
+//        loadRootFragment(MainFragment.class);
+//
+//
+//        Log.e("数据", "7777");
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.e("数据", "8888");
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.e("数据", "11111");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.e("数据", "9999");
-    }
-
-    @Override
-    public boolean onBackPressedSupport() {
-        Log.e("数据", "Activity onBackPressedSupport");
-        return super.onBackPressedSupport();
-    }
-
-
-    @Override
-    public void onEnterAnimEnd() {
-        Log.e("数据", "动画加载结束");
-    }
 }

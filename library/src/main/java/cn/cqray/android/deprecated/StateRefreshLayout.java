@@ -1,4 +1,4 @@
-package cn.cqray.android.state;
+package cn.cqray.android.deprecated;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -20,6 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.cqray.android.R;
+import cn.cqray.android.state.BusyAdapter;
+import cn.cqray.android.state.EmptyAdapter;
+import cn.cqray.android.state.ErrorAdapter;
+import cn.cqray.android.state.StateAdapter;
+import cn.cqray.android.state.ViewState;
 
 /**
  * 状态布局控件
@@ -82,24 +87,24 @@ public class StateRefreshLayout extends SmartRefreshLayout {
     }
 
     public void setState(ViewState state, String text) {
-        saveEnableState();
-        mCurState = state;
-        // 初始化界面
-        initStateLayout();
-        if (mCurState != ViewState.BUSY) {
-            for (int i = 0; i < mAdapters.size(); i++) {
-                StateAdapter adapter = mAdapters.valueAt(i);
-                if (adapter != null) {
-                    adapter.hide();
-                }
-            }
-        }
-        // 显示指定状态的界面
-        StateAdapter adapter = getAdapter(mCurState);
-        if (adapter != null) {
-            adapter.show(text);
-        }
-        restoreEnableState();
+//        saveEnableState();
+//        mCurState = state;
+//        // 初始化界面
+//        initStateLayout();
+//        if (mCurState != ViewState.BUSY) {
+//            for (int i = 0; i < mAdapters.size(); i++) {
+//                StateAdapter adapter = mAdapters.valueAt(i);
+//                if (adapter != null) {
+//                    adapter.hide();
+//                }
+//            }
+//        }
+//        // 显示指定状态的界面
+//        StateAdapter adapter = getAdapter(mCurState);
+//        if (adapter != null) {
+//            adapter.show(text);
+//        }
+//        restoreEnableState();
     }
 
     public void setBusyAdapter(StateAdapter adapter) {
@@ -179,11 +184,11 @@ public class StateRefreshLayout extends SmartRefreshLayout {
      * @param adapter 适配器
      */
     private void setStateAdapter(@NonNull ViewState state, StateAdapter adapter) {
-        StateAdapter sAdapter = mAdapters.get(state.ordinal());
-        if (sAdapter != null) {
-            sAdapter.hide();
-        }
-        mAdapters.put(state.ordinal(), adapter);
+//        StateAdapter sAdapter = mAdapters.get(state.ordinal());
+//        if (sAdapter != null) {
+//            sAdapter.hide();
+//        }
+//        mAdapters.put(state.ordinal(), adapter);
     }
 
     /**
@@ -202,10 +207,10 @@ public class StateRefreshLayout extends SmartRefreshLayout {
                 adapter = new ErrorAdapter();
             }
         }
-        if (adapter != null && adapter.mContentView == null) {
-            mAdapters.put(state.ordinal(), adapter);
-            adapter.onAttach(null, mRootLayout);
-        }
+//        if (adapter != null && adapter.mContentView == null) {
+//            mAdapters.put(state.ordinal(), adapter);
+//            adapter.onAttach(null, mRootLayout);
+//        }
         return adapter;
     }
 }

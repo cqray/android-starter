@@ -10,6 +10,7 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
+import cn.cqray.android.anim.DefaultHorizontalAnimator;
 import cn.cqray.android.anim.DefaultVerticalAnimator;
 import cn.cqray.android.state.EmptyAdapter;
 import cn.cqray.android.state.ErrorAdapter;
@@ -30,7 +31,7 @@ public class StarterApplication extends Application {
         super.onCreate();
 
         StarterStrategy strategy = StarterStrategy.builder()
-                .fragmentAnimator(new DefaultVerticalAnimator())
+                .fragmentAnimator(new DefaultHorizontalAnimator())
                 //.fragmentBackground(new ColorDrawable(Color.RED))
                 //.toolbarTitleTextColor(Color.WHITE)
                 //.toolbarTitleTextSize(14)

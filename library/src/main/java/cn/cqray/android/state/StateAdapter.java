@@ -5,8 +5,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.DrawableRes;
@@ -21,6 +23,7 @@ import com.blankj.utilcode.util.CloneUtils;
 
 import java.io.Serializable;
 
+import cn.cqray.android.R;
 import cn.cqray.android.util.ContextUtils;
 import lombok.Getter;
 import lombok.experimental.Accessors;

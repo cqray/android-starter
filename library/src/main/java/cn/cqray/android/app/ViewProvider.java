@@ -7,9 +7,17 @@ package cn.cqray.android.app;
  */
 public interface ViewProvider {
 
+    /**
+     * 获取委托实例
+     * @return 委托实例
+     */
     ViewDelegate getViewDelegate();
 
-    default boolean onSupportKeyboardAutoHide() {
+    /**
+     * 键盘自动隐藏
+     * @return true 自动隐藏 false 不处理
+     */
+    default boolean onKeyboardAutoHide() {
         return true;
     }
 

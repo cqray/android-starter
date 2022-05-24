@@ -11,6 +11,10 @@
     tools:context=".MainActivity">
 
 
+    <cn.cqray.android.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar"/>
+
     <TextView
         android:id="@+id/tv"
         android:layout_width="wrap_content"

@@ -2,6 +2,7 @@ package cn.cqray.android.state;
 
 import android.content.Context;
 import android.util.SparseArray;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -10,12 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
 
+import com.blankj.utilcode.util.SizeUtils;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshFooter;
 import com.scwang.smart.refresh.layout.api.RefreshHeader;
@@ -24,16 +25,13 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import cn.cqray.android.R;
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
-import cn.cqray.android.exception.ExceptionDispatcher;
-import cn.cqray.android.app.ViewDelegate;
-import cn.cqray.android.app.ViewProvider;
+import cn.cqray.android.util.ContextUtils;
 
 /**
  * 状态管理委托
@@ -94,16 +92,17 @@ public class StateDelegate implements Serializable {
     private FrameLayout mRootLayout;
     /** 当前状态 **/
     private ViewState mCurState;
+    /** 偏移量 **/
+    private final MutableLiveData<float[]> mOffsets = new MutableLiveData<>();
     /** 状态缓存 **/
     private final Boolean[] mEnableStates = new Boolean[3];
     /** 适配器集合 **/
     private final SparseArray<StateAdapter<?>> mAdapters = new SparseArray<>();
-    /** 忙碌对话框 **/
-    private BusyDialog mBusyDialog;
+//
     private LifecycleOwner mLifecycleOwner;
 
     private StateDelegate(@NonNull LifecycleOwner lifecycleOwner) {
-        mLifecycleOwner = lifecycleOwner;
+//        mLifecycleOwner = lifecycleOwner;
         lifecycleOwner.getLifecycle().addObserver((LifecycleEventObserver) (owner, event) -> {
             if (event == Lifecycle.Event.ON_DESTROY) {
                 START_DELEGATE_MAP.remove(lifecycleOwner);
@@ -111,14 +110,47 @@ public class StateDelegate implements Serializable {
         });
         START_DELEGATE_MAP.put(lifecycleOwner, this);
         mBusyCancelable = Starter.getInstance().getStarterStrategy().isBusyCancelable();
+        // 设置容器偏移
+        mOffsets.observe(lifecycleOwner, this::setRootLayoutOffsets);
     }
 
     public void attachLayout(FrameLayout layout) {
+        // 取消常规状态容器关联
+        detachLayout(mRefreshLayout);
+        // 更新刷新状态容器
+        mRefreshLayout = layout == null ? mRefreshLayout : null;
         mNormalLayout = layout;
     }
 
     public void attachLayout(SmartRefreshLayout layout) {
+        // 取消常规状态容器关联
+        detachLayout(mNormalLayout);
+        // 更新常规状态容器
+        mNormalLayout = layout == null ? mNormalLayout : null;
         mRefreshLayout = layout;
+    }
+
+    void detachLayout(ViewGroup layout) {
+        if (mRootLayout != null) {
+            if (layout instanceof SmartRefreshLayout) {
+                SmartRefreshLayout refreshLayout = (SmartRefreshLayout) layout;
+                FrameLayout content = (FrameLayout) mRootLayout.getParent();
+                if (content != null) {
+                    // 移除根容器
+                    content.removeView(mRootLayout);
+                    if (content.getChildCount() == 1) {
+                        // 如果内容容器只剩下一个控件
+                        View view = content.getChildAt(0);
+                        content.removeView(view);
+                        // 将那个控件直接加入刷新控件
+                        refreshLayout.removeView(content);
+                        refreshLayout.setRefreshContent(view);
+                    }
+                }
+            } else if (layout instanceof FrameLayout) {
+                layout.removeView(mRootLayout);
+            }
+        }
     }
 
     public void setIdle() {
@@ -139,14 +171,58 @@ public class StateDelegate implements Serializable {
 
     public synchronized void setState(ViewState state, String... texts) {
         String text = convert2Text(texts);
-        // 设置状态
-        if (mNormalLayout == null && mRefreshLayout == null) {
-            // 没有接入布局控件，则使用对话框来显示状态
-            setStateByDialog(state, text);
-        } else {
-            // 接入了布局控件，使用布局控件显示状态
-            setStateByLayout(state, text);
+        // 保存刷新控件空闲状态时的相关属性
+        saveRefreshEnableState();
+        // 更新当前状态
+        mCurState = state;
+        // 初始化控件
+        initStateLayouts();
+        // 隐藏所有状态控件
+        for (int i = 0; i < mAdapters.size(); i++) {
+            StateAdapter<?> adapter = mAdapters.valueAt(i);
+            if (adapter != null) {
+                adapter.hide();
+            }
         }
+        // 显示对应的状态控件
+        StateAdapter<?> adapter = getAdapter(state);
+        if (adapter != null) {
+            adapter.show(text);
+            if (adapter.mContentView == null) {
+                adapter.onAttach(this, mRootLayout);
+            }
+        }
+        // 恢复刷新控件状态
+        restoreRefreshEnableState();
+    }
+
+    public void setOffsetTop(float offset) {
+        setOffsetTop(offset, TypedValue.COMPLEX_UNIT_DIP);
+    }
+
+    public void setOffsetTop(float offset, int unit) {
+        mOffsets.setValue(new float[] {0, SizeUtils.applyDimension(offset, unit), 0, 0});
+    }
+
+    public void setOffsetBottom(float offset) {
+        setOffsetBottom(offset, TypedValue.COMPLEX_UNIT_DIP);
+    }
+
+    public void setOffsetBottom(float offset, int unit) {
+        mOffsets.setValue(new float[] {0, 0, 0, SizeUtils.applyDimension(offset, unit)});
+    }
+
+    public void setOffsets(float left, float top, float right, float bottom) {
+        setOffsets(left, top, right, bottom, TypedValue.COMPLEX_UNIT_DIP);
+    }
+
+    public void setOffsets(float left, float top, float right, float bottom, int unit) {
+        mOffsets.setValue(new float[] {
+                SizeUtils.applyDimension(left, unit),
+                SizeUtils.applyDimension(top, unit),
+                SizeUtils.applyDimension(right, unit),
+                SizeUtils.applyDimension(bottom, unit)
+        });
     }
 
     public void setBusyAdapter(StateAdapter<?> adapter) {
@@ -189,19 +265,18 @@ public class StateDelegate implements Serializable {
             // 没有接入容器，则不继续
             return;
         }
-        if (mRootLayout != null) {
-            // 已初始化，则不再继续
+        if (mRootLayout != null && mRootLayout.getParent() != null) {
             return;
         }
         // 获取上下文
-        Context context = mRefreshLayout != null
-                ? mRefreshLayout.getContext()
-                : mNormalLayout.getContext();
+        Context context = ContextUtils.get();
         // 初始化Root容器
-        mRootLayout = new FrameLayout(context);
-        mRootLayout.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
-        mRootLayout.setClickable(true);
-        mRootLayout.setFocusable(true);
+        if (mRootLayout == null) {
+            mRootLayout = new FrameLayout(context);
+            mRootLayout.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
+            mRootLayout.setClickable(true);
+            mRootLayout.setFocusable(true);
+        }
         // 如果刷新容器不为空，走刷新控件逻辑
         if (mRefreshLayout != null) {
             // 替换布局
@@ -226,62 +301,36 @@ public class StateDelegate implements Serializable {
             // 走常规容器逻辑
             mNormalLayout.addView(mRootLayout);
         }
+        // 设置容器偏移
+        setRootLayoutOffsets();
     }
 
-    private void setStateByLayout(ViewState state, String text) {
-        // 保存刷新控件空闲状态时的相关属性
-        saveRefreshEnableState();
-        // 更新当前状态
-        mCurState = state;
-        // 初始化控件
-        initStateLayouts();
-        // 隐藏所有状态控件
-        for (int i = 0; i < mAdapters.size(); i++) {
-            StateAdapter<?> adapter = mAdapters.valueAt(i);
-            if (adapter != null) {
-                adapter.hide();
+    /**
+     * 设置关联容器的偏移数据
+     */
+    void setRootLayoutOffsets() {
+        ViewGroup parent = (ViewGroup) mRootLayout.getParent();
+        mRootLayout.setVisibility(View.GONE);
+        mRootLayout.post(() -> {
+            // 如果标记了内容控件，则有标题栏存在
+            View toolbar = parent.findViewById(R.id.starter_toolbar);
+            float[] offsets = mOffsets.getValue() == null ? new float[4] : mOffsets.getValue();
+            int top = (int) offsets[1];
+            if (top == 0 && toolbar != null) {
+                // 获取标题栏底部位置为偏移量
+                top = toolbar.getBottom();
             }
-        }
-        // 显示对应的状态控件
-        StateAdapter<?> adapter = getAdapter(state);
-        if (adapter != null) {
-            adapter.show(text);
-            if (adapter.mContentView == null) {
-                adapter.onAttach(this, mRootLayout);
-            }
-        }
-        // 恢复刷新控件状态
-        restoreRefreshEnableState();
+            mRootLayout.setVisibility(mCurState == ViewState.IDLE ? View.GONE : View.VISIBLE);
+            // 设置四周的间距
+            setRootLayoutOffsets(new float[] {offsets[0], top, offsets[2], offsets[3]});
+        });
     }
 
-    private void setStateByDialog(ViewState state, String text) {
-        // 如果是空闲状态或者和当前状态不一致
-        if (state == ViewState.IDLE) {
-            // 取消忙碌对话框
-            if (mBusyDialog != null) {
-                mBusyDialog.dismiss();
-                mBusyDialog = null;
-            }
-        }
-        // 如果是忙碌状态，则显示对应对话框
-        if (state == ViewState.BUSY) {
-            if (mBusyDialog != null) {
-                mBusyDialog = new BusyDialog();
-                mBusyDialog.setCancelable(mBusyCancelable);
-                mBusyDialog.setBusyAdapter(getAdapter(ViewState.BUSY));
-                mBusyDialog.setLocationAt(getLocationView());
-                mBusyDialog.setText(text);
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.setCustomAnimations(R.anim._starter_no_anim, R.anim._starter_no_anim, R.anim._starter_no_anim, R.anim._starter_no_anim);
-                mBusyDialog.show(ft, null);
-            }
-        } else if (state != ViewState.IDLE) {
-            ExceptionDispatcher.dispatchStarterThrowable(this,
-                    String.format(Locale.getDefault(), "不支持%s状态", state.name()),
-                    String.format(Locale.getDefault(), "需要调用attachLayout()后，才能支持%s和%s状态",
-                            ViewState.EMPTY.name(), ViewState.ERROR.name()));
-        }
-        mCurState = state;
+    void setRootLayoutOffsets(@NonNull float[] offsets) {
+        // 设置四周的间距
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mRootLayout.getLayoutParams();
+        params.setMargins((int) offsets[0], (int) offsets[1], (int) offsets[2], (int) offsets[3]);
+        mRootLayout.requestLayout();
     }
 
     /**
@@ -361,31 +410,6 @@ public class StateDelegate implements Serializable {
             mAdapters.put(state.ordinal(), adapter);
         }
         return adapter;
-    }
-
-    /**
-     * 获取FragmentManager
-     */
-    @NonNull
-    private FragmentManager getSupportFragmentManager() {
-        if (mLifecycleOwner instanceof FragmentActivity) {
-            return ((FragmentActivity) mLifecycleOwner).getSupportFragmentManager();
-        } else {
-            Fragment fragment = (Fragment) mLifecycleOwner;
-            return fragment.requireActivity().getSupportFragmentManager();
-        }
-    }
-
-    /**
-     * 获取定位控件
-     */
-    @Nullable
-    private View getLocationView() {
-        if (mLifecycleOwner instanceof ViewProvider) {
-            ViewDelegate delegate = ((ViewProvider) mLifecycleOwner).getViewDelegate();
-            return delegate.getContentView();
-        }
-        return null;
     }
 
     @Nullable

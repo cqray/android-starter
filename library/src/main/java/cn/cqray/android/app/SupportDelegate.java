@@ -16,27 +16,28 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
-import com.blankj.utilcode.util.ActivityUtils;
-import com.blankj.utilcode.util.KeyboardUtils;
-
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import cn.cqray.android.exception.ExceptionDispatcher;
 import cn.cqray.android.exception.ExceptionType;
 import cn.cqray.android.lifecycle.LifecycleViewModelProvider;
 
 /**
- * Fragment启动委托
+ * Fragment启动管理委托
  * @author Cqray
  */
 public final class SupportDelegate {
 
     /** 委托缓存 **/
-    private static final Map<Object, SupportDelegate> DELEGATE_CACHE = new HashMap<>();
+    private static final Map<SupportProvider, SupportDelegate> DELEGATE_CACHE = new ConcurrentHashMap<>();
 
+    /**
+     * 获取委托实例
+     * @param provider 功能提供器
+     */
     @NonNull
-    public static SupportDelegate get(@NonNull SupportProvider provider) {
+    public synchronized static SupportDelegate get(@NonNull SupportProvider provider) {
         SupportDelegate delegate = DELEGATE_CACHE.get(provider);
         if (delegate == null) {
             delegate = new SupportDelegate(provider);
@@ -95,11 +96,6 @@ public final class SupportDelegate {
         }
         // 进入动画结束回调
         mHandler.postDelayed(()-> mProvider.onEnterAnimEnd(), enterAnimDuration);
-        // 是否自动隐藏键盘
-        if (mProvider.onKeyboardAutoHide()) {
-            Activity act = ActivityUtils.getTopActivity();
-            KeyboardUtils.hideSoftInput(act);
-        }
     }
 
     /**
@@ -141,7 +137,7 @@ public final class SupportDelegate {
      */
     public void popTo(Class<?> popTo, boolean inclusive) {
         if (isViewModelReady()) {
-            mMainViewModel.popTo(popTo, inclusive);
+            mMainViewModel.popTo(popTo, null, inclusive);
         }
     }
 

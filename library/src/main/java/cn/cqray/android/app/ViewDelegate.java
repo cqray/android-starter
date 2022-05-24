@@ -1,5 +1,6 @@
 package cn.cqray.android.app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -17,12 +18,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
+import com.blankj.utilcode.util.ActivityUtils;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 
 import cn.cqray.android.R;
@@ -102,7 +103,7 @@ public final class ViewDelegate {
      * @param view 布局
      */
     public void setContentView(View view) {
-        mContentView = inflate(R.layout.starter_default_layout);
+        mContentView = inflate(R.layout.starter_layout_default);
         mToolbar = findViewById(R.id.starter_toolbar);
         mHeaderLayout = findViewById(R.id.starter_header_layout);
         mFooterLayout = findViewById(R.id.starter_footer_layout);
@@ -126,11 +127,12 @@ public final class ViewDelegate {
      * @param view 布局
      */
     public void setNativeContentView(@NonNull View view) {
-        mContentView = view;
+        mContentView = inflate(R.layout.starter_layout_native);
         mToolbar = view.findViewById(R.id.starter_toolbar);
         mHeaderLayout = view.findViewById(R.id.starter_header_layout);
         mFooterLayout = view.findViewById(R.id.starter_footer_layout);
         mRefreshLayout = view.findViewById(R.id.starter_refresh_layout);
+        ((FrameLayout) mContentView).addView(view);
         setActivityContentView();
         initSupportView();
     }
@@ -332,9 +334,11 @@ public final class ViewDelegate {
             ((SupportFragment) mLifecycleOwner).mRefreshLayout = mRefreshLayout;
         }
         if (mRefreshLayout != null) {
-            mRefreshLayout.setEnableLoadMore(true);
+            mStateDelegate.attachLayout(mRefreshLayout);
+        } else if (mContentView instanceof FrameLayout) {
+            mStateDelegate.attachLayout((FrameLayout) mContentView);
         }
-        mStateDelegate.attachLayout(mRefreshLayout);
+
         // 初始化标题
         initToolbar();
         // 初始化ButterKnife
@@ -385,13 +389,8 @@ public final class ViewDelegate {
      * @param resId 界面ID
      */
     View inflate(@LayoutRes int resId) {
-        FragmentActivity activity;
         // 获取Activity
-        if (mLifecycleOwner instanceof AppCompatActivity) {
-            activity = (AppCompatActivity) mLifecycleOwner;
-        } else {
-            activity = ((Fragment) mLifecycleOwner).requireActivity();
-        }
+        Activity activity = ActivityUtils.getTopActivity();
         // 缓存控件
         if (mActivityContent == null) {
             mActivityContent = activity.findViewById(android.R.id.content);

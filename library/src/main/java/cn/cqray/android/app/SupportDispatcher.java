@@ -17,6 +17,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 
+import com.blankj.utilcode.util.KeyboardUtils;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -61,6 +63,8 @@ public class SupportDispatcher {
                 if (activity instanceof SupportProvider) {
                     SupportDelegate.get((SupportProvider) activity).onViewCreated();
                 }
+                // 自动隐藏键盘
+                autoHideKeyboard(activity);
             }
 
             @Override
@@ -170,6 +174,8 @@ public class SupportDispatcher {
             if (f instanceof SupportProvider) {
                 SupportDelegate.get((SupportProvider) f).onViewCreated();
             }
+            // 自动隐藏键盘
+            autoHideKeyboard(f);
         }
 
         @Override
@@ -177,6 +183,25 @@ public class SupportDispatcher {
             super.onFragmentDestroyed(fm, f);
             if (f instanceof SupportProvider) {
                 SupportDelegate.get((SupportProvider) f).onDestroyed();
+            }
+        }
+    }
+
+    static void autoHideKeyboard(Object target) {
+        if (target instanceof ViewProvider) {
+            boolean autoHide = ((ViewProvider) target).onKeyboardAutoHide();
+            if (autoHide) {
+                View view;
+                if (target instanceof Activity) {
+                    view = ((Activity) target).findViewById(android.R.id.content);
+                } else {
+                    view = ((Fragment) target).requireView();
+                }
+                KeyboardUtils.hideSoftInput(view);
+                View focusView = view.findFocus();
+                if (focusView != null) {
+                    focusView.clearFocus();
+                }
             }
         }
     }
