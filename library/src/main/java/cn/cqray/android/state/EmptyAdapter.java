@@ -2,7 +2,6 @@ package cn.cqray.android.state;
 
 import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -43,13 +42,10 @@ public class EmptyAdapter extends StateAdapter<EmptyAdapter> {
         mImageView = view.findViewById(R.id.starter_image);
         mTextView = view.findViewById(R.id.starter_text);
         mRetryView = view.findViewById(R.id.starter_retry);
+        mRetryView.setVisibility(View.GONE);
         if (mImageResource != null) {
             mImageView.setImageDrawable(mImageResource);
         }
-//        ViewGroup parent = (ViewGroup) view;
-//        TextView btn = (TextView) parent.getChildAt(2);
-//        btn.setOnClickListener(v -> getDelegate().setBusy());
-//        setButtonVisible(false);
     }
 
     @Override
@@ -86,11 +82,5 @@ public class EmptyAdapter extends StateAdapter<EmptyAdapter> {
     public EmptyAdapter setImageResource(@DrawableRes int resId) {
         mImageResource = ContextCompat.getDrawable(ContextUtils.get(), resId);
         return this;
-    }
-
-    public void setButtonVisible(final boolean visible) {
-        ViewGroup parent = (ViewGroup) getContentView();
-        TextView btn = (TextView) parent.getChildAt(2);
-        btn.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }
