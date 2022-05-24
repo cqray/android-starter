@@ -102,7 +102,7 @@ public class StateDelegate implements Serializable {
     private LifecycleOwner mLifecycleOwner;
 
     private StateDelegate(@NonNull LifecycleOwner lifecycleOwner) {
-//        mLifecycleOwner = lifecycleOwner;
+        mLifecycleOwner = lifecycleOwner;
         lifecycleOwner.getLifecycle().addObserver((LifecycleEventObserver) (owner, event) -> {
             if (event == Lifecycle.Event.ON_DESTROY) {
                 START_DELEGATE_MAP.remove(lifecycleOwner);
