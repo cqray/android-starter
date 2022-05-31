@@ -2,11 +2,11 @@ package cn.cqray.demo.starter;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseArray;
 
-
-import cn.cqray.android.app.NavActivity;
 import cn.cqray.android.ui.multi.MultiItem;
 import cn.cqray.android.ui.multi.MultiTabActivity;
+import cn.cqray.java.traverse.Traverse;
 
 public class MainActivity extends MultiTabActivity {
 
@@ -33,6 +33,19 @@ public class MainActivity extends MultiTabActivity {
 //
 //
 //        Log.e("数据", "7777");
+        SparseArray<String> array = new SparseArray<>();
+        array.put(10, "10");
+        array.put(1, "3");
+        array.put(2, "4");
+
+        Log.e("数据", array.getClass().getName());
+
+        Traverse.with(array)
+                .valType(String.class)
+                .positive(item -> {
+                    Log.e("数据", "子项:" + item);
+                    return false;
+                });
     }
 
 }

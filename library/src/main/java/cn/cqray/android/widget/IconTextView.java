@@ -31,6 +31,7 @@ import java.lang.annotation.RetentionPolicy;
 
 import cn.cqray.android.R;
 import cn.cqray.android.util.ExtUtils;
+import cn.cqray.android.util.ViewUtils;
 
 /**
  * 图标文本控件
@@ -107,8 +108,8 @@ public class IconTextView extends LinearLayout {
         addView(mSpaceView);
         addView(!iconBefore ? mIconView : mTextView);
         // 设置背景
-        ExtUtils.setRippleBackground(mIconView, useRipple);
-        ExtUtils.setRippleBackground(mTextView, useRipple);
+        ViewUtils.setRippleBackground(mIconView, useRipple);
+        ViewUtils.setRippleBackground(mTextView, useRipple);
         // 设置点击事件
         setOnClickListener(null);
     }
@@ -138,8 +139,8 @@ public class IconTextView extends LinearLayout {
     }
 
     public IconTextView setUseRipple(boolean useRipple) {
-        ExtUtils.setRippleBackground(mIconView, useRipple);
-        ExtUtils.setRippleBackground(mTextView, useRipple);
+        ViewUtils.setRippleBackground(mIconView, useRipple);
+        ViewUtils.setRippleBackground(mTextView, useRipple);
         return this;
     }
 

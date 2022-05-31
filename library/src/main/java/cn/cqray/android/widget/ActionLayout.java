@@ -30,6 +30,7 @@ import com.blankj.utilcode.util.SizeUtils;
 
 import cn.cqray.android.R;
 import cn.cqray.android.util.ExtUtils;
+import cn.cqray.android.util.ViewUtils;
 
 /**
  * Action布局控件
@@ -111,7 +112,7 @@ public class ActionLayout extends LinearLayout {
         tv.setVisibility(mVisibleArray.get(key) ? VISIBLE : GONE);
         tv.setTypeface(Typeface.defaultFromStyle(mActionTextStyle));
         addView(tv, index);
-        ExtUtils.setRippleBackground(tv, mUseRipple);
+        ViewUtils.setRippleBackground(tv, mUseRipple);
         mViewArray.put(key, tv);
         return this;
     }
@@ -203,7 +204,7 @@ public class ActionLayout extends LinearLayout {
         iv.setPadding(mActionSpace, 0, mActionSpace, 0);
         iv.setVisibility(mVisibleArray.get(key) ? VISIBLE : GONE);
         addView(iv, index);
-        ExtUtils.setRippleBackground(iv, mUseRipple);
+        ViewUtils.setRippleBackground(iv, mUseRipple);
         if (tintColor != null) {
             ImageViewCompat.setImageTintList(iv, ColorStateList.valueOf(tintColor));
         } else if (mTintColorArray.get(key) != 0) {
@@ -258,7 +259,7 @@ public class ActionLayout extends LinearLayout {
         mUseRipple = useRipple;
         for (int i = 0; i < mViewArray.size(); i++) {
             View view = mViewArray.valueAt(i);
-            ExtUtils.setRippleBackground(view, mUseRipple);
+            ViewUtils.setRippleBackground(view, mUseRipple);
         }
         return this;
     }
@@ -267,7 +268,7 @@ public class ActionLayout extends LinearLayout {
         mUseRipple = useRipple;
         View view = mViewArray.get(key);
         if (view != null) {
-            ExtUtils.setRippleBackground(view, mUseRipple);
+            ViewUtils.setRippleBackground(view, mUseRipple);
         }
         return this;
     }
