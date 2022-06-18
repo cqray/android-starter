@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 
 import cn.cqray.android.app.SupportFragment;
+import cn.cqray.android.exception.ExceptionActivity;
+import cn.cqray.android.launch.Launcher;
 
 /**
  * @author Admin
@@ -41,7 +43,10 @@ public class MainFragment extends SupportFragment {
 //        setIdle();
 //        setEmpty("7777", "88888", "99999");
         findViewById(R.id.btn).setOnClickListener(v -> {
-            startWithPop(MainFragment2.class, MainFragment.class);
+            //startWithPop(MainFragment2.class, MainFragment.class);
+
+            //startActivity(new Intent(requireContext(), ExceptionActivity.class));
+            Launcher.with(this).launch(ExceptionActivity.class);
         });
 
 
@@ -50,17 +55,7 @@ public class MainFragment extends SupportFragment {
         SmartRefreshLayout refreshLayout = findViewById(R.id.refresh_layout);
 
         getViewDelegate().getStateDelegate().attachLayout(refreshLayout);
-        timer(aLong -> {
-            setBusy();
-        }, 1500);
 
-        timer(aLong -> {
-            setIdle();
-        }, 3000);
-
-        timer(aLong -> {
-            setBusy();
-        }, 4500);
 //        setHeaderFloating(false);
     }
 //
