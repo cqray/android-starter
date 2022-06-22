@@ -66,14 +66,14 @@
     <!-- 文本图标控件 -->
     <declare-styleable name="IconTextView">
         <!-- 图标位置 -->
-        <attr name="sGravity" format="enum">
+        <attr name="sIconLocation" format="enum">
             <enum name="left" value="0" />
             <enum name="top" value="1" />
             <enum name="right" value="2" />
             <enum name="bottom" value="3" />
         </attr>
         <!-- 图标文本间隔 -->
-        <attr name="sSpace" format="dimension" />
+        <attr name="sViewSpace" format="dimension" />
         <attr name="sUseRipple"/>
         <attr name="android:src" />
         <attr name="android:text" />

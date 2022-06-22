@@ -30,7 +30,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import cn.cqray.android.R;
-import cn.cqray.android.util.ExtUtils;
 import cn.cqray.android.util.ViewUtils;
 
 /**
@@ -39,14 +38,14 @@ import cn.cqray.android.util.ViewUtils;
  */
 public class IconTextView extends LinearLayout {
 
-    public static final int GRAVITY_LEFT = 0;
-    public static final int GRAVITY_TOP = 1;
-    public static final int GRAVITY_RIGHT = 2;
-    public static final int GRAVITY_BOTTOM = 3;
+    public static final int LOCATION_LEFT = 0;
+    public static final int LOCATION_TOP = 1;
+    public static final int LOCATION_RIGHT = 2;
+    public static final int LOCATION_BOTTOM = 3;
 
-    @IntDef({GRAVITY_LEFT, GRAVITY_TOP, GRAVITY_RIGHT, GRAVITY_BOTTOM})
+    @IntDef({LOCATION_LEFT, LOCATION_TOP, LOCATION_RIGHT, LOCATION_BOTTOM})
     @Retention(RetentionPolicy.RUNTIME)
-    public @interface Gravity{}
+    public @interface Location{}
 
     /** 间隔控件 **/
     private Space mSpaceView;
@@ -55,7 +54,7 @@ public class IconTextView extends LinearLayout {
     /** 文本控件 **/
     private AppCompatTextView mTextView;
     /** 图标的位置 **/
-    private int mItvGravity;
+    private int mItvLocation;
     /** 图标与文字的间隔 **/
     private int mItvSpace;
 
@@ -71,8 +70,8 @@ public class IconTextView extends LinearLayout {
         super(context, attrs, defStyleAttr);
         // 获取属性
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.IconTextView);
-        mItvGravity = ta.getInt(R.styleable.IconTextView_sGravity, GRAVITY_LEFT);
-        mItvSpace = ta.getDimensionPixelSize(R.styleable.IconTextView_sSpace, getResources().getDimensionPixelSize(R.dimen.small));
+        mItvLocation = ta.getInt(R.styleable.IconTextView_sIconLocation, LOCATION_LEFT);
+        mItvSpace = ta.getDimensionPixelSize(R.styleable.IconTextView_sViewSpace, getResources().getDimensionPixelSize(R.dimen.small));
         String text = ta.getString(R.styleable.IconTextView_android_text);
         int textColor = ta.getColor(R.styleable.IconTextView_android_textColor, ContextCompat.getColor(context, R.color.text));
         int textSize = ta.getDimensionPixelSize(R.styleable.IconTextView_android_textSize, getResources().getDimensionPixelSize(R.dimen.body));
@@ -81,8 +80,8 @@ public class IconTextView extends LinearLayout {
         Drawable drawable = ta.getDrawable(R.styleable.IconTextView_android_src);
         ta.recycle();
         // 设置方向
-        boolean horizontal = mItvGravity == GRAVITY_LEFT || mItvGravity == GRAVITY_RIGHT;
-        boolean iconBefore = mItvGravity == GRAVITY_LEFT || mItvGravity == GRAVITY_TOP;
+        boolean horizontal = mItvLocation == LOCATION_LEFT || mItvLocation == LOCATION_RIGHT;
+        boolean iconBefore = mItvLocation == LOCATION_LEFT || mItvLocation == LOCATION_TOP;
         setOrientation(horizontal ? HORIZONTAL : VERTICAL);
         // 初始化图标
         mIconView = new AppCompatImageView(context);
@@ -114,11 +113,11 @@ public class IconTextView extends LinearLayout {
         setOnClickListener(null);
     }
 
-    public IconTextView setIconGravity(@Gravity int gravity) {
+    public IconTextView setIconLocation(@Location int location) {
         removeAllViews();
-        mItvGravity = gravity;
-        boolean horizontal = mItvGravity == GRAVITY_LEFT || mItvGravity == GRAVITY_RIGHT;
-        boolean iconBefore = mItvGravity == GRAVITY_LEFT || mItvGravity == GRAVITY_TOP;
+        mItvLocation = location;
+        boolean horizontal = mItvLocation == LOCATION_LEFT || mItvLocation == LOCATION_RIGHT;
+        boolean iconBefore = mItvLocation == LOCATION_LEFT || mItvLocation == LOCATION_TOP;
         // 重新添加控件，以改变位置
         mSpaceView.setLayoutParams(new ViewGroup.LayoutParams(horizontal ? mItvSpace : -1, !horizontal ? mItvSpace : -1));
         addView(iconBefore ? mIconView : mTextView);
@@ -127,12 +126,12 @@ public class IconTextView extends LinearLayout {
         return this;
     }
 
-    public IconTextView setSpace(float space) {
-        return setSpace(space, TypedValue.COMPLEX_UNIT_DIP);
+    public IconTextView setViewSpace(float space) {
+        return setViewSpace(space, TypedValue.COMPLEX_UNIT_DIP);
     }
 
-    public IconTextView setSpace(float space, int unit) {
-        boolean horizontal = mItvGravity == GRAVITY_LEFT || mItvGravity == GRAVITY_RIGHT;
+    public IconTextView setViewSpace(float space, int unit) {
+        boolean horizontal = mItvLocation == LOCATION_LEFT || mItvLocation == LOCATION_RIGHT;
         mItvSpace = (int) SizeUtils.applyDimension(space, unit);
         mSpaceView.setLayoutParams(new ViewGroup.LayoutParams(horizontal ? mItvSpace : -1, !horizontal ? mItvSpace : -1));
         return this;
@@ -209,8 +208,8 @@ public class IconTextView extends LinearLayout {
         return mTextView;
     }
 
-    public int getIconGravity() {
-        return mItvGravity;
+    public int getIconLocation() {
+        return mItvLocation;
     }
 
     @Override

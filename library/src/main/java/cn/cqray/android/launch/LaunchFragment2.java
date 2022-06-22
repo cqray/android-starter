@@ -52,7 +52,6 @@ public class LaunchFragment2 extends DialogFragment {
         }).launch(mIntent);
     }
 
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

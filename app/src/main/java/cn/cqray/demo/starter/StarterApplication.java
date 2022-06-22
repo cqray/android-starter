@@ -3,7 +3,6 @@ package cn.cqray.demo.starter;
 import android.app.Application;
 
 import com.github.ybq.android.spinkit.Style;
-import com.hjq.toast.ToastUtils;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -11,7 +10,6 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
 import cn.cqray.android.anim.DefaultHorizontalAnimator;
-import cn.cqray.android.anim.DefaultVerticalAnimator;
 import cn.cqray.android.state.EmptyAdapter;
 import cn.cqray.android.state.ErrorAdapter;
 
@@ -47,7 +45,5 @@ public class StarterApplication extends Application {
                 .build();
 
         Starter.getInstance().initialize(this, strategy);
-
-        ToastUtils.init(this);
     }
 }

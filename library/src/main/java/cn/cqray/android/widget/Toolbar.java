@@ -312,8 +312,8 @@ public class Toolbar extends RelativeLayout {
         return this;
     }
 
-    public Toolbar setBackSpace(float space) {
-        mBackView.setSpace(space);
+    public Toolbar setBackViewSpace(float space) {
+        mBackView.setViewSpace(space);
         return this;
     }
 
