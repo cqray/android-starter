@@ -283,12 +283,6 @@ public class Toolbar extends RelativeLayout {
     }
 
     @Override
-    public void setPadding(int left, int top, int right, int bottom) {}
-
-    @Override
-    public void setPaddingRelative(int start, int top, int end, int bottom) {}
-
-    @Override
     public void setGravity(int gravity) {}
 
     public Toolbar setPadding(float padding) {

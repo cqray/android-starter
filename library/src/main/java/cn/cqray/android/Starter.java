@@ -2,16 +2,10 @@ package cn.cqray.android;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import com.blankj.utilcode.util.Utils;
 
 import cn.cqray.android.app.SupportDispatcher;
-import cn.cqray.java.SparseArrayTypeAdapter;
-import cn.cqray.java.SparseBooleanArrayTypeAdapter;
-import cn.cqray.java.SparseIntArrayTypeAdapter;
-import cn.cqray.java.SparseLongArrayTypeAdapter;
-import cn.cqray.java.type.ExtraTypeManager;
 import lombok.experimental.Accessors;
 
 /**
@@ -64,7 +58,6 @@ public class Starter {
                         if (Application.class.isAssignableFrom(clazz)) {
                             mApplication = application;
                             mStarterStrategy = strategy;
-                            initJavaUtils();
                             Utils.init(application);
                             SupportDispatcher.initialize(application);
                             return;
@@ -76,13 +69,6 @@ public class Starter {
         // 不是在Application中初始化，则抛出异常信息。
         throw new RuntimeException("You must initialize Starter in class which extends Application.");
     }
-
-//    public Starter fragmentAnimator(FragmentAnimator animator) {
-//        if (animator != null) {
-//            mFragmentAnimator = animator;
-//        }
-//        return this;
-//    }
 
     public Application getApplication() {
         if (mApplication == null) {
@@ -97,15 +83,5 @@ public class Starter {
 
     public StarterStrategy getStarterStrategy() {
         return mStarterStrategy;
-    }
-
-    public void initJavaUtils() {
-
-        ExtraTypeManager.getInstance().addTypeAdapter(new SparseArrayTypeAdapter());
-        ExtraTypeManager.getInstance().addTypeAdapter(new SparseBooleanArrayTypeAdapter());
-        ExtraTypeManager.getInstance().addTypeAdapter(new SparseIntArrayTypeAdapter());
-        ExtraTypeManager.getInstance().addTypeAdapter(new SparseLongArrayTypeAdapter());
-
-        Log.e("数据", "chagndu:" + ExtraTypeManager.getInstance().getTypeAdapters().size());
     }
 }

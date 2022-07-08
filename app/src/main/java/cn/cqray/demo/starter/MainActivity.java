@@ -5,9 +5,6 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import cn.cqray.android.app.NavActivity;
-import cn.cqray.android.ui.multi.MultiItem;
-import cn.cqray.android.ui.multi.MultiTabActivity;
-import cn.cqray.java.traverse.Traverse;
 
 public class MainActivity extends NavActivity {
 

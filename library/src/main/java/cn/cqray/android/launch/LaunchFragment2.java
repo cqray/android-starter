@@ -44,9 +44,11 @@ public class LaunchFragment2 extends DialogFragment {
         }, new ActivityResultCallback<Intent>() {
             @Override
             public void onActivityResult(Intent result) {
-
-
-                Log.e("数据", "毁掉了|");
+                if (result == null) {
+                    Log.e("数据", "毁掉了11|");
+                } else {
+                    Log.e("数据", "毁掉了22|");
+                }
                 dismiss();
             }
         }).launch(mIntent);

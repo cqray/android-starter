@@ -1,7 +1,8 @@
 package cn.cqray.android.app;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 
 import java.util.ArrayList;
@@ -27,9 +28,8 @@ public class ObservableDelegate {
     private volatile Map<Object, List<Disposable>> mDisposableMap;
 
     public ObservableDelegate(@NonNull LifecycleOwner owner) {
-        owner.getLifecycle().addObserver(new DefaultLifecycleObserver() {
-            @Override
-            public void onDestroy(@NonNull LifecycleOwner owner) {
+        owner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
+            if (event == Lifecycle.Event.ON_DESTROY) {
                 // 释放资源
                 if (mCompositeDisposable != null) {
                     mCompositeDisposable.dispose();

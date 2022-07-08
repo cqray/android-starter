@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -85,5 +86,13 @@ public class ExceptionActivity extends SupportActivity {
         } else if (view.getId() == R.id._starter_divider2) {
             view.setVisibility(mThrowable == null ? View.GONE : View.VISIBLE);
         }
+    }
+
+    @Override
+    public boolean onBackPressedSupport() {
+        setResult(0, new Intent());
+        finish();
+        Log.e("数据", "我是66666");
+        return true;
     }
 }

@@ -8,7 +8,6 @@ import android.os.Looper;
 import android.view.View;
 
 import androidx.activity.OnBackPressedCallback;
-import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -67,15 +66,15 @@ public final class SupportDelegate {
         if (mProvider instanceof Fragment) {
             Fragment fragment = (Fragment) mProvider;
             FragmentActivity activity = fragment.requireActivity();
-            OnBackPressedDispatcher dispatcher = activity.getOnBackPressedDispatcher();
-            dispatcher.addCallback(fragment, new OnBackPressedCallback(true) {
+            mMainViewModel = new LifecycleViewModelProvider(activity).get(SupportViewModel.class);
+        } else {
+            FragmentActivity activity = (FragmentActivity) mProvider;
+            activity.getOnBackPressedDispatcher().addCallback(activity, new OnBackPressedCallback(true) {
                 @Override
                 public void handleOnBackPressed() {
                     mMainViewModel.onBackPressed();
                 }
             });
-            mMainViewModel = new LifecycleViewModelProvider(activity).get(SupportViewModel.class);
-        } else {
             mMainViewModel = new LifecycleViewModelProvider((AppCompatActivity) mProvider).get(SupportViewModel.class);
         }
     }
