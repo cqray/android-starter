@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
-import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
@@ -160,8 +159,8 @@ public class FullTextView extends androidx.appcompat.widget.AppCompatTextView {
                 } else if (ob instanceof SpanObject) {
                     Object span = ((SpanObject) ob).span;
                     if (span instanceof DynamicDrawableSpan) {
-                        int start = ((Spannable) text).getSpanStart(span);
-                        int end = ((Spannable) text).getSpanEnd(span);
+                        int start = ((Spanned) text).getSpanStart(span);
+                        int end = ((Spanned) text).getSpanEnd(span);
                         ((DynamicDrawableSpan) span).draw(canvas, text, start, end, (int) x, (int) top, (int) y, (int) bottom, getPaint());
                         realDrewWidth += width;
                     } else if (span instanceof BackgroundColorSpan) {
