@@ -8,6 +8,7 @@ import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.text.Spannable;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
@@ -159,7 +160,6 @@ public class FullTextView extends androidx.appcompat.widget.AppCompatTextView {
                 } else if (ob instanceof SpanObject) {
                     Object span = ((SpanObject) ob).span;
                     if (span instanceof DynamicDrawableSpan) {
-
                         int start = ((Spannable) text).getSpanStart(span);
                         int end = ((Spannable) text).getSpanEnd(span);
                         ((DynamicDrawableSpan) span).draw(canvas, text, start, end, (int) x, (int) top, (int) y, (int) bottom, getPaint());
@@ -225,6 +225,9 @@ public class FullTextView extends androidx.appcompat.widget.AppCompatTextView {
         if (cachedHeight > 0) {
             return cachedHeight;
         }
+        if (TextUtils.isEmpty(getText())) {
+            return -1;
+        }
         FontMetrics fontMetrics = getPaint().getFontMetrics();
         float obWidth = 0, obHeight = 0;
         float textSize = getTextSize();
@@ -257,8 +260,8 @@ public class FullTextView extends androidx.appcompat.widget.AppCompatTextView {
             } else if (ob instanceof SpanObject) {
                 Object span = ((SpanObject) ob).span;
                 if (span instanceof DynamicDrawableSpan) {
-                    int start = ((Spannable) text).getSpanStart(span);
-                    int end = ((Spannable) text).getSpanEnd(span);
+                    int start = ((Spanned) text).getSpanStart(span);
+                    int end = ((Spanned) text).getSpanEnd(span);
                     obWidth = ((DynamicDrawableSpan) span).getSize(getPaint(), text, start, end, mSpanFmInt);
                     obHeight = Math.abs(mSpanFmInt.top) + Math.abs(mSpanFmInt.bottom);
                     if (obHeight > lineHeight) {
@@ -395,11 +398,11 @@ public class FullTextView extends androidx.appcompat.widget.AppCompatTextView {
     private void calculateSpanList(CharSequence cs) {
         mItemList.clear();
         ArrayList<SpanObject> isList = new ArrayList<>();
-        if (cs instanceof Spannable) {
-            CharacterStyle[] spans = ((Spannable) cs).getSpans(0, cs.length(), CharacterStyle.class);
+        if (cs instanceof Spanned) {
+            CharacterStyle[] spans = ((Spanned) cs).getSpans(0, cs.length(), CharacterStyle.class);
             for (CharacterStyle span : spans) {
-                int start = ((Spannable) cs).getSpanStart(span);
-                int end = ((Spannable) cs).getSpanEnd(span);
+                int start = ((Spanned) cs).getSpanStart(span);
+                int end = ((Spanned) cs).getSpanEnd(span);
                 SpanObject so = new SpanObject();
                 so.span = span;
                 so.start = start;

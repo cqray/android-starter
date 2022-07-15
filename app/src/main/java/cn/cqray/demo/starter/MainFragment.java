@@ -2,6 +2,7 @@ package cn.cqray.demo.starter;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.SpannableString;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -25,8 +26,9 @@ public class MainFragment extends SupportFragment {
         super.onCreating(savedInstanceState);
         setNativeContentView(R.layout.activity_main);
 
+        CharSequence text = new SpannableString("123");
         FullTextView tv = findViewById(R.id.tv);
-
+        tv.setText(text);
 //        new StateDelegate().attachProvider(this);
 //
 //        StateDelegate.get(this).setBusy();
