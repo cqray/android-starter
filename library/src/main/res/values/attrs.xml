@@ -12,7 +12,7 @@
     </attr>
     <attr name="sActionSpace" format="dimension" />
 
-    <declare-styleable name="TextSpanView">
+    <declare-styleable name="FullTextView">
         <attr name="sUseDefault" format="boolean"/>
         <attr name="sParagraphSpacing" format="dimension"/>
     </declare-styleable>

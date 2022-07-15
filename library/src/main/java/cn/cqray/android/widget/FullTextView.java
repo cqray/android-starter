@@ -13,6 +13,7 @@ import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.DynamicDrawableSpan;
 import android.util.AttributeSet;
+
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -26,41 +27,41 @@ import cn.cqray.android.R;
  * 图文混排TextView，防止不满一行换行
  * @author Cqray
  */
-public class TextSpanView extends androidx.appcompat.widget.AppCompatTextView {
+public class FullTextView extends androidx.appcompat.widget.AppCompatTextView {
 
     /** 缓存测量过的数据 **/
     private static WeakHashMap<CharSequence, MeasuredData> sMeasuredData = new WeakHashMap<>();
     private static int sHashIndex = 0;
-    /** 存储当前文本内容，每个item为一行 **/
-    private ArrayList<Line> mContentList = new ArrayList<>();
     /** 段间距,-1为默认 **/
     private int mParagraphSpacing;
     /** 只有一行时的宽度 **/
     private int mOneLineWidth = -1;
     /** 已绘的行中最宽的一行的宽度 **/
     private float mLineWidthMax = -1;
-    /** 存储当前文本内容,每个item为一个字符或者一个SpanObject **/
-    private ArrayList<Object> mItemList = new ArrayList<>();
     /** 是否使用默认的TextView **/
-    private boolean mUseDefault;
+    private Boolean mUseDefault;
+    /** 存储当前文本内容，每个item为一行 **/
+    private ArrayList<Line> mContentList = new ArrayList<>();
+    /** 存储当前文本内容,每个item为一个字符或者一个SpanObject **/
+    private final ArrayList<Object> mItemList = new ArrayList<>();
     private final Rect mTextBackgroundColorRect = new Rect();
     private final Paint mTextBackgroundColorPaint = new Paint();
     /** 用于测量span高度 **/
     private final Paint.FontMetricsInt mSpanFmInt = new Paint.FontMetricsInt();
 
-    public TextSpanView(Context context) {
+    public FullTextView(Context context) {
         this(context, null);
     }
 
-    public TextSpanView(Context context, AttributeSet attrs) {
+    public FullTextView(Context context, AttributeSet attrs) {
         this(context, attrs, -1);
     }
 
-    public TextSpanView(Context context, AttributeSet attrs, int defStyle) {
+    public FullTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.TextSpanView);
-        mParagraphSpacing = ta.getDimensionPixelSize(R.styleable.TextSpanView_sParagraphSpacing, -1);
-        mUseDefault = ta.getBoolean(R.styleable.TextSpanView_sUseDefault, false);
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.FullTextView);
+        mParagraphSpacing = ta.getDimensionPixelSize(R.styleable.FullTextView_sParagraphSpacing, -1);
+        mUseDefault = ta.getBoolean(R.styleable.FullTextView_sUseDefault, false);
         ta.recycle();
         if (!mUseDefault) {
             calculateSpanList(getText());
@@ -193,7 +194,8 @@ public class TextSpanView extends androidx.appcompat.widget.AppCompatTextView {
     @Override
     public void setText(CharSequence text, BufferType type) {
         super.setText(text, type);
-        if (!mUseDefault) {
+        if (mUseDefault != null && !mUseDefault) {
+            // mUserDefault == null 代表还未初始化完成
             calculateSpanList(text);
         }
     }

@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar"/>
 
-    <cn.cqray.android.widget.TextSpanView
+    <cn.cqray.android.widget.FullTextView
         android:id="@+id/tv"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
