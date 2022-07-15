@@ -6,21 +6,24 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-public class LaunchFragment2 extends DialogFragment {
+/**
+ * 用于跳转的Fragment
+ * @author Cqray
+ */
+public class LaunchFragment extends DialogFragment {
 
     private Intent mIntent;
+    private ResultCallback mCallback;
 
-    public LaunchFragment2(Intent intent) {
+    public LaunchFragment(Intent intent) {
         mIntent = intent;
     }
 
@@ -28,29 +31,27 @@ public class LaunchFragment2 extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registerForActivityResult(new ActivityResultContract<Intent, Intent>() {
-
             @NonNull
             @Override
             public Intent createIntent(@NonNull Context context, Intent input) {
                 return input;
-                //Log.e("数据", GsonUtils.toJson(input.getComponent()));
-                //return new Intent(requireContext(), ExceptionActivity.class).putExtras(input);
             }
 
             @Override
             public Intent parseResult(int resultCode, @Nullable Intent intent) {
                 return intent;
             }
-        }, new ActivityResultCallback<Intent>() {
-            @Override
-            public void onActivityResult(Intent result) {
+        }, result -> {
+            if (mCallback != null) {
                 if (result == null) {
-                    Log.e("数据", "毁掉了11|");
+                    // 没有回调成功
+                    mCallback.onFail();
                 } else {
-                    Log.e("数据", "毁掉了22|");
+                    // 回调成功
+                    mCallback.onSucceed(result);
                 }
-                dismiss();
             }
+            dismiss();
         }).launch(mIntent);
     }
 

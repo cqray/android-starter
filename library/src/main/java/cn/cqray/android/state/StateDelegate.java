@@ -156,7 +156,8 @@ public class StateDelegate implements Serializable {
         // 隐藏所有状态控件
         for (int i = 0; i < mAdapters.size(); i++) {
             StateAdapter<?> adapter = mAdapters.valueAt(i);
-            if (adapter != null) {
+            if (adapter != null && state != ViewState.BUSY) {
+                // 忙碌状态时，之前界面可能为空或异常，所以不隐藏
                 adapter.hide();
             }
         }

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentFactory;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
@@ -16,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import cn.cqray.android.ui.multi.MultiFragmentAdapter;
@@ -42,7 +44,7 @@ public class MultiDelegate {
 
     private MultiDelegate(LifecycleOwner owner) {
         mLifecycleOwner = owner;
-        mFragments = new ArrayList<>();
+        mFragments = Collections.synchronizedList(new ArrayList<>());
     }
 
     /**
@@ -71,11 +73,22 @@ public class MultiDelegate {
      */
     public void loadMultiFragments(@IdRes int containerId, List<Fragment> fragments) {
         mContainerId = containerId;
+        mCurrentIndex = 0;
+        mFragments.clear();
         mFragments.addAll(fragments);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         for (int i = 0; i < fragments.size(); i++) {
-            ft.add(containerId, fragments.get(i));
-            ft.setMaxLifecycle(fragments.get(i), i == mCurrentIndex ? Lifecycle.State.RESUMED : Lifecycle.State.CREATED);
+            Fragment temp;
+            Fragment fragment = fragments.get(i);
+            // 发现历史Fragment并移除
+            String tag = fragments.get(i).getClass().getName() + "-" + i;
+            temp = getFragmentManager().findFragmentByTag(tag);
+            if (temp != null) {
+                ft.remove(temp);
+            }
+            // 添加新的Fragment
+            ft.add(containerId, fragment, tag);
+            ft.setMaxLifecycle(fragment, i == mCurrentIndex ? Lifecycle.State.RESUMED : Lifecycle.State.CREATED);
         }
         ft.commitAllowingStateLoss();
     }
@@ -106,6 +119,8 @@ public class MultiDelegate {
      */
     public void loadMultiFragments(@NonNull ViewPager2 vp, List<Fragment> fragments) {
         mViewPager = vp;
+        mCurrentIndex = 0;
+        mFragments.clear();
         mFragments.addAll(fragments);
         vp.setAdapter(getFragmentAdapter(mFragments));
         vp.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -173,6 +188,14 @@ public class MultiDelegate {
 
     /**
      * 添加Fragment界面
+     * @param cls Fragment类
+     */
+    public void addFragment(Class<? extends SupportProvider> cls) {
+        addFragment(instantiateFragments(new NavIntent(cls))[0]);
+    }
+
+    /**
+     * 添加Fragment界面
      * @param fragment Fragment
      */
     public void addFragment(Fragment fragment) {
@@ -192,10 +215,10 @@ public class MultiDelegate {
 
     /**
      * 移除指定的Fragment界面
-     * @param position 位置
+     * @param index 位置
      */
-    public void removeFragment(int position) {
-        Fragment fragment = mFragments.get(position);
+    public void removeFragment(int index) {
+        Fragment fragment = mFragments.get(index);
         removeFragment(fragment);
     }
 
@@ -252,7 +275,6 @@ public class MultiDelegate {
         mViewPager = null;
     }
 
-
     @NonNull
     public FragmentManager getFragmentManager() {
         if (mLifecycleOwner instanceof AppCompatActivity) {
@@ -294,14 +316,18 @@ public class MultiDelegate {
         }
     }
 
+    /**
+     * 生成Fragment列表
+     * @param intents 意图列表
+     */
     @NonNull
     private Fragment[] instantiateFragments(@NonNull NavIntent... intents) {
         Fragment[] fragments = new Fragment[intents.length];
         for (int i = 0; i < fragments.length; i++) {
-            NavIntent intent = intents[i];
-            fragments[i] = getFragmentManager().getFragmentFactory()
-                    .instantiate(requireActivity().getClassLoader(), intent.getToClass().getName());
-            fragments[i].setArguments(intent.getArguments());
+            String className = intents[i].getToClass().getName();
+            FragmentFactory fragmentFactory = getFragmentManager().getFragmentFactory();
+            fragments[i] = fragmentFactory.instantiate(requireActivity().getClassLoader(), className);
+            fragments[i].setArguments(intents[i].getArguments());
         }
         return fragments;
     }

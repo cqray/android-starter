@@ -18,7 +18,7 @@ import cn.cqray.android.app.SupportFragment;
  */
 public class MultiFragment extends SupportFragment {
 
-    private final MultiDelegate mMultiDelegate = new MultiDelegate(this);
+    public final MultiDelegate mMultiDelegate = new MultiDelegate(this);
 
     public void loadMultiFragments(@IdRes int containerId, Fragment... fragments) {
         mMultiDelegate.loadMultiFragments(containerId, fragments);
@@ -28,11 +28,10 @@ public class MultiFragment extends SupportFragment {
         mMultiDelegate.loadMultiFragments(containerId, intents);
     }
 
-    @SuppressWarnings("unchecked")
-    public void loadMultiFragments(@IdRes int containerId, @NonNull Class<? extends Fragment>... classes) {
+    public void loadMultiFragemts(@IdRes int containerId, @NonNull Class<? extends SupportProvider>... classes) {
         NavIntent[] intents = new NavIntent[classes.length];
         for (int i = 0; i < classes.length; i++) {
-            intents[i] = new NavIntent((Class<? extends SupportProvider>) classes[i]);
+            intents[i] = new NavIntent(classes[i]);
         }
         mMultiDelegate.loadMultiFragments(containerId, intents);
     }
@@ -45,8 +44,7 @@ public class MultiFragment extends SupportFragment {
         mMultiDelegate.loadMultiFragments(vp, intents);
     }
 
-    @SuppressWarnings("unchecked")
-    public void loadMultiFragments(ViewPager2 vp, @NonNull Class<? extends Fragment>... classes) {
+    public void loadMultiFragemts(ViewPager2 vp, @NonNull Class<? extends SupportProvider>... classes) {
         NavIntent[] intents = new NavIntent[classes.length];
         for (int i = 0; i < classes.length; i++) {
             intents[i] = new NavIntent((Class<? extends SupportProvider>) classes[i]);
@@ -54,16 +52,32 @@ public class MultiFragment extends SupportFragment {
         mMultiDelegate.loadMultiFragments(vp, intents);
     }
 
-    public void showFragment(int index) {
-        mMultiDelegate.showFragment(index);
+    public void showFragment(int position) {
+        mMultiDelegate.showFragment(position);
     }
 
     public void showFragment(Fragment fragment) {
         mMultiDelegate.showFragment(fragment);
     }
 
-    public void reset() {
-        mMultiDelegate.reset();
+    public void addFragment(NavIntent intent) {
+        mMultiDelegate.addFragment(intent);
+    }
+
+    public void addFragment(Class<? extends SupportProvider> cls) {
+        mMultiDelegate.addFragment(cls);
+    }
+
+    public void addFragment(Fragment fragment) {
+        mMultiDelegate.addFragment(fragment);
+    }
+
+    public void removeFragment(int index) {
+        mMultiDelegate.removeFragment(index);
+    }
+
+    public void removeFragment(Fragment fragment) {
+        mMultiDelegate.removeFragment(fragment);
     }
 
     public int getCurrentIndex() {

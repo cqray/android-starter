@@ -147,7 +147,7 @@ public class Launcher {
             Intent intent = new Intent(activity, target);
             intent.putExtras(mArguments);
             try {
-                new LaunchFragment2(intent).showNow(activity.getSupportFragmentManager(), target.getName());
+                new LaunchFragment(intent).showNow(activity.getSupportFragmentManager(), target.getName());
             } catch (Exception ignore) {}
         }
     }

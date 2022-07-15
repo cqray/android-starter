@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat;
 
 import com.blankj.utilcode.util.ConvertUtils;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
-import com.google.gson.Gson;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -229,8 +228,7 @@ public abstract class LineItem<T extends LineItem<T>> implements MultiItemEntity
             bais.close();
             return o;
         } catch (IOException | ClassNotFoundException ignored) {
-            Gson gson = new Gson();
-            return (T) gson.fromJson(gson.toJson(this), getClass());
+            throw new RuntimeException("Copy " + LineItem.class.getName() + " failed.");
         }
     }
 

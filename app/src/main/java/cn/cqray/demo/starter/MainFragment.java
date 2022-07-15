@@ -1,6 +1,7 @@
 package cn.cqray.demo.starter;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -34,12 +35,19 @@ public class MainFragment extends SupportFragment {
         //mToolbar.setVisibility(View.VISIBLE);
 //        setBusy();
 
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                setIdle();
-//            }
-//        }, 1500);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setIdle();
+            }
+        }, 3500);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setBusy();
+            }
+        }, 1500);
 //        setIdle();
 //        setEmpty("7777", "88888", "99999");
         findViewById(R.id.btn).setOnClickListener(v -> {
@@ -50,13 +58,14 @@ public class MainFragment extends SupportFragment {
         });
 
 
-        setBusy("123", "456");
-
         SmartRefreshLayout refreshLayout = findViewById(R.id.refresh_layout);
 
         getViewDelegate().getStateDelegate().attachLayout(refreshLayout);
 
+
+        setEmpty("123", "456");
 //        setHeaderFloating(false);
+
     }
 //
 //    @Override
