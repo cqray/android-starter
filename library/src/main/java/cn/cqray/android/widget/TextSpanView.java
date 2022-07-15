@@ -63,7 +63,7 @@ public class TextSpanView extends androidx.appcompat.widget.AppCompatTextView {
         mUseDefault = ta.getBoolean(R.styleable.TextSpanView_sUseDefault, false);
         ta.recycle();
         if (!mUseDefault) {
-            setSpanText(getText());
+            calculateSpanList(getText());
         }
     }
 
@@ -190,13 +190,26 @@ public class TextSpanView extends androidx.appcompat.widget.AppCompatTextView {
         }
     }
 
+    @Override
+    public void setText(CharSequence text, BufferType type) {
+        super.setText(text, type);
+        if (!mUseDefault) {
+            calculateSpanList(text);
+        }
+    }
+
+    public void setText(CharSequence text, boolean useDefault) {
+        mUseDefault = useDefault;
+        setText(text);
+    }
+
     public void setParagraphSpacing(int spacing) {
         mParagraphSpacing = spacing;
     }
 
     public void setUseDefault(boolean useDefault) {
         mUseDefault = useDefault;
-        requestLayout();
+        calculateSpanList(getText());
     }
 
     /**
@@ -377,11 +390,9 @@ public class TextSpanView extends androidx.appcompat.widget.AppCompatTextView {
         }
     }
 
-    public void setSpanText(CharSequence cs) {
+    private void calculateSpanList(CharSequence cs) {
         mItemList.clear();
-        mUseDefault = false;
         ArrayList<SpanObject> isList = new ArrayList<>();
-
         if (cs instanceof Spannable) {
             CharacterStyle[] spans = ((Spannable) cs).getSpans(0, cs.length(), CharacterStyle.class);
             for (CharacterStyle span : spans) {
@@ -447,7 +458,7 @@ public class TextSpanView extends androidx.appcompat.widget.AppCompatTextView {
 
     /** 存储测量好的一行数据 **/
     static class Line {
-        public ArrayList<Object> line = new ArrayList<Object>();
+        public ArrayList<Object> line = new ArrayList<>();
         public ArrayList<Integer> widthList = new ArrayList<>();
         public float height;
     }
