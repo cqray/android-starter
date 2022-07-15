@@ -17,8 +17,8 @@ import cn.cqray.android.state.ViewState;
 import cn.cqray.android.tip.TipDelegate;
 import cn.cqray.android.tip.TipProvider;
 import cn.cqray.android.widget.Toolbar;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 /**
  * 基础Activity
