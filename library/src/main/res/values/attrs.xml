@@ -12,6 +12,11 @@
     </attr>
     <attr name="sActionSpace" format="dimension" />
 
+    <declare-styleable name="TextSpanView">
+        <attr name="sUseDefault" format="boolean"/>
+        <attr name="sParagraphSpacing" format="dimension"/>
+    </declare-styleable>
+
     <!-- 标题栏 -->
     <declare-styleable name="Toolbar">
         <!-- 一般属性 -->

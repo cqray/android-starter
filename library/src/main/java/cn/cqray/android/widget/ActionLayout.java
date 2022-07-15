@@ -29,7 +29,6 @@ import androidx.core.widget.ImageViewCompat;
 import com.blankj.utilcode.util.SizeUtils;
 
 import cn.cqray.android.R;
-import cn.cqray.android.util.ExtUtils;
 import cn.cqray.android.util.ViewUtils;
 
 /**

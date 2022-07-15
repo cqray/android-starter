@@ -25,3 +25,20 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    appcompat_version = '1.3.1'
+    material_version = '1.2.1'
+    lifecycle_java8_version = '2.4.0'
+
+    rxjava_version = '3.1.5'
+    rxandroid_version = '3.0.0'
+    utilcodex_version = '1.30.6'
+
+    brvah_version = '3.0.4'
+    spinkit_version = '1.4.0'
+    smart_refresh_version = '2.0.3'
+
+    butterknife_version = '10.2.3'
+    lombok_version = '1.18.20'
+}

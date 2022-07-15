@@ -12,6 +12,7 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import cn.cqray.android.app.SupportFragment;
 import cn.cqray.android.exception.ExceptionActivity;
 import cn.cqray.android.launch.Launcher;
+import cn.cqray.android.widget.TextSpanView;
 
 /**
  * @author Admin
@@ -24,6 +25,7 @@ public class MainFragment extends SupportFragment {
         super.onCreating(savedInstanceState);
         setNativeContentView(R.layout.activity_main);
 
+        TextSpanView tv = findViewById(R.id.tv);
 
 //        new StateDelegate().attachProvider(this);
 //
