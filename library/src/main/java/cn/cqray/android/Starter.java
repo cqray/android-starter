@@ -6,6 +6,7 @@ import android.content.Context;
 import com.blankj.utilcode.util.Utils;
 
 import cn.cqray.android.app.SupportDispatcher;
+import lombok.Getter;
 import lombok.experimental.Accessors;
 
 /**
@@ -21,7 +22,7 @@ public class Starter {
 
     /** 反射所得Application **/
     private Application mApplication;
-    private StarterStrategy mStarterStrategy;
+    private @Getter StarterStrategy mStarterStrategy;
 
     private Starter() {}
 
@@ -79,9 +80,5 @@ public class Starter {
 
     public Context getContext() {
         return getApplication().getApplicationContext();
-    }
-
-    public StarterStrategy getStarterStrategy() {
-        return mStarterStrategy;
     }
 }

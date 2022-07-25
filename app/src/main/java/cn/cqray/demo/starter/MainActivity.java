@@ -4,6 +4,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.blankj.utilcode.util.GsonUtils;
+
+import java.util.List;
+
+import cn.cqray.android.api.ResponseData;
 import cn.cqray.android.app.NavActivity;
 
 public class MainActivity extends NavActivity {
@@ -28,6 +33,16 @@ public class MainActivity extends NavActivity {
 //        setNativeContentView(R.layout.test);
 //        getSupportDelegate().loadRootFragment(R.id.content, new NavIntent(MainFragment.class));
         loadRootFragment(MainFragment.class);
+
+        ResponseData<Integer> data = new ResponseData<>();
+
+//        Log.e("数据", "泛型：" + data.getGenericClass());
+
+        ResponseData<List<Object>> responseData = GsonUtils.fromJson(
+                "{\"code\":200,\"msg\":\"请求成功\",\"data\":[{\"id\":80,\"name\":\"10kV线路\"},{\"id\":727,\"name\":\"300KV线路\"},{\"id\":755,\"name\":\"青海内网驱鸟器测试\"}]}",
+                GsonUtils.getType(ResponseData.class, GsonUtils.getListType(Object.class))
+        );
+//
 //
 //
 //        Log.e("数据", "7777");

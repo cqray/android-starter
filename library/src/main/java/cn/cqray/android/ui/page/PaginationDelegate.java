@@ -16,8 +16,11 @@ import java.util.List;
 
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
+import cn.cqray.android.api.ResponseData;
 import cn.cqray.android.app.ViewProvider;
 import cn.cqray.android.state.StateDelegate;
+import cn.cqray.android.tip.TipDelegate;
+import cn.cqray.android.tip.TipProvider;
 
 /**
  * 分页委托
@@ -48,6 +51,8 @@ public class PaginationDelegate<T> {
     /** 状态管理委托 **/
     private final StateDelegate mStateDelegate;
 
+    private final TipDelegate mTipDelegate;
+
     public PaginationDelegate(FragmentActivity activity) {
         initPageInfo(activity);
         initDataObserver(activity);
@@ -56,6 +61,7 @@ public class PaginationDelegate<T> {
         } else {
             mStateDelegate = new StateDelegate(activity);
         }
+        mTipDelegate = activity instanceof TipProvider ? ((TipProvider) activity).getTipDelegate() : new TipDelegate();
     }
 
     public PaginationDelegate(Fragment fragment) {
@@ -66,6 +72,7 @@ public class PaginationDelegate<T> {
         } else {
             mStateDelegate = new StateDelegate(fragment);
         }
+        mTipDelegate = fragment instanceof TipProvider ? ((TipProvider) fragment).getTipDelegate() : new TipDelegate();
     }
 
     private void initPageInfo(LifecycleOwner owner) {
@@ -226,9 +233,26 @@ public class PaginationDelegate<T> {
         mEmptyText = text;
     }
 
+    /**
+     * 设置网络请求数据集
+     * @param data 数据集
+     */
     public void finish(List<T> data) {
         check();
         mData.setValue(data);
+    }
+
+    /**
+     * 设置网络请求数据集
+     * @param data 数据集
+     */
+    public void finish(@NonNull ResponseData<List<T>> data) {
+        check();
+        mData.setValue(data.data);
+        if (!data.isSucceed()) {
+            // 请求失败，显示异常信息
+            mTipDelegate.showError(data.message);
+        }
     }
 
     public void finishWithException(Throwable throwable) {

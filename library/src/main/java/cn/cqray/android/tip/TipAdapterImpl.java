@@ -3,6 +3,7 @@ package cn.cqray.android.tip;
 import androidx.annotation.Nullable;
 
 import com.blankj.utilcode.util.ToastUtils;
+
 /**
  * 提示适配器实现
  * @author Cqray

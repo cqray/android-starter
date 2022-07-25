@@ -7,5 +7,9 @@ package cn.cqray.android.tip;
  */
 public interface TipProvider {
 
+    /**
+     * 获取提示操作委托
+     * @return TipDelegate
+     */
     TipDelegate getTipDelegate();
 }

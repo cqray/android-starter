@@ -58,6 +58,8 @@ dependencies {
     // RxJava
     api "io.reactivex.rxjava3:rxjava:$rxjava_version"
     api "io.reactivex.rxjava3:rxandroid:$rxandroid_version"
+    // Json格式化
+    api "com.google.code.gson:gson:$gson_version"
     // ButterKnife工具
     compileOnly "com.jakewharton:butterknife:$butterknife_version"
     // Lombok框架

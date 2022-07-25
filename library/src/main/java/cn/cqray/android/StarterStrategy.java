@@ -11,6 +11,10 @@ import androidx.core.content.ContextCompat;
 import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.Utils;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import cn.cqray.android.anim.DefaultVerticalAnimator;
 import cn.cqray.android.anim.FragmentAnimator;
 import cn.cqray.android.state.BusyAdapter;
@@ -115,6 +119,9 @@ public class StarterStrategy {
     private @Builder.Default int defaultStartPageNum = 1;
     /** 默认分页大小 **/
     private @Builder.Default int defaultPageSize = 20;
+
+    private @Builder.Default @NonNull String responseDataFailCode = "0";
+    private @Builder.Default @NonNull List<String> responseDataSucceedCode = Collections.singletonList("200");
 
     public synchronized Drawable getActivityBackground() {
         if (activityBackground == null && activityBackgroundRes != 0) {
