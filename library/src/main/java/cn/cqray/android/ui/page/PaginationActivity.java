@@ -2,6 +2,7 @@ package cn.cqray.android.ui.page;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import cn.cqray.android.R;
 import cn.cqray.android.app.SupportActivity;
+import cn.cqray.android.extra.ResponseData;
 
 /**
  * 分页Activity
@@ -85,5 +87,21 @@ public abstract class PaginationActivity<T> extends SupportActivity {
      */
     public void finish(List<T> data) {
         mPaginationDelegate.finish(data);
+    }
+
+    /**
+     * 数据请求结束
+     * @param data 数据
+     */
+    public void finish(@NonNull ResponseData<List<T>> data) {
+        mPaginationDelegate.finish(data);
+    }
+
+    /**
+     * 数据请求结束
+     * @param throwable 异常
+     */
+    public void finishWithException(Throwable throwable) {
+        mPaginationDelegate.finishWithException(throwable);
     }
 }
