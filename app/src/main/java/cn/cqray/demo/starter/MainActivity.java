@@ -1,14 +1,12 @@
 package cn.cqray.demo.starter;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.util.SparseArray;
 
 import com.blankj.utilcode.util.GsonUtils;
 
 import java.util.List;
 
-import cn.cqray.android.api.ResponseData;
+import cn.cqray.android.extra.ResponseData;
 import cn.cqray.android.app.NavActivity;
 
 public class MainActivity extends NavActivity {
