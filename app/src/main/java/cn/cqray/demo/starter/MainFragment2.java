@@ -1,5 +1,6 @@
 package cn.cqray.demo.starter;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -25,7 +26,10 @@ public class MainFragment2 extends PaginationFragment<String> {
     public void onCreating(@Nullable Bundle savedInstanceState) {
         super.onCreating(savedInstanceState);
         mToolbar.setTitle("测试列表");
+        mToolbar.setBackgroundColor(Color.RED);
         mPaginationDelegate.setPaginationEnable(false);
+
+        mPaginationDelegate.finish(null);
 //        setBusy("123", "456");
     }
 
@@ -69,6 +73,5 @@ public class MainFragment2 extends PaginationFragment<String> {
 
     @Override
     public void onEnterAnimEnd() {
-        finish(null);
     }
 }

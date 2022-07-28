@@ -107,8 +107,8 @@ public abstract class PaginationFragment<T> extends SupportFragment {
      * 数据请求结束
      * @param data 数据
      */
-    public void finish(@NonNull ResponseData<List<T>> data) {
-        mPaginationDelegate.finish(data);
+    public void finishWithResponse(ResponseData<List<T>> data) {
+        mPaginationDelegate.finishWithResponse(data);
     }
 
     /**

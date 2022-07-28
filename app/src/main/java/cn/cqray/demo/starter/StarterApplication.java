@@ -1,6 +1,8 @@
 package cn.cqray.demo.starter;
 
 import android.app.Application;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 
 import com.github.ybq.android.spinkit.Style;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
@@ -38,6 +40,7 @@ public class StarterApplication extends Application {
                 .toolbarDividerHeight(2)
                 .toolbarBackIconRes(R.drawable.def_back_common_light)
                 .toolbarTitleCenter(true)
+                .toolbarBackground(new ColorDrawable(Color.CYAN))
                 .fragmentBackgroundRes(R.color.background)
                 .busyAdapter(new MyBusyAdapter().setSpinStyle(Style.DOUBLE_BOUNCE))
                 .emptyAdapter(new EmptyAdapter().setImageResource(R.drawable.ic_no_data_search))

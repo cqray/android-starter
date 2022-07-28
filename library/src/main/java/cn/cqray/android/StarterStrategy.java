@@ -9,9 +9,9 @@ import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
 
 import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.Utils;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -128,7 +128,7 @@ public class StarterStrategy {
             Context context = Starter.getInstance().getContext();
             activityBackground = ContextCompat.getDrawable(context, activityBackgroundRes);
         }
-        return activityBackground;
+        return ImageUtils.bytes2Drawable(ImageUtils.drawable2Bytes(activityBackground));
     }
 
     public synchronized Drawable getFragmentBackground() {
@@ -136,7 +136,7 @@ public class StarterStrategy {
             Context context = Starter.getInstance().getContext();
             fragmentBackground = ContextCompat.getDrawable(context, fragmentBackgroundRes);
         }
-        return fragmentBackground;
+        return ImageUtils.bytes2Drawable(ImageUtils.drawable2Bytes(fragmentBackground));
     }
 
     public synchronized Drawable getToolbarBackground() {
@@ -144,11 +144,10 @@ public class StarterStrategy {
             Context context = Starter.getInstance().getContext();
             toolbarBackground = ContextCompat.getDrawable(context, toolbarBackgroundRes);
         }
-
         if (toolbarBackground == null) {
             toolbarBackground = new ColorDrawable(ColorUtils.getColor(R.color.colorPrimary));
         }
-        return toolbarBackground;
+        return ImageUtils.bytes2Drawable(ImageUtils.drawable2Bytes(toolbarBackground));
     }
 
     public synchronized Drawable getToolbarBackIcon() {
@@ -159,7 +158,7 @@ public class StarterStrategy {
         if (toolbarBackIcon == null) {
             toolbarBackIcon = ContextCompat.getDrawable(Utils.getApp(), R.drawable.def_back_material_light);
         }
-        return toolbarBackIcon;
+        return ImageUtils.bytes2Drawable(ImageUtils.drawable2Bytes(toolbarBackIcon));
     }
 
 }

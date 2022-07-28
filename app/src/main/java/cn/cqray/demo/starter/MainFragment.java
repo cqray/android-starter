@@ -37,28 +37,12 @@ public class MainFragment extends SupportFragment {
         //mToolbar.setTitleText("车时标题777777");
         //mToolbar.setActionText(0, "确定");
         //mToolbar.setVisibility(View.VISIBLE);
-//        setBusy();
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setIdle();
-            }
-        }, 3500);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setBusy();
-            }
-        }, 1500);
-//        setIdle();
-//        setEmpty("7777", "88888", "99999");
         findViewById(R.id.btn).setOnClickListener(v -> {
-            //startWithPop(MainFragment2.class, MainFragment.class);
+            //start(MainFragment2.class);
 
             //startActivity(new Intent(requireContext(), ExceptionActivity.class));
-            Launcher.with(this).launch(ExceptionActivity.class);
+            Launcher.with(this).launch(MainActivity2.class);
         });
 
 

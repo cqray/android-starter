@@ -246,10 +246,10 @@ public class PaginationDelegate<T> {
      * 设置网络请求数据集
      * @param data 数据集
      */
-    public void finish(@NonNull ResponseData<List<T>> data) {
+    public void finishWithResponse(ResponseData<List<T>> data) {
         check();
-        mData.setValue(data.data);
-        if (!data.isSucceed()) {
+        mData.setValue(data == null ? null : data.data);
+        if (data != null && !data.isSucceed()) {
             // 请求失败，显示异常信息
             mTipDelegate.showError(data.message);
         }

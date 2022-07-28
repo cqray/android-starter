@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -95,6 +96,8 @@ public class Toolbar extends RelativeLayout {
         super.onAttachedToWindow();
         mLifecycleRegistry.setCurrentState(Lifecycle.State.RESUMED);
         MaterialShapeUtils.setParentAbsoluteElevation(this);
+
+        Log.e("数据", "666666666");
     }
 
     @Override
@@ -119,6 +122,7 @@ public class Toolbar extends RelativeLayout {
         // 设置标题栏背景
         int primaryColor = ContextCompat.getColor(context, R.color.colorPrimary);
         Drawable background = getBackground() == null ? new ColorDrawable(primaryColor) : getBackground();
+        Log.e("数据", "555555");
         ViewCompat.setBackground(this, createMaterialShapeDrawableBackground(background));
         // 其他属性
         mTitleCenterData.setValue(mTitleCenter);
@@ -126,6 +130,12 @@ public class Toolbar extends RelativeLayout {
         mUseRipple.setValue(useRipple);
         mPadding.setValue(padding);
         setElevation(elevation);
+    }
+
+    @Override
+    public void setBackgroundColor(int color) {
+        super.setBackgroundColor(color);
+        Log.e("数据", "33333");
     }
 
     private void initToolbarBack(AttributeSet attrs) {
