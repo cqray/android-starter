@@ -30,6 +30,7 @@
     java.lang.Object readResolve();
 }
 
+# SmartRefreshLayout保留指定字段，因为代码中用到了反射
 -keepclassmembers class com.scwang.smart.refresh.layout.SmartRefreshLayout {
     protected boolean mEnableLoadMore;
     protected boolean mEnableRefresh;
@@ -48,3 +49,24 @@
     @butterknife.* <methods>;
 }
 -dontwarn butterknife.internal.**
+
+##---------------开始：Gson的proguard配置----------
+-keepattributes Signature
+-keepattributes *Annotation*
+# Gson specific classes
+-dontwarn sun.misc.**
+-keep class com.google.gson.stream.** { *; }
+#防止proguard从TypeAdapter、TypeAdapterFactory、，
+#JsonSerializer、JsonDeserializer实例（因此可以在@JsonAdapter中使用）
+-keep class * extends com.google.gson.TypeAdapter
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+# 防止R8将数据对象成员始终保留为null
+-keepclassmembers,allowobfuscation class * {
+  @com.google.gson.annotations.SerializedName <fields>;
+}
+# 在R8版本3.0及更高版本中保留TypeToken及其子类的通用签名。
+-keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
+-keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
+##---------------结束：Gson的proguard配置----------
