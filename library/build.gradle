@@ -8,7 +8,7 @@ android {
         minSdkVersion 16
         //noinspection OldTargetApi
         targetSdkVersion 30
-        versionCode 47
+        versionCode 58
         versionName createVersionName(versionCode)
 
         consumerProguardFiles "consumer-rules.pro"

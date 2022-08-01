@@ -2,7 +2,6 @@ package cn.cqray.android.ui.page;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,7 +13,7 @@ import java.util.List;
 
 import cn.cqray.android.R;
 import cn.cqray.android.app.SupportActivity;
-import cn.cqray.android.extra.ResponseData;
+import cn.cqray.android.entity.ResponseData;
 
 /**
  * 分页Activity

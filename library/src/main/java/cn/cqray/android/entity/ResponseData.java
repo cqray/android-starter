@@ -1,9 +1,8 @@
-package cn.cqray.android.extra;
+package cn.cqray.android.entity;
 
 import androidx.annotation.NonNull;
-
 import com.google.gson.annotations.SerializedName;
-
+import java.io.Serializable;
 import java.util.List;
 
 import cn.cqray.android.Starter;
@@ -14,7 +13,7 @@ import lombok.Getter;
  * @author Cqray
  */
 @Getter
-public class ResponseData<T>  {
+public class ResponseData<T> implements Serializable {
 
     @SerializedName(value = "code",alternate = {"ret", "error_code"})
     public String code;

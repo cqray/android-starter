@@ -6,7 +6,7 @@ import com.blankj.utilcode.util.GsonUtils;
 
 import java.util.List;
 
-import cn.cqray.android.extra.ResponseData;
+import cn.cqray.android.entity.ResponseData;
 import cn.cqray.android.app.NavActivity;
 
 public class MainActivity extends NavActivity {
