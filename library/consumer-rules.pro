@@ -28,6 +28,7 @@
     private void readObject(java.io.ObjectInputStream);
     java.lang.Object writeReplace();
     java.lang.Object readResolve();
+    <fields>;
 }
 
 # SmartRefreshLayout保留指定字段，因为代码中用到了反射
