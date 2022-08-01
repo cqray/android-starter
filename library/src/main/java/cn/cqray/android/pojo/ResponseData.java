@@ -1,4 +1,4 @@
-package cn.cqray.android.entity;
+package cn.cqray.android.pojo;
 
 import androidx.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;

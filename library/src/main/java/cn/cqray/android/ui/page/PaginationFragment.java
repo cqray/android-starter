@@ -13,7 +13,7 @@ import java.util.List;
 
 import cn.cqray.android.R;
 import cn.cqray.android.app.SupportFragment;
-import cn.cqray.android.entity.ResponseData;
+import cn.cqray.android.pojo.ResponseData;
 import lombok.Getter;
 
 /**

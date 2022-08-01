@@ -16,7 +16,7 @@ import java.util.List;
 
 import cn.cqray.android.Starter;
 import cn.cqray.android.StarterStrategy;
-import cn.cqray.android.entity.ResponseData;
+import cn.cqray.android.pojo.ResponseData;
 import cn.cqray.android.app.ViewProvider;
 import cn.cqray.android.state.StateDelegate;
 import cn.cqray.android.tip.TipDelegate;
