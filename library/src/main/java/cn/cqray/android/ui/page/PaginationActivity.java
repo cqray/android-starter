@@ -13,7 +13,7 @@ import java.util.List;
 
 import cn.cqray.android.R;
 import cn.cqray.android.app.SupportActivity;
-import cn.cqray.android.pojo.ResponseData;
+import cn.cqray.android.object.ResponseData;
 
 /**
  * 分页Activity
