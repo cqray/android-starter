@@ -5,13 +5,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <cn.cqray.android.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar"
+        android:visibility="gone"/>
+
     <com.google.android.material.tabs.TabLayout
         android:id="@id/starter_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tabbed"
         android:background="@color/foreground"
-        app:tabRippleColor="@color/transparent"
-        app:tabIndicatorFullWidth="false"/>
+        app:tabIndicatorFullWidth="false"
+        app:tabRippleColor="@color/transparent" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@id/starter_content_layout"
