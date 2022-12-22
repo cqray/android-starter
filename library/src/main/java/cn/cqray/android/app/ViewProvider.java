@@ -7,6 +7,8 @@ package cn.cqray.android.app;
  */
 public interface ViewProvider {
 
+
+
     /**
      * 获取委托实例
      * @return 委托实例
