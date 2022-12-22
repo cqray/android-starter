@@ -9,7 +9,7 @@ import java.util.List;
 
 import cn.cqray.android.app.SupportProvider;
 import cn.cqray.android.app.MultiDelegate;
-import cn.cqray.android.app.NavIntent;
+import cn.cqray.android.app.GetIntent;
 import cn.cqray.android.app.SupportFragment;
 
 /**
@@ -24,14 +24,14 @@ public class MultiFragment extends SupportFragment {
         mMultiDelegate.loadMultiFragments(containerId, fragments);
     }
 
-    public void loadMultiFragments(@IdRes int containerId, NavIntent... intents) {
+    public void loadMultiFragments(@IdRes int containerId, GetIntent... intents) {
         mMultiDelegate.loadMultiFragments(containerId, intents);
     }
 
     public void loadMultiFragemts(@IdRes int containerId, @NonNull Class<? extends SupportProvider>... classes) {
-        NavIntent[] intents = new NavIntent[classes.length];
+        GetIntent[] intents = new GetIntent[classes.length];
         for (int i = 0; i < classes.length; i++) {
-            intents[i] = new NavIntent(classes[i]);
+            intents[i] = new GetIntent(classes[i]);
         }
         mMultiDelegate.loadMultiFragments(containerId, intents);
     }
@@ -40,14 +40,14 @@ public class MultiFragment extends SupportFragment {
         mMultiDelegate.loadMultiFragments(vp, fragments);
     }
 
-    public void loadMultiFragments(ViewPager2 vp, NavIntent... intents) {
+    public void loadMultiFragments(ViewPager2 vp, GetIntent... intents) {
         mMultiDelegate.loadMultiFragments(vp, intents);
     }
 
     public void loadMultiFragemts(ViewPager2 vp, @NonNull Class<? extends SupportProvider>... classes) {
-        NavIntent[] intents = new NavIntent[classes.length];
+        GetIntent[] intents = new GetIntent[classes.length];
         for (int i = 0; i < classes.length; i++) {
-            intents[i] = new NavIntent((Class<? extends SupportProvider>) classes[i]);
+            intents[i] = new GetIntent((Class<? extends SupportProvider>) classes[i]);
         }
         mMultiDelegate.loadMultiFragments(vp, intents);
     }
@@ -60,7 +60,7 @@ public class MultiFragment extends SupportFragment {
         mMultiDelegate.showFragment(fragment);
     }
 
-    public void addFragment(NavIntent intent) {
+    public void addFragment(GetIntent intent) {
         mMultiDelegate.addFragment(intent);
     }
 

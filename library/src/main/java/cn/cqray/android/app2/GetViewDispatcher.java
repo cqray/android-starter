@@ -54,19 +54,19 @@ public class GetViewDispatcher {
         application.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
-//                if (activity instanceof GetProvider) {
-//                    activity.getIntent().putExtra("activity:isTranslucentOrFloating", isTranslucentOrFloating(activity));
-//                    SupportDelegate.get((SupportProvider) activity).onCreated();
-//                    new SupportFragmentCallbacks((AppCompatActivity) activity);
-//                }
+                if (activity instanceof GetProvider) {
+                    activity.getIntent().putExtra("activity:isTranslucentOrFloating", isTranslucentOrFloating(activity));
+                    GetDelegate.get((GetProvider) activity).onCreated();
+                    new GetFragmentCallbacks((AppCompatActivity) activity);
+                }
                 hookOrientation(activity);
             }
 
             @Override
             public void onActivityPostCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
-//                if (activity instanceof SupportProvider) {
-//                    SupportDelegate.get((SupportProvider) activity).onViewCreated();
-//                }
+                if (activity instanceof GetProvider) {
+                    GetDelegate.get((GetProvider) activity).onViewCreated();
+                }
                 // 自动隐藏键盘
                 autoHideKeyboard(activity);
             }
@@ -88,9 +88,9 @@ public class GetViewDispatcher {
 
             @Override
             public void onActivityDestroyed(@NonNull Activity activity) {
-//                if (activity instanceof SupportProvider) {
-//                    SupportDelegate.get((SupportProvider) activity).onDestroyed();
-//                }
+                if (activity instanceof GetProvider) {
+                    GetDelegate.get((GetProvider) activity).onDestroyed();
+                }
             }
         });
     }
@@ -167,17 +167,17 @@ public class GetViewDispatcher {
         @Override
         public void onFragmentCreated(@NonNull FragmentManager fm, @NonNull Fragment f, @Nullable Bundle savedInstanceState) {
             super.onFragmentCreated(fm, f, savedInstanceState);
-//            if (f instanceof SupportProvider) {
-//                SupportDelegate.get((SupportProvider) f).onCreated();
-//            }
+            if (f instanceof GetProvider) {
+                GetDelegate.get((GetProvider) f).onCreated();
+            }
         }
 
         @Override
         public void onFragmentViewCreated(@NonNull FragmentManager fm, @NonNull Fragment f, @NonNull View v, @Nullable Bundle savedInstanceState) {
             super.onFragmentViewCreated(fm, f, v, savedInstanceState);
-//            if (f instanceof SupportProvider) {
-//                SupportDelegate.get((SupportProvider) f).onViewCreated();
-//            }
+            if (f instanceof GetProvider) {
+                GetDelegate.get((GetProvider) f).onViewCreated();
+            }
             // 自动隐藏键盘
             autoHideKeyboard(f);
         }
@@ -185,9 +185,9 @@ public class GetViewDispatcher {
         @Override
         public void onFragmentDestroyed(@NonNull FragmentManager fm, @NonNull Fragment f) {
             super.onFragmentDestroyed(fm, f);
-//            if (f instanceof SupportProvider) {
-//                SupportDelegate.get((SupportProvider) f).onDestroyed();
-//            }
+            if (f instanceof GetProvider) {
+                GetDelegate.get((GetProvider) f).onDestroyed();
+            }
         }
     }
 

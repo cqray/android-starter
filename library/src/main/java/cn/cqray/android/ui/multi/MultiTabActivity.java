@@ -13,7 +13,7 @@ import java.util.List;
 
 import cn.cqray.android.R;
 import cn.cqray.android.app.MultiDelegate;
-import cn.cqray.android.app.NavIntent;
+import cn.cqray.android.app.GetIntent;
 import cn.cqray.android.app.SupportActivity;
 
 /**
@@ -56,7 +56,7 @@ public class MultiTabActivity extends SupportActivity {
     public void loadMultiFragments(@NonNull MultiItem... items) {
         reset();
         mTabLayout.removeAllTabs();
-        NavIntent[] intents = new NavIntent[items.length];
+        GetIntent[] intents = new GetIntent[items.length];
         for (int i = 0; i < items.length; i++) {
             intents[i] = items[i].getIntent();
             MultiItem ti = items[i];

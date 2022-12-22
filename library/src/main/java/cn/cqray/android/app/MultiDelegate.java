@@ -52,7 +52,7 @@ public class MultiDelegate {
      * @param containerId 容器Id
      * @param intents 意图列表
      */
-    public void loadMultiFragments(@IdRes int containerId, NavIntent... intents) {
+    public void loadMultiFragments(@IdRes int containerId, GetIntent... intents) {
         Fragment[] fragments = instantiateFragments(intents);
         loadMultiFragments(containerId, fragments);
     }
@@ -98,7 +98,7 @@ public class MultiDelegate {
      * @param vp ViewPager2容器
      * @param intents 意图列表
      */
-    public void loadMultiFragments(@NonNull ViewPager2 vp, NavIntent... intents) {
+    public void loadMultiFragments(@NonNull ViewPager2 vp, GetIntent... intents) {
         Fragment[] fragments = instantiateFragments(intents);
         loadMultiFragments(vp, fragments);
     }
@@ -182,7 +182,7 @@ public class MultiDelegate {
      * 添加Fragment界面
      * @param intent 意图
      */
-    public void addFragment(NavIntent intent) {
+    public void addFragment(GetIntent intent) {
         addFragment(instantiateFragments(intent)[0]);
     }
 
@@ -191,7 +191,7 @@ public class MultiDelegate {
      * @param cls Fragment类
      */
     public void addFragment(Class<? extends SupportProvider> cls) {
-        addFragment(instantiateFragments(new NavIntent(cls))[0]);
+        addFragment(instantiateFragments(new GetIntent(cls))[0]);
     }
 
     /**
@@ -321,7 +321,7 @@ public class MultiDelegate {
      * @param intents 意图列表
      */
     @NonNull
-    private Fragment[] instantiateFragments(@NonNull NavIntent... intents) {
+    private Fragment[] instantiateFragments(@NonNull GetIntent... intents) {
         Fragment[] fragments = new Fragment[intents.length];
         for (int i = 0; i < fragments.length; i++) {
             String className = intents[i].getToClass().getName();

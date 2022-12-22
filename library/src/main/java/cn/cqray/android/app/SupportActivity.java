@@ -151,22 +151,22 @@ public class SupportActivity extends AppCompatActivity implements ViewProvider, 
     }
 
     public void start(Class<? extends SupportProvider> to) {
-        mSupportDelegate.start(new NavIntent(to));
+        mSupportDelegate.start(new GetIntent(to));
     }
 
     public void startWithPop(Class<? extends SupportProvider> to, Class<? extends SupportProvider> popTo) {
-        NavIntent intent = new NavIntent(to);
+        GetIntent intent = new GetIntent(to);
         intent.setPopTo(popTo, true);
         mSupportDelegate.start(intent);
     }
 
     public void startWithPop(Class<? extends SupportProvider> to, Class<? extends SupportProvider> popTo, boolean inclusive) {
-        NavIntent intent = new NavIntent(to);
+        GetIntent intent = new GetIntent(to);
         intent.setPopTo(popTo, inclusive);
         mSupportDelegate.start(intent);
     }
 
-    public void start(NavIntent intent) {
+    public void start(GetIntent intent) {
         mSupportDelegate.start(intent);
     }
 

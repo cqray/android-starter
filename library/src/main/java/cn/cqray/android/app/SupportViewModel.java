@@ -124,7 +124,7 @@ public final class SupportViewModel extends LifecycleViewModel {
      * @param intent intent对象
      */
     @NonNull
-    public Fragment generateFragment(@NonNull NavIntent intent) {
+    public Fragment generateFragment(@NonNull GetIntent intent) {
         // Fragment管理器
         FragmentManager fm = mActivity.getSupportFragmentManager();
         // Fragment工厂
@@ -182,7 +182,7 @@ public final class SupportViewModel extends LifecycleViewModel {
      * @param containerId 容器ID
      * @param intent NavIntent
      */
-    public void loadRootFragment(@IdRes int containerId, NavIntent intent) {
+    public void loadRootFragment(@IdRes int containerId, GetIntent intent) {
         mContainerId = containerId;
         start(intent);
     }
@@ -191,7 +191,7 @@ public final class SupportViewModel extends LifecycleViewModel {
      * 启动Fragment
      * @param intent NavIntent
      */
-    public void start(@NonNull NavIntent intent) {
+    public void start(@NonNull GetIntent intent) {
         // 未设置布局ID
         if (mContainerId == 0) {
             ExceptionDispatcher.dispatchStarterThrowable(
@@ -346,7 +346,7 @@ public final class SupportViewModel extends LifecycleViewModel {
      * @param intent 启动传参
      */
     @NonNull
-    private FragmentAnimator getFragmentAnimator(@NonNull Fragment fragment, @NonNull NavIntent intent) {
+    private FragmentAnimator getFragmentAnimator(@NonNull Fragment fragment, @NonNull GetIntent intent) {
         // 优先集最高的Fragment动画
         FragmentAnimator fa = intent.getFragmentAnimator();
         // Fragment自定义动画

@@ -113,7 +113,7 @@ public final class SupportDelegate {
      * @param containerId 容器ID
      * @param intent NavIntent
      */
-    public void loadRootFragment(@IdRes int containerId, NavIntent intent) {
+    public void loadRootFragment(@IdRes int containerId, GetIntent intent) {
         if (isViewModelReady()) {
             mMainViewModel.loadRootFragment(containerId, intent);
         }
@@ -123,7 +123,7 @@ public final class SupportDelegate {
      * 启动Fragment
      * @param intent NavIntent
      */
-    public void start(@NonNull NavIntent intent) {
+    public void start(@NonNull GetIntent intent) {
         if (isViewModelReady()) {
             mMainViewModel.start(intent);
         }

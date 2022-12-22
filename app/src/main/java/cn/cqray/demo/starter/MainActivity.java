@@ -1,11 +1,13 @@
 package cn.cqray.demo.starter;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.blankj.utilcode.util.GsonUtils;
 
 import java.util.List;
 
+import cn.cqray.android.app2.GetViewModelProvider;
 import cn.cqray.android.object.ResponseData;
 import cn.cqray.android.app.NavActivity;
 
@@ -40,6 +42,13 @@ public class MainActivity extends NavActivity {
                 "{\"code\":200,\"msg\":\"请求成功\",\"data\":[{\"id\":80,\"name\":\"10kV线路\"},{\"id\":727,\"name\":\"300KV线路\"},{\"id\":755,\"name\":\"青海内网驱鸟器测试\"}]}",
                 GsonUtils.getType(ResponseData.class, GsonUtils.getListType(Object.class))
         );
+
+        TestViewModel v1 = new GetViewModelProvider(this).get(TestViewModel.class);
+
+        TestViewModel v2 =new GetViewModelProvider(this).get(TestViewModel.class);
+
+
+        Log.e("数据", "搜索|" + (v1 == v2));
 //
 //
 //

@@ -1,7 +1,7 @@
 package cn.cqray.android.app2;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModel;
 
@@ -12,29 +12,17 @@ import cn.cqray.android.lifecycle.LifecycleViewModelProvider;
  * <p>需要使用{@link LifecycleViewModelProvider}获取</p>
  * @author Cqray
  */
-class GetViewModel extends ViewModel {
+public class GetViewModel extends ViewModel implements DefaultLifecycleObserver {
 
     @NonNull
-    private FragmentActivity activity;
+    private final LifecycleOwner mLifecycleOwner;
 
-    public GetViewModel(@NonNull FragmentActivity activity) {
-        this.activity = activity;
+    public GetViewModel(@NonNull LifecycleOwner owner) {
+        mLifecycleOwner = owner;
     }
 
-//    @Override
-//    protected void onCleared() {
-//        super.onCleared();
-//        LifecycleViewModelProvider.removeFactory(mLifecycleOwner);
-//    }
-//
-//    @NonNull
-//    public LifecycleOwner getLifecycleOwner() {
-//        return mLifecycleOwner;
-//    }
-
-
     @NonNull
-    public FragmentActivity getActivity() {
-        return activity;
+    public LifecycleOwner getLifecycleOwner() {
+        return mLifecycleOwner;
     }
 }
